@@ -8,6 +8,7 @@ const postRouter = require("./modules/v1/posts/post.routes");
 const errorHandler = require("./middlewares/errorHandler ");
 const convertToTrim = require("./middlewares/convertToTrim");
 const apiDocRoutes = require("./modules/v1/apiDoc/swagger.routes");
+const cors = require('cors')
 const app = express();
 // parse application/x-www-form-urlencoded
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
@@ -19,6 +20,10 @@ app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
 
 // cors policy
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+})) // Use this after the variable declaration
 app.use(setHeaders);
 
 //static folders

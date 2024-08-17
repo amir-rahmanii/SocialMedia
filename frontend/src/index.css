@@ -4,11 +4,13 @@
 
 
 body {
-  background-color: #fafafa;
+  background: #833ab4;
+  background: linear-gradient(to right,
+      #833ab4, #fd1d1d, #fcb045);
   font-family: "Segoe UI", sans-serif;
 }
 
-.slick-arrow {
+/* .slick-arrow {
   margin: 0 2.3rem;
   background-color: #ffffff;
   z-index: 100;
@@ -35,4 +37,4 @@ body {
   100% {
     transform: scale(0.4);
   }
-}
+} */

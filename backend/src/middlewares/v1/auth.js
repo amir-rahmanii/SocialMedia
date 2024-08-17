@@ -10,7 +10,7 @@ module.exports = async (req, res, next) => {
     let accessTokenData = accessTokenExpiredTimeValidator(accessToken);
     const user = await userModel.findOne({ _id: accessTokenData.userId });
     if (!user) {
-      return errorResponse(res, 404, "olease fitst login");
+      return errorResponse(res, 404, "please fitst login");
     }
 
     req.user = user;

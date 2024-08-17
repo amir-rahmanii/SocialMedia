@@ -40,7 +40,7 @@ exports.register = async (req, res) => {
       })
       .lean();
     if (isUserExist) {
-      throwError("email or password is exist", 401);
+      throwError("email or username is exist", 401);
     }
     const isFirstUser = (await userModel.countDocuments()) === 0;
 

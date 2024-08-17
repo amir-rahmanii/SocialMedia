@@ -6,11 +6,44 @@ import registerSchema from '../../Validation/register';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from "@hookform/resolvers/yup";
 import IsLoaderBtn from '../../Components/IsLoaderBtn/IsLoaderBtn';
+import { usePostUserRegister } from '../../hooks/user/useUser';
+import toast from 'react-hot-toast';
+import Cookies from 'js-cookie';
 
 function Register() {
 
     // const [profileState, setProfileState] = useState({})
-    const [isStartLoaderSubmit, setIsStartLoaderSubmit] = useState(false) // start loader
+    const { mutate: registerUser, isLoading, isError, error , isSuccess} = usePostUserRegister();
+
+    if (isError) {
+        if (error && (error as any).response) {
+            toast.error((error as any).response.data.error.message,
+                {
+                    icon: '❌',
+                    style: {
+                        borderRadius: '10px',
+                        background: '#333',
+                        color: '#fff',
+                    },
+                }
+            )
+        }
+    }
+
+    if(isSuccess){
+        toast.success("User created successfuly",
+                {
+                    icon: '✅',
+                    style: {
+                        borderRadius: '10px',
+                        background: '#333',
+                        color: '#fff',
+                    },
+                }
+            )
+    }
+
+
     // hook form
     const {
         register,
@@ -124,13 +157,9 @@ function Register() {
                     </div> */}
 
                     <button onClick={handleSubmit((data) => {
-                        setIsStartLoaderSubmit(true)
-                        console.log(data);
-                        setTimeout(() => {
-                            setIsStartLoaderSubmit(false)
-                        }, 1000);
-                    })} disabled={isStartLoaderSubmit} type="submit" className={`font-medium py-2 rounded text-white w-full  duration-300 transition-all ${isStartLoaderSubmit ? "bg-primaryLoading-blue" : "bg-primary-blue hover:bg-primaryhover-blue"}`}>
-                        {isStartLoaderSubmit ? <IsLoaderBtn /> : "Sign up"}
+                        registerUser(data)
+                    })} disabled={isLoading} type="submit" className={`font-medium py-2 rounded text-white w-full  duration-300 transition-all ${isLoading ? "bg-primaryLoading-blue" : "bg-primary-blue hover:bg-primaryhover-blue"}`}>
+                        {isLoading ? <IsLoaderBtn /> : "Sign up"}
                     </button>
                     <span className="my-3 text-gray-500">OR</span>
                     <Link to="/password/forgot" className="text-sm font-medium  text-blue-800">Forgot password?</Link>
@@ -140,6 +169,8 @@ function Register() {
             <div className="bg-white border p-5 text-center">
                 <span>Already have an account? <Link to="/login" className="text-primary-blue">Log in</Link></span>
             </div>
+
+
         </Auth>
     )
 }

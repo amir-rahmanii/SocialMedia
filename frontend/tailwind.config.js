@@ -50,7 +50,7 @@ export default {
           blue: '#00AAf6',
         },
         primaryLoading: {
-          blue: '##9fc2f8',
+          blue: '#9fc2f8',
         },
         error : {
           red : '#EF4056'

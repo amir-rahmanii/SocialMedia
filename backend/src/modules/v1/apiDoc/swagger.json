@@ -52,7 +52,7 @@
                         "description": "User created successfully "
                     },
                     "401": {
-                        "description": "email or password is exist"
+                        "description": "email or username is exist"
                     },
                     "409": {
                         "description": "Error in  requestBody"
