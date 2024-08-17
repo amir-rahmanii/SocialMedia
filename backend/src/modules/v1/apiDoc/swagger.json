@@ -1,0 +1,774 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": " Social Media",
+        "description": "This document is for the project of an application or a social network site like Instagram ",
+        "version": "1.0.0"
+    },
+    "tags": [
+        {
+            "name": "user",
+            "description": "all routs about User operations"
+        },
+        {
+            "name": "post",
+            "description": "all routs about post operations"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "paths": {
+        "/users/register": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "register user",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "example": {
+                                    "name": "3jjasfasf3",
+                                    "username": "csafa",
+                                    "email": "mohammad.ebrahimzadeh002@gmail.com",
+                                    "password": "12345678",
+                                    "confirmPassword": "12345678"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User created successfully "
+                    },
+                    "401": {
+                        "description": "email or password is exist"
+                    },
+                    "409": {
+                        "description": "Error in  requestBody"
+                    }
+                }
+            }
+        },
+        "/users/login": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "login user",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "example": {
+                                    "identity": "ali",
+                                    "password": "12345678"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User login successfully "
+                    },
+                    "401": {
+                        "description": "email or password is not true"
+                    },
+                    "404": {
+                        "description": "Error user not found"
+                    },
+                    "409": {
+                        "description": "Error in  requestBody"
+                    }
+                }
+            }
+        },
+        "/users/update-password": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "summary": " To update the password by the user ",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "example": {
+                                    "pervPassword": "123456789001",
+                                    "newPassword": "123456789002",
+                                    "newConfrimPassword": "123456789002"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "reset password is successfully"
+                    },
+                    "401": {
+                        "description": "pervPassword is not match"
+                    },
+                    "409": {
+                        "description": "Error in requestBody"
+                    }
+                }
+            }
+        },
+        "/users/forget-password": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "summary": " send email for reset psssword ",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "example": {
+                                    "email": "mohammad.ebrahimzadeh002@gmail.com"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password reset email sent successfully"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "409": {
+                        "description": "Error in requestBody"
+                    }
+                }
+            }
+        },
+        "/users/user-ban-toggle": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": " ban user by admin ",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "example": {
+                                    "userid": "66a50c7e0312b322822b9485"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "The user was successfully banned/unbanned"
+                    },
+                    "400": {
+                        "description": "please enter userid"
+                    },
+                    "401": {
+                        "description": "please add token in headers"
+                    },
+                    "404": {
+                        "description": "user not found "
+                    },
+                    "403": {
+                        "description": "You cannot ban the admin"
+                    }
+                }
+            }
+        },
+        "/users/reset-password": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "summary": " reset password by user ",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "example": {
+                                    "token": "45256",
+                                    "new_password": "12345678"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "reset password is successfully"
+                    },
+                    "401": {
+                        "description": "token (otp) not valid or expierd"
+                    },
+                    "404": {
+                        "description": "user not found "
+                    },
+                    "409": {
+                        "description": "Error in  requestBody"
+                    }
+                }
+            }
+        },
+        "/users/refresh-token": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "summary": " refresh user jwt ",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "example": {
+                                    "refreshToken": "3d6c712a-3aba-44d9-830b-82f6b524cbb5"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "new access token is set"
+                    },
+                    "400": {
+                        "description": "refresh token not found or expier please login"
+                    },
+                    "404": {
+                        "description": "user token not found  please login"
+                    }
+                }
+            }
+        },
+        "/users/user-information": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "summary": " show user information ",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "example": {
+                                    "userid": "66a50c7e0312b322822b9485"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "get user info successfully"
+                    },
+                    "401": {
+                        "description": "please add token in headers"
+                    },
+                    "400": {
+                        "description": "please enter userid"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    }
+                }
+            }
+        },
+        "/posts/create-post": {
+            "post": {
+                "tags": [
+                    "post"
+                ],
+                "summary": "create a post in social",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "media": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "hashtags": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "example": {
+                                "media": {
+                                    "content": "SGVsbG8gV29ybGQh",
+                                    "contentType": "text/plain"
+                                },
+                                "title": "post one",
+                                "description": "about post",
+                                "hashtags": "main,car,animals"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "post created"
+                    },
+                    "400": {
+                        "description": "media is required"
+                    },
+                    "401": {
+                        "description": "please add token in headers"
+                    },
+                    "409": {
+                        "description": "Error in  requestBody"
+                    }
+                }
+            }
+        },
+        "/posts/like-toggle": {
+            "post": {
+                "tags": [
+                    "post"
+                ],
+                "summary": " like and dislike the post ",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "example": {
+                                    "postid": "66a3a70ce3ca564cc4e4f475"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "post is liked/disLiked"
+                    },
+                    "401": {
+                        "description": "please add token in headers"
+                    },
+                    "400": {
+                        "description": "postid is not valid"
+                    },
+                    "404": {
+                        "description": "post is not found"
+                    }
+                }
+            }
+        },
+        "/posts/save-post-toggle": {
+            "post": {
+                "tags": [
+                    "post"
+                ],
+                "summary": " saave and unsave the post ",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "example": {
+                                    "postid": "66a3c039126f45be3d70d96c"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "post is save/unsave"
+                    },
+                    "401": {
+                        "description": "please add token in headers"
+                    },
+                    "400": {
+                        "description": "postid is not valid"
+                    },
+                    "404": {
+                        "description": "post is not found"
+                    }
+                }
+            }
+        },
+        "/posts/add-comment": {
+            "post": {
+                "tags": [
+                    "post"
+                ],
+                "summary": " add comment for post ",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "example": {
+                                    "postid": "66a3beae4523d80e6629a0e1",
+                                    "title": "qqqqqqqqqqqqqqqqqqqqq",
+                                    "content": "tyjtyjtj"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "comment submitted successfully"
+                    },
+                    "400": {
+                        "description": "postid is not valid"
+                    },
+                    "401": {
+                        "description": "please add token in headers"
+                    },
+                    "404": {
+                        "description": "post is not found"
+                    },
+                    "409": {
+                        "description": "Error in  requestBody"
+                    }
+                }
+            }
+        },
+        "/posts/update-post": {
+            "put": {
+                "tags": [
+                    "post"
+                ],
+                "summary": "edit a post",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "media": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "postid": {
+                                        "type": "string"
+                                    },
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "hashtags": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "example": {
+                                "media": {
+                                    "content": "SGVsbG8gV29ybGQh",
+                                    "contentType": "text/plain"
+                                },
+                                "postid": "66a28c66f07f28fbce165290",
+                                "title": "post one",
+                                "description": "about post",
+                                "hashtags": "main,car,animals"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "post created"
+                    },
+                    "400": {
+                        "description": "media is required"
+                    },
+                    "401": {
+                        "description": "please add token in headers"
+                    },
+                    "409": {
+                        "description": "Error in  requestBody"
+                    }
+                }
+            }
+        },
+        "/posts/delete-post": {
+            "delete": {
+                "tags": [
+                    "post"
+                ],
+                "summary": " delete a post ",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "example": {
+                                    "postid": "66a3beae4523d80e6629a0e1"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "the post was deleted successfully"
+                    },
+                    "400": {
+                        "description": "postid is not valid"
+                    },
+                    "401": {
+                        "description": "please add token in headers"
+                    },
+                    "403": {
+                        "description": "user is not create this post or is not admin"
+                    },
+                    "404": {
+                        "description": "post is not found"
+                    },
+                    "409": {
+                        "description": "Error in  requestBody"
+                    }
+                }
+            }
+        },
+        "/posts/delete-comment": {
+            "delete": {
+                "tags": [
+                    "post"
+                ],
+                "summary": " delete a comment ",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "example": {
+                                    "commentid": "66a27d49e74ea9be70fd947"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "comment deleted"
+                    },
+                    "400": {
+                        "description": "postid is not valid"
+                    },
+                    "401": {
+                        "description": "please add token in headers"
+                    },
+                    "403": {
+                        "description": "user is not create this post or is not admin"
+                    },
+                    "404": {
+                        "description": "comment is not found"
+                    },
+                    "409": {
+                        "description": "Error in  requestBody"
+                    }
+                }
+            }
+        },
+        "/posts/get-all-posts": {
+            "get": {
+                "tags": [
+                    "post"
+                ],
+                "summary": " get all posts from all users",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successfully"
+                    }
+                }
+            }
+        },
+        "/posts/my-posts": {
+            "get": {
+                "tags": [
+                    "post"
+                ],
+                "summary": " get all posts for a user",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successfully"
+                    }
+                }
+            }
+        },
+        "/posts/search-posts": {
+            "get": {
+                "tags": [
+                    "post"
+                ],
+                "summary": " search a queary in title all posts",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "description": "search title",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successfully"
+                    },
+                    "400": {
+                        "description": "please enter query in url"
+                    },
+                    "401": {
+                        "description": "please add token in headers"
+                    }
+                }
+            }
+        },
+        "/posts/post-details": {
+            "get": {
+                "tags": [
+                    "post"
+                ],
+                "summary": " show a post detail",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "example": {
+                                    "postid": "66a3c039126f45be3d70d96c"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successfully"
+                    },
+                    "401": {
+                        "description": "please add token in headers"
+                    },
+                    "404": {
+                        "description": "post is not found"
+                    }
+                }
+            }
+        },
+        "/posts/my-save-posts": {
+            "get": {
+                "tags": [
+                    "post"
+                ],
+                "summary": " get all save posts  by a user",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successfully"
+                    },
+                    "401": {
+                        "description": "please add token in headers"
+                    }
+                }
+            }
+        }
+    }
+}
