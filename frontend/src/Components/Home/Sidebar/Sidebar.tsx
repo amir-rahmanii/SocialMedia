@@ -1,23 +1,12 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useContext } from 'react'
+import { AuthContext } from '../../../../Context/AuthContext';
 
-type SidebarProps = {
-    createdAt: string,
-    email: string,
-    isVerified: boolean,
-    isban: boolean,
-    name: string,
-    role: "ADMIN" | "USER",
-    updatedAt: string,
-    username: string,
-    __v: number,
-    _id: string
-}
 
-function Sidebar(props : SidebarProps ) {
 
+function Sidebar() {
+    const authContext = useContext(AuthContext);
     return (
-        <div className="fixed  lg:right-32 xl:right-56 w-3/12 h-full hidden lg:flex flex-col flex-auto m-8 mt-12 pr-8 -z-1">
+        <div className="fixed  lg:right-[50px] xl:right-[150px] w-fit h-full hidden lg:flex flex-col flex-auto m-8 mt-12 pr-8 -z-1">
 
             <div className="ml-10 flex flex-col p-2 bg-white">
 
@@ -26,16 +15,16 @@ function Sidebar(props : SidebarProps ) {
                     <div className="flex flex-auto space-x-4 items-center">
                         <img draggable="false" className="w-14 h-14 rounded-full object-cover" src="/src/assets/images/hero.png" alt="{user.name}" />
                         <div className="flex flex-col">
-                            <p className="text-black text-sm font-semibold">{props.email}</p>
-                            <span className="text-gray-400 text-sm">{props.username}</span>
+                            <p className="text-black text-sm font-semibold line-clamp-1">{authContext?.user?.email}</p>
+                            <span className="text-gray-400 text-sm line-clamp-1">{authContext?.user?.username}</span>
                         </div>
                     </div>
-                    <span className="text-blue-500 text-xs font-semibold">{props.role === "ADMIN" ? "Admin" : "User" }</span>
+                    <span className="text-blue-500 text-xs font-semibold">{authContext?.user?.role === "ADMIN" ? "Admin" : "User" }</span>
                 </div>
 
                 {/* <!-- suggestions --> */}
                 <div className="flex justify-between items-center mt-5">
-                    <p className="font-semibold text-gray-500 text-sm">Hi {props.name} Welcome to my project.</p>
+                    <p className="font-semibold text-gray-500 text-sm line-clamp-1">Hi {authContext?.user?.name} Welcome to my project.</p>
                     <span className="text-black text-xs font-semibold cursor-pointer">See All</span>
                 </div>
 

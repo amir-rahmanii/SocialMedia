@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, {useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { exploreOutline, homeFill, homeOutline, likeOutline, messageFill, messageOutline, postUploadOutline } from '../../Components/SvgIcon/SvgIcon';
 import SearchBox from '../../Components/Header/SearchBox/SearchBox';
 import ProfileDetails from '../../Components/Header/ProfileDetails/ProfileDetails';
 import NewPost from '../../Components/Header/NewPost/NewPost';
 
+
 export default function Header() {
+
+
 
     const [profileToggle, setProfileToggle] = useState(false)
     const [newPost, setNewPost] = useState(false);

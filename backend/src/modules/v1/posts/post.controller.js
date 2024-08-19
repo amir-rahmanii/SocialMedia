@@ -25,7 +25,14 @@ exports.createPost = async (req, res) => {
       title,
       description,
       hashtags,
-      user: user._id,
+      user: {
+        id : user._id,
+        username : user.username,
+        email : user.email,
+        name : user.name,
+        role : user.role,
+        isban : user.isban,
+      }
     });
     await post.save();
     successResponse(res, 201, { message: "post created", post });
@@ -36,7 +43,7 @@ exports.createPost = async (req, res) => {
 exports.getAllPosts = async (req, res) => {
   try {
     const allPosts = await postModel
-      .find({}, { _id: 0, __v: 0 })
+      .find({}, { __v: 0 }) // Only exclude __v, keep _id
       .populate("comments", "-__v")
       .populate("likes", "-__v");
 

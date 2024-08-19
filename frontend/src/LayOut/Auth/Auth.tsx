@@ -3,9 +3,9 @@ import React, { PropsWithChildren } from 'react'
 
 const Auth: React.FC<PropsWithChildren> = ({ children }) => {
     return (
-        <div className="w-full h-full">
+        <div className="w-full h-full p-3 sm:p-0">
           
-            <div className="flex w-full h-screen md:w-2/3 py-8 mx-auto">
+            <div className="flex w-full h-screen md:w-2/3 py-8 mx-auto ">
 
                 <div className="hidden xl:block my-10">
                     <img src='/src/assets/images/homepage.webp' draggable="false" className="mr-[80px] mt-[1.8rem] ml-[155px]" alt="homepage" />

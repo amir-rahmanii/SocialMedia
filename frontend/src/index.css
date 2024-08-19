@@ -10,9 +10,8 @@ body {
   font-family: "Segoe UI", sans-serif;
 }
 
-/* .slick-arrow {
+.slick-arrow {
   margin: 0 2.3rem;
-  background-color: #ffffff;
   z-index: 100;
 }
 
@@ -37,4 +36,4 @@ body {
   100% {
     transform: scale(0.4);
   }
-} */
+}

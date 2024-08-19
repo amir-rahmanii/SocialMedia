@@ -4,13 +4,41 @@ import SkeletonPost from '../../SkeletonPost/SkeletonPost'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import PostItem from '../PostItem/PostItem';
 import SpinLoader from '../../SpinLoader/SpinLoader';
+import { useGetAllPostAllUsers } from '../../../hooks/post/usePost';
+import PostItemProps from '../PostItem/PostItem'
+
+export type PostItemProps = {
+    _id: string,
+    comments: any[],
+    description: string,
+    hashtags: string,
+    likes: {
+        createdAt: string,
+        postid: string
+        updatedAt: string
+        userid: string
+        _id: string
+    }[],
+    media: { path: string, filename: string },
+    title: string,
+    user: {
+        email: string,
+        id: string,
+        isban: boolean,
+        name: string,
+        role: "ADMIN" | "USER",
+        username: string
+    },
+    createdAt: Date,
+    updatedAt: Date,
+}
+
+
 
 function PostsContainer() {
 
-    const handleClose = () => setUsersDialog(false);
-    const [usersList, setUsersList] = useState([]);
-    const [usersDialog, setUsersDialog] = useState(true);
-    const [page, setPage] = useState(2);
+    const { data, isLoading } = useGetAllPostAllUsers();
+
 
     return (
         <>
@@ -18,13 +46,26 @@ function PostsContainer() {
 
                 <StoriesContainer />
 
-                {
+                {isLoading ? (
                     Array(5).fill("").map((el, i) => (<SkeletonPost key={i} />))
+                ) : (
+                    <>
+                        {data?.response?.allPosts.length > 0 ? (
+                            <div className="flex flex-col space-y-4">
+                                {data.response.allPosts.map((post: PostItemProps) => (
+                                    <PostItem key={post._id} {...post} />
+                                ))}
+                            </div>
+                        ) : (
+                            <div>
+                                NO POST
+                            </div>
+                        )}
+                    </>
+
+                )
                 }
 
-                {/* <div className="w-full h-full mt-1 sm:mt-6 flex flex-col space-y-4"> */}
-                    <PostItem />
-                {/* </div> */}
 
                 {/* 
                 <InfiniteScroll

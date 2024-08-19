@@ -46,7 +46,7 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: ["USER", "ADMIN"],
-      default: "uSER",
+      default: "USER",
     },
     isban: {
       type: Boolean,

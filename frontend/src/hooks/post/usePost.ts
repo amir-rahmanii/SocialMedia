@@ -1,26 +1,51 @@
-import { useMutation } from "react-query"
+import { useMutation, useQuery, useQueryClient } from "react-query"
 import apiRequest from "../../Services/axios"
-import { createPost } from "./post.types"
+import { postid } from "./post.types";
 
 
 
 
 function usePostCreatePost() {
-    return useMutation(async (post: createPost) => {
-        console.log(post);
-        return apiRequest.post(`posts/create-post`, post)
+    const queryClient = useQueryClient();
+    return useMutation(async (post: FormData) => {
+        return apiRequest.post(`posts/create-post`, post, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        })
     },
         {
-            onSuccess: (res) => {
-                console.log(res)
+            onSuccess: () => {
+                queryClient.invalidateQueries(["AllPostAllUsers"]);
             },
-            onError: (err) => {
-                console.log(err);
-            }
+        }
+    )
+}
+
+
+function useGetAllPostAllUsers() {
+    return useQuery(['AllPostAllUsers'],
+        async () => {
+            const response = await apiRequest.get("posts/get-all-posts");
+            return response.data
+        },
+    )
+}
+
+
+function usePostLikeToggle() {
+    const queryClient = useQueryClient();
+    return useMutation(async (postid : postid) => {
+        return apiRequest.post(`posts/like-toggle`, postid)
+    },
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries(["AllPostAllUsers"]);
+            },
         }
     )
 }
 
 
 
-export { usePostCreatePost }
+export { usePostCreatePost, useGetAllPostAllUsers , usePostLikeToggle}

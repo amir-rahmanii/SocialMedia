@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import MetaData from '../../Components/MetaData/MetaData'
 import PostsContainer from '../../Components/Home/PostsContainer/PostsContainer'
 import Sidebar from '../../Components/Home/Sidebar/Sidebar'
@@ -7,11 +7,13 @@ import { usePostUserInformation } from '../../hooks/user/useUser'
 import SpinLoader from '../../Components/SpinLoader/SpinLoader'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
+import { AuthContext } from '../../../Context/AuthContext'
 
 function Home() {
     const navigate = useNavigate()
+    const authContext = useContext(AuthContext);
 
-    const { mutate: informationUser, isLoading, data, isError } = usePostUserInformation();
+    const { mutate: informationUser, isLoading, data, isError , isSuccess } = usePostUserInformation();
 
     useEffect(() => {
         const userid = localStorage.getItem("userId")
@@ -34,9 +36,11 @@ function Home() {
             )
             navigate("/login")
         }
-    }, [isError])
-
-    // console.log(data?.data.response.user);
+        if(isSuccess){
+            authContext?.setUser(data?.data.response.user)  
+        }
+    }, [isError , isSuccess])
+    
 
 
 
@@ -48,9 +52,9 @@ function Home() {
                 <>
                     <MetaData title="Instagram" />
                     <Header />
-                    <div className="flex h-full md:w-4/5 lg:w-4/6 mt-14 mx-auto">
+                    <div className="flex gap-2 h-full lg:w-4/6 mt-14 mx-auto p-3 sm:p-0">
                         <PostsContainer />
-                        <Sidebar {...data?.data.response.user} />
+                        <Sidebar  />
                     </div>
                 </>
             )}

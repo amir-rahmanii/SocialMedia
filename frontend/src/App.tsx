@@ -3,6 +3,7 @@ import { useRoutes } from 'react-router-dom'
 import routes from './routes'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import Toast from './Components/Toast/Toast'
+import AuthContextProvider from '../Context/AuthContext'
 
 function App() {
 
@@ -19,9 +20,11 @@ function App() {
 
   return (
     <QueryClientProvider client={client}>
-      {route}
-      {/* show toast */}
-      <Toast />
+      <AuthContextProvider>
+        {route}
+        {/* show toast */}
+        <Toast />
+      </AuthContextProvider>
     </QueryClientProvider>
   )
 }

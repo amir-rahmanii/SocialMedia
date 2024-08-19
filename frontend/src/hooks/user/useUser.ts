@@ -43,14 +43,6 @@ function usePostUserInformation() {
     return useMutation(async (userId: userId) => {
         return apiRequest.post(`users/user-information`, userId)
     },
-        {
-            onSuccess(res) {
-                console.log(res);
-            },
-            onError(err) {
-                console.log(err);
-            },
-        }
     )
 }
 
