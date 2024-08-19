@@ -58,11 +58,11 @@ exports.register = async (req, res) => {
 
     res.cookie("access-token", accessToken, {
       maxAge: 900_000,
-      httpOnly: true,
+      httpOnly: false,
     });
     res.cookie("refresh-token", refreshToken, {
       maxAge: 900_000,
-      httpOnly: true,
+      httpOnly: false,
     });
     return successResponse(res, 201, {
       message: "User created successfully :))",
@@ -92,11 +92,11 @@ exports.login = async (req, res) => {
     const refreshToken = await RefreshTokenModel.createToken(user);
     res.cookie("access-token", accessToken, {
       maxAge: 900_000,
-      httpOnly: true,
+      httpOnly: false,
     });
     res.cookie("refresh-token", refreshToken, {
       maxAge: 900_000,
-      httpOnly: true,
+      httpOnly: false,
     });
 
     return successResponse(res, 200, {
@@ -112,25 +112,28 @@ exports.refreshToken = async (req, res) => {
   try {
     const userId = await RefreshTokenModel.verifyToken(refreshToken);
     if (!userId) {
-      throwError("refresh token not found or expier please login", 400);
+      throwError("refresh token not found or expired, please login", 400);
     }
-    // delete refresh token doc in modele refresh token
+    // Delete the refresh token document from the model
     await RefreshTokenModel.findOneAndDelete({ token: refreshToken });
+    
     const user = await userModel.findOne({ _id: userId });
     if (!user) {
-      throwError("user token not found  please login", 404);
+      throwError("user not found, please login", 404);
     }
+    
     const accessToken = accessTokenCreator(user, "30s");
     const newRefreshToken = await RefreshTokenModel.createToken(user);
 
     res.cookie("access-token", accessToken, {
-      maxAge: 900_000,
-      httpOnly: true,
+      maxAge: 900_000, // 15 minutes
+      httpOnly: false,
     });
     res.cookie("refresh-token", newRefreshToken, {
-      maxAge: 900_000,
-      httpOnly: true,
+      maxAge: 900_000, // 15 minutes
+      httpOnly: false,
     });
+    
     return successResponse(res, 201, {
       message: "new access token is set",
       accessToken,
@@ -202,7 +205,7 @@ exports.forgetPassword = async (req, res) => {
       subject: "Reset Password Link For Your Social account",
       html: `
        <h2>your link for reset password:</h2>
-       <p>http://localhost:${process.env.PORT}/reset-password/?token=${resetPassordToken}</p>
+       <p>http://localhost:5173/reset-password/?token=${resetPassordToken}</p>
        `,
     };
     transporter.sendMail(mailOptions);
@@ -219,37 +222,46 @@ exports.resetPassword = async (req, res) => {
   const { token, new_password } = req.body;
 
   try {
+    // اعتبارسنجی داده‌های ورودی
     await userValidator.resetPasswordValidator.validate(
       { token, new_password },
       { abortEarly: false }
     );
+
+    // جستجوی توکن در پایگاه داده
     const resultResetSearchTokenInDb = await forgetPasswordModel.findOne({
       token,
-      tokenExpireTime: { $gt: Date.now() },
+      tokenExpireTime: { $gt: Date.now() }, // بررسی اعتبار زمانی توکن
     });
     if (!resultResetSearchTokenInDb) {
-      throwError("token not valid or expierd", 401);
+      throwError("Token not valid or expired", 401);
     }
+
+    // پیدا کردن کاربر مرتبط با توکن
     const user = await userModel.findOne({
       _id: resultResetSearchTokenInDb.user,
     });
     if (!user) {
-      throwError("user not found", 404);
+      throwError("User not found", 404);
     }
 
+    // هش کردن رمز عبور جدید
     const hashedPassword = await bcrypt.hash(new_password, 10);
 
+    // بروزرسانی رمز عبور کاربر
     await userModel.findOneAndUpdate(
       { _id: user._id },
       { password: hashedPassword }
     );
 
+    // حذف توکن از پایگاه داده
     await forgetPasswordModel.findOneAndDelete({
       _id: resultResetSearchTokenInDb._id,
     });
-    // -----
+
+    // ارسال پاسخ موفقیت‌آمیز
     return successResponse(res, 200, {
-      message: "successfully",
+      message: "Password reset successfully",
       data: "",
     });
   } catch (error) {
@@ -257,6 +269,7 @@ exports.resetPassword = async (req, res) => {
     return errorResponse(res, 409, error, {});
   }
 };
+
 exports.userBanToggle = async (req, res) => {
   try {
     const { userid } = req.body;

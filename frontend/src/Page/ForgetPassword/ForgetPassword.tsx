@@ -1,19 +1,17 @@
 import React, { useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
 import Auth from '../../LayOut/Auth/Auth'
-import TextField from '@mui/material/TextField';
+import { TextField } from '@mui/material'
+import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import loginSchema from '../../Validation/login';
-import { usePostUserLogin } from '../../hooks/user/useUser';
+import forgetPassSchema from '../../Validation/forgetPassword';
 import IsLoaderBtn from '../../Components/IsLoaderBtn/IsLoaderBtn';
+import { usePostUserForgetPassword } from '../../hooks/user/useUser';
 import toast from 'react-hot-toast';
 
+function ForgetPassword() {
 
-function Login() {
-
-    const navigate = useNavigate();
-    const { mutate: loginUser, isLoading, isError, error, isSuccess } = usePostUserLogin();
+    const { mutate: forgetPasswordUser, isLoading, isError, error, isSuccess } = usePostUserForgetPassword();
 
 
     useEffect(() => {
@@ -33,7 +31,7 @@ function Login() {
         }
 
         if (isSuccess) {
-            toast.success("User login successfuly",
+            toast.success("Email sent successfuly",
                 {
                     icon: '✅',
                     style: {
@@ -43,13 +41,8 @@ function Login() {
                     },
                 }
             )
-            navigate("/")
         }
     }, [isError, isSuccess])
-
-
-
-
 
     // hook form
     const {
@@ -57,10 +50,8 @@ function Login() {
         handleSubmit,
         formState: { errors },
     } = useForm({
-        resolver: yupResolver(loginSchema)
+        resolver: yupResolver(forgetPassSchema)
     });
-
-
     return (
         <Auth>
             <div className="bg-white border flex flex-col gap-2 p-4 pt-10">
@@ -68,33 +59,21 @@ function Login() {
                 <form onSubmit={e => e.preventDefault()} className="flex flex-col justify-center items-center gap-3 m-3 md:m-8">
                     <div className='w-full'>
                         <TextField
-                            {...register('identity')}
-                            label="Email/Username"
-                            type="text"
+                            {...register('email')}
+                            fullWidth
+                            label="Email"
+                            type="email"
+                            name="email"
                             required
                             size="small"
-                            fullWidth
                         />
-                        {errors.identity && <p className='text-error-red text-sm mt-1.5'> {errors.identity.message}</p>}
-                    </div>
-                    <div className='w-full'>
-                        <TextField
-                            {...register('password')}
-                            label="Password"
-                            type="password"
-                            required
-                            size="small"
-                            fullWidth
-                        />
-                        {errors.password && <p className='text-error-red text-sm mt-1.5'> {errors.password.message}</p>}
+                        {errors.email && <p className='text-error-red text-sm mt-1.5'> {errors.email.message}</p>}
                     </div>
                     <button onClick={handleSubmit((data) => {
-                        loginUser(data)
+                        forgetPasswordUser(data)
                     })} disabled={isLoading} type="submit" className={`font-medium py-2 rounded text-white w-full  duration-300 transition-all ${isLoading ? "bg-primaryLoading-blue" : "bg-primary-blue hover:bg-primaryhover-blue"}`}>
-                        {isLoading ? <IsLoaderBtn /> : "Log in"}
+                        {isLoading ? <IsLoaderBtn /> : "Submit"}
                     </button>
-                    <span className="my-3 text-gray-500">OR</span>
-                    <Link to="/forget-password" className="text-sm font-medium text-blue-800">Forgot password?</Link>
                 </form>
             </div>
 
@@ -105,5 +84,4 @@ function Login() {
     )
 }
 
-
-export default Login
+export default ForgetPassword

@@ -16,7 +16,6 @@ exports.createPost = async (req, res) => {
     const user = req.user;
     const { title, description, hashtags } = req.body;
     await postValidator.createPostAccess(req, res);
-    const tags = hashtags.split(",");
     const mediaUrlPath = `images/posts/${req.file.filename}`;
     const post = new postModel({
       media: {
@@ -25,7 +24,7 @@ exports.createPost = async (req, res) => {
       },
       title,
       description,
-      hashtags: tags,
+      hashtags,
       user: user._id,
     });
     await post.save();
@@ -93,7 +92,6 @@ exports.updatePost = async (req, res) => {
     await postValidator.updatePostsAccess(req, res);
 
     const mediaUrlPath = `images/posts/${req.file.filename}`;
-    const tags = hashtags.split(",");
 
     const post = await postModel.findOneAndUpdate(
       { _id: req.body.postid },
@@ -104,7 +102,7 @@ exports.updatePost = async (req, res) => {
         },
         title,
         description,
-        hashtags: tags,
+        hashtags,
         user: user._id,
       }
     );

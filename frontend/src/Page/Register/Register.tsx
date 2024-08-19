@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Auth from '../../LayOut/Auth/Auth'
 import { Avatar, TextField } from '@mui/material'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import registerSchema from '../../Validation/register';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -11,27 +11,28 @@ import toast from 'react-hot-toast';
 import Cookies from 'js-cookie';
 
 function Register() {
-
+    const navigate = useNavigate();
     // const [profileState, setProfileState] = useState({})
-    const { mutate: registerUser, isLoading, isError, error , isSuccess} = usePostUserRegister();
+    const { mutate: registerUser, isLoading, isError, error, isSuccess } = usePostUserRegister();
 
-    if (isError) {
-        if (error && (error as any).response) {
-            toast.error((error as any).response.data.error.message,
-                {
-                    icon: '❌',
-                    style: {
-                        borderRadius: '10px',
-                        background: '#333',
-                        color: '#fff',
-                    },
-                }
-            )
+    useEffect(() => {
+        if (isError) {
+            if (error && (error as any).response) {
+                toast.error((error as any).response.data.error.message,
+                    {
+                        icon: '❌',
+                        style: {
+                            borderRadius: '10px',
+                            background: '#333',
+                            color: '#fff',
+                        },
+                    }
+                )
+            }
         }
-    }
 
-    if(isSuccess){
-        toast.success("User created successfuly",
+        if (isSuccess) {
+            toast.success("User created successfuly",
                 {
                     icon: '✅',
                     style: {
@@ -41,7 +42,9 @@ function Register() {
                     },
                 }
             )
-    }
+            navigate("/login")
+        }
+    }, [isError, isSuccess])
 
 
     // hook form
@@ -162,12 +165,12 @@ function Register() {
                         {isLoading ? <IsLoaderBtn /> : "Sign up"}
                     </button>
                     <span className="my-3 text-gray-500">OR</span>
-                    <Link to="/password/forgot" className="text-sm font-medium  text-blue-800">Forgot password?</Link>
+                    <Link to="/forget-password" className="text-sm font-medium  text-blue-800">Forgot password?</Link>
                 </form>
             </div>
 
             <div className="bg-white border p-5 text-center">
-                <span>Already have an account? <Link to="/login" className="text-primary-blue">Log in</Link></span>
+                <span>Already have an account? <Link to="/login" className="text-primary-blue hover:text-primaryhover-blue transition-all duration-300">Log in</Link></span>
             </div>
 
 

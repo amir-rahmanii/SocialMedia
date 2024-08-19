@@ -6,7 +6,7 @@ const schema = mongoose.Schema({
   },
   title: { type: String, required: true },
   description: { type: String, required: true },
-  hashtags: { type: [String], required: true },
+  hashtags: { type: String, required: true },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "user",

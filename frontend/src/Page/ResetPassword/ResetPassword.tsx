@@ -1,25 +1,28 @@
 import React, { useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
 import Auth from '../../LayOut/Auth/Auth'
-import TextField from '@mui/material/TextField';
-import { useForm } from 'react-hook-form';
+import { TextField } from '@mui/material'
+import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { yupResolver } from '@hookform/resolvers/yup';
-import loginSchema from '../../Validation/login';
-import { usePostUserLogin } from '../../hooks/user/useUser';
-import IsLoaderBtn from '../../Components/IsLoaderBtn/IsLoaderBtn';
+import { useForm } from 'react-hook-form';
+import resetPassSchema from '../../Validation/resetPassword';
+import { usePostUserResetPassword } from '../../hooks/user/useUser';
 import toast from 'react-hot-toast';
+import IsLoaderBtn from '../../Components/IsLoaderBtn/IsLoaderBtn';
 
+function ResetPassword() {
 
-function Login() {
+    const [searchParams] = useSearchParams();
+    const token = searchParams.get('token');
 
-    const navigate = useNavigate();
-    const { mutate: loginUser, isLoading, isError, error, isSuccess } = usePostUserLogin();
+    let navigate = useNavigate()
+
+    const { mutate: resetPassword, isLoading, isError, error, isSuccess } = usePostUserResetPassword();
 
 
     useEffect(() => {
         if (isError) {
             if (error && (error as any).response) {
-                toast.error((error as any).response.data.error.message,
+                toast.error("token (otp) not valid or expierd",
                     {
                         icon: '❌',
                         style: {
@@ -33,7 +36,7 @@ function Login() {
         }
 
         if (isSuccess) {
-            toast.success("User login successfuly",
+            toast.success("password change successfuly",
                 {
                     icon: '✅',
                     style: {
@@ -43,13 +46,9 @@ function Login() {
                     },
                 }
             )
-            navigate("/")
+            navigate("/login")
         }
     }, [isError, isSuccess])
-
-
-
-
 
     // hook form
     const {
@@ -57,53 +56,48 @@ function Login() {
         handleSubmit,
         formState: { errors },
     } = useForm({
-        resolver: yupResolver(loginSchema)
+        resolver: yupResolver(resetPassSchema)
     });
 
 
     return (
+        <>
+        {token ? (
         <Auth>
             <div className="bg-white border flex flex-col gap-2 p-4 pt-10">
                 <img draggable="false" className="mx-auto h-[120px] w-[220px] object-contain" src="/src/assets/images/Instagram.png" alt="instagram" />
                 <form onSubmit={e => e.preventDefault()} className="flex flex-col justify-center items-center gap-3 m-3 md:m-8">
                     <div className='w-full'>
                         <TextField
-                            {...register('identity')}
-                            label="Email/Username"
-                            type="text"
-                            required
-                            size="small"
-                            fullWidth
-                        />
-                        {errors.identity && <p className='text-error-red text-sm mt-1.5'> {errors.identity.message}</p>}
-                    </div>
-                    <div className='w-full'>
-                        <TextField
                             {...register('password')}
-                            label="Password"
-                            type="password"
-                            required
-                            size="small"
                             fullWidth
+                            size="small"
+                            label="New Password"
+                            type="password"
+                            name="password"
+                            required
                         />
                         {errors.password && <p className='text-error-red text-sm mt-1.5'> {errors.password.message}</p>}
                     </div>
                     <button onClick={handleSubmit((data) => {
-                        loginUser(data)
+                            resetPassword({token : token , new_password : data.password})
                     })} disabled={isLoading} type="submit" className={`font-medium py-2 rounded text-white w-full  duration-300 transition-all ${isLoading ? "bg-primaryLoading-blue" : "bg-primary-blue hover:bg-primaryhover-blue"}`}>
-                        {isLoading ? <IsLoaderBtn /> : "Log in"}
+                        {isLoading ? <IsLoaderBtn /> : "Submit"}
                     </button>
-                    <span className="my-3 text-gray-500">OR</span>
+                    <span className="my-3 text-gray-700">OR</span>
                     <Link to="/forget-password" className="text-sm font-medium text-blue-800">Forgot password?</Link>
                 </form>
             </div>
 
             <div className="bg-white border p-5 text-center">
-                <span>Don't have an account? <Link to="/register" className="text-primary-blue hover:text-primaryhover-blue transition-all duration-300">Sign up</Link></span>
+                <span>Already have an account? <Link to="/login" className="text-primary-blue hover:text-primaryhover-blue transition-all duration-300">Log in</Link></span>
             </div>
         </Auth>
+        ) : (
+            <Navigate to='/forget-password' />
+        )}
+        </>
     )
 }
 
-
-export default Login
+export default ResetPassword

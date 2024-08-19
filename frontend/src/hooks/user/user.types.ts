@@ -11,3 +11,15 @@ export type userLogin = {
     password : string
 }
 
+export type forgetPassword = {
+    email : string,
+}
+
+export type resetPassword ={
+    token : string,
+    new_password : string
+}
+
+export type userId ={
+    userid : string,
+}
