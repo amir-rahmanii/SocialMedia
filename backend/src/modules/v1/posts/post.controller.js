@@ -26,12 +26,12 @@ exports.createPost = async (req, res) => {
       description,
       hashtags,
       user: {
-        id : user._id,
-        username : user.username,
-        email : user.email,
-        name : user.name,
-        role : user.role,
-        isban : user.isban,
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        isban: user.isban,
       }
     });
     await post.save();
@@ -43,7 +43,7 @@ exports.createPost = async (req, res) => {
 exports.getAllPosts = async (req, res) => {
   try {
     const allPosts = await postModel
-      .find({}, { __v: 0 }) // Only exclude __v, keep _id
+      .find({}, { __v: 0 })
       .populate("comments", "-__v")
       .populate("likes", "-__v");
 
@@ -55,15 +55,27 @@ exports.getAllPosts = async (req, res) => {
 exports.myPosts = async (req, res) => {
   try {
     const user = req.user;
+    
+    // لاگ کردن شناسه کاربر برای اطمینان
+    console.log("User ID:", user._id);
+
+    // پیدا کردن پست‌های مرتبط با کاربر
     const allPosts = await postModel
-      .find({ user: user._id }, { _id: 0, __v: 0, user: 0 })
-      .populate("comments")
-      .populate("likes", "-__v");
+      .find({ "user.id": user._id }) // استفاده از `user.id` برای مطابقت با شناسه کاربر
+      .populate("comments") // پر کردن داده‌های کامنت‌ها
+      .populate("likes", "-__v") // پر کردن داده‌های لایک‌ها بدون فیلد __v
+      .populate("saved") // پر کردن داده‌های ذخیره‌شده
+      .exec();
+
+    // لاگ کردن نتایج برای بررسی
+    console.log("All Posts:", allPosts);
+
     successResponse(res, 200, { allPosts });
   } catch (error) {
     errorResponse(res, 500, { message: error.message, error });
   }
 };
+
 exports.searchPosts = async (req, res) => {
   try {
     const query = req.query.query;
@@ -73,6 +85,7 @@ exports.searchPosts = async (req, res) => {
       .find({ title: { $regex: regex } })
       .populate("comments")
       .populate("likes", "-__v");
+
     successResponse(res, 200, { resultSearch });
   } catch (error) {
     errorResponse(res, error.statusCode, { message: error.message });
@@ -185,19 +198,35 @@ exports.savePostToggle = async (req, res) => {
         postid,
       });
 
-      successResponse(res, 201, { massage: "post is unsaved" });
+      await postModel.updateOne(
+        { _id: postid },
+        {
+          $pull: {
+            saved: user._id, // تغییر در این خط
+          },
+        }
+      );
+
+      successResponse(res, 201, { message: "post is unsaved" });
     } else {
       const record = new savepostsModel({
         userid: user._id,
         postid,
       });
+
       await record.save();
-      successResponse(res, 201, { massage: "post is saved" });
+
+      await postModel.findByIdAndUpdate(postid, {
+        $push: { saved: user._id }, // تغییر در این خط
+      });
+
+      successResponse(res, 201, { message: "post is saved" });
     }
   } catch (error) {
     errorResponse(res, error.statusCode, { msg: error.message });
   }
 };
+
 exports.addComment = async (req, res) => {
   try {
     const user = req.user;
@@ -255,6 +284,7 @@ exports.postDetails = async (req, res) => {
       .findOne({ _id: postid })
       .populate("comments")
       .populate("likes", "-__v");
+
     if (result == null) {
       throwError("post is not found", 404);
     }

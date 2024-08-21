@@ -6,18 +6,29 @@ import PostItem from '../PostItem/PostItem';
 import SpinLoader from '../../SpinLoader/SpinLoader';
 import { useGetAllPostAllUsers } from '../../../hooks/post/usePost';
 import PostItemProps from '../PostItem/PostItem'
+import NewPost from '../../Header/NewPost/NewPost';
+import { postUploadOutline } from '../../SvgIcon/SvgIcon';
 
 export type PostItemProps = {
     _id: string,
-    comments: any[],
+    saved: string[],
+    comments: {
+        title: string,
+        content: string,
+        createdAt: Date,
+        postid: string,
+        updatedAt: Date,
+        userid: string,
+        _id: string,
+    }[],
     description: string,
     hashtags: string,
     likes: {
-        createdAt: string,
-        postid: string
-        updatedAt: string
-        userid: string
-        _id: string
+        createdAt: Date,
+        postid: string,
+        updatedAt: Date,
+        userid: string,
+        _id: string,
     }[],
     media: { path: string, filename: string },
     title: string,
@@ -38,7 +49,7 @@ export type PostItemProps = {
 function PostsContainer() {
 
     const { data, isLoading } = useGetAllPostAllUsers();
-
+    const [newPost, setNewPost] = useState(false);
 
     return (
         <>
@@ -57,8 +68,13 @@ function PostsContainer() {
                                 ))}
                             </div>
                         ) : (
-                            <div>
-                                NO POST
+                            <div className='bg-white text-center mt-2 p-4 text-xl rounded'>
+                                Sorry, no posts have been registered yet😩
+                                <div className='flex items-center justify-center gap-3 mt-2'>
+                                    <span> You be the first</span>
+                                    <div onClick={() => setNewPost(true)} className="cursor-pointer">{postUploadOutline}</div>
+                                </div>
+                                <NewPost newPost={newPost} setNewPost={setNewPost} />
                             </div>
                         )}
                     </>

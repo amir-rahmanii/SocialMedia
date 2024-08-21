@@ -22,6 +22,8 @@ const schema = mongoose.Schema(
     },
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "comment" }],
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "likeToggle" }],
+    saved: [{ type: mongoose.Schema.Types.ObjectId, ref: "saveposts" }],
+  
   }, {
   timestamps: true,
 }

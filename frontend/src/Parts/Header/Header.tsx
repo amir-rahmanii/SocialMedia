@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { exploreOutline, homeFill, homeOutline, likeOutline, messageFill, messageOutline, postUploadOutline } from '../../Components/SvgIcon/SvgIcon';
 import SearchBox from '../../Components/Header/SearchBox/SearchBox';
@@ -28,8 +28,8 @@ export default function Header() {
             <div className="flex flex-row justify-between items-center py-2 px-3.5 sm:w-full sm:py-2 sm:px-4 md:w-full md:py-2 md:px-6 xl:w-4/6 xl:py-3 xl:px-8 mx-auto">
 
                 {/* <!-- logo --> */}
-                <Link to="/">
-                    <img draggable="false" className="mx-auto h-[35px] w-[110px] object-contain" src="/src/assets/images/Instagram.png" alt="instagram" />
+                <Link className='shrink-0' to="/">
+                    <img draggable="false" className="mx-auto  h-[35px] w-[110px] object-contain" src="/src/assets/images/Instagram.png" alt="instagram" />
                 </Link>
 
                 <SearchBox />
@@ -49,10 +49,10 @@ export default function Header() {
                 </div>
 
                 {profileToggle &&
-            <ProfileDetails setProfileToggle={setProfileToggle} />
-        }
+                    <ProfileDetails setProfileToggle={setProfileToggle} />
+                }
 
-        <NewPost newPost={newPost} setNewPost={setNewPost} />
+                <NewPost newPost={newPost} setNewPost={setNewPost} />
 
             </div>
         </nav>

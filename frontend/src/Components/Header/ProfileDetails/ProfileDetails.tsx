@@ -15,7 +15,7 @@ const ProfileDetails = ({setProfileToggle} : ProfileDetailsProps) => {
         {
             title: "Profile",
             icon: profileIcon,
-            redirect: `/`
+            redirect: `/profile`
         },
         {
             title: "Saved",
@@ -41,9 +41,7 @@ const ProfileDetails = ({setProfileToggle} : ProfileDetailsProps) => {
 
   return (
     <ClickAwayListener onClickAway={() => setProfileToggle(false)}>
-    <div className="absolute w-56 bg-white rounded  drop-shadow top-14 right-0 md:right-72 md:top-14 border">
-        <div className="absolute right-5 -top-2 rotate-45 h-4 w-4 bg-white rounded-sm border-l border-t"></div>
-
+    <div className="absolute w-56 bg-white rounded  drop-shadow top-14 right-3 sm:right-8  md:right-10 lg:right-10 xl:right-72  md:top-14 border">
         <div className="flex flex-col w-full overflow-hidden">
             {tabs.map((el, i) => (
                 <Link to={el.redirect} className="flex items-center gap-3 p-2.5 text-sm pl-4 cursor-pointer hover:bg-gray-50" key={i}>

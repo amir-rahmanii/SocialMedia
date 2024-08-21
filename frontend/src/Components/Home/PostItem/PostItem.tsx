@@ -1,12 +1,14 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { commentIcon, emojiIcon, likeIconOutline, moreIcons, saveIconFill, saveIconOutline, shareIcon } from '../../SvgIcon/SvgIcon'
 import { likeFill } from '../../SvgIcon/SvgIcon';
 import EmojiPicker from '@emoji-mart/react';
 import { PostItemProps } from '../PostsContainer/PostsContainer';
 import DateConverter from '../../../utils/DateConverter';
-import { usePostLikeToggle } from '../../../hooks/post/usePost';
-
+import { usePostAddComment, usePostLikeToggle, usePostSavePostToggle } from '../../../hooks/post/usePost';
+import toast from 'react-hot-toast';
+import ScrollToBottom from 'react-scroll-to-bottom';
+import apiRequest from '../../../Services/axios';
 
 
 
@@ -19,15 +21,18 @@ function PostItem(props: PostItemProps) {
     const [viewComment, setViewComment] = useState(false);
     const [showEmojis, setShowEmojis] = useState(false);
     const [likeEffect, setLikeEffect] = useState(false);
+    const [showMoreDesc, setShowMoreDesc] = useState(false);
 
     const { mutate: addPostLikeToggle } = usePostLikeToggle()
+    const { mutate: addPostSaveToggle } = usePostSavePostToggle()
+    const { mutate: addComment, isSuccess: isSuccessAddComment, isError: isErrorAddComment, error } = usePostAddComment()
 
     const setLike = (postid: string) => {
         setLikeEffect(true)
         setTimeout(() => {
             setLikeEffect(false)
         }, 500)
-        if (liked) {
+        if (props.likes.some(id => props.user.id === id.userid)) {
             return;
         }
         handleLike(postid);
@@ -40,7 +45,71 @@ function PostItem(props: PostItemProps) {
         addPostLikeToggle(newObjLikeToggle)
         setLiked(prev => !prev)
     }
-    
+
+    const handleSave = (postid: string) => {
+        let newObjSaveToggle = {
+            postid
+        }
+        addPostSaveToggle(newObjSaveToggle)
+        setSaved(prev => !prev)
+    }
+
+    //for show liked
+    useEffect(() => {
+        let isLiked = props.likes.some(id => props.user.id === id.userid);
+        let isPosted = props.saved.some(id => props.user.id === id);
+        setSaved(isPosted);
+        setLiked(isLiked);
+    }, [])
+
+
+    const handleEmojiSelect = (emoji: any) => {
+        setComment(comment + emoji.native)
+    }
+
+    const submitComment = (postid: string) => {
+        let newObjAddComment = {
+            postid,
+            title: "title",
+            content: comment
+        }
+
+        addComment(newObjAddComment),
+            setComment('')
+    }
+
+    useEffect(() => {
+        if (isErrorAddComment) {
+            if (error && (error as any).response) {
+                toast.error((error as any).response.data.error.message,
+                    {
+                        icon: '❌',
+                        style: {
+                            borderRadius: '10px',
+                            background: '#333',
+                            color: '#fff',
+                        },
+                    }
+                )
+            }
+        }
+
+        if (isSuccessAddComment) {
+            toast.success("Comment Add successfuly",
+                {
+                    icon: '✅',
+                    style: {
+                        borderRadius: '10px',
+                        background: '#333',
+                        color: '#fff',
+                    },
+                }
+            )
+        }
+    }, [isErrorAddComment, isSuccessAddComment])
+
+
+
     return (
         <div className="flex flex-col border rounded bg-white relative mt-3">
 
@@ -60,85 +129,110 @@ function PostItem(props: PostItemProps) {
                 }
             </div>
 
-            {/* like comment container */}
-            <div className="flex flex-col px-4 space-y-1 border-b pb-2 mt-2">
+            {/* container for the entire component */}
+            <div className="flex flex-col justify-between h-full">
+                {/* comment input container */}
+                <div className="mt-auto">
+                    {/* like comment container */}
+                    <div className="flex flex-col px-4 space-y-1 border-b pb-2 mt-2">
 
-                {/* icons container */}
-                <div className="flex items-center justify-between py-2">
-                    <div className="flex space-x-4">
-                        <button onClick={() => handleLike(props._id)}>{props.likes.some(id => props.user.id === id.userid) ? likeFill : likeIconOutline }</button>
-                        <button onClick={() => commentInput.current?.focus()}>{commentIcon}</button>
-                        {shareIcon}
+                        {/* icons container */}
+                        <div className="flex items-center justify-between py-2">
+                            <div className="flex space-x-4">
+                                <button onClick={() => handleLike(props._id)}>{liked ? likeFill : likeIconOutline}</button>
+                                <button onClick={() => commentInput.current?.focus()}>{commentIcon}</button>
+                                {shareIcon}
+                            </div>
+                            <button onClick={() => handleSave(props._id)}>{saved ? saveIconFill : saveIconOutline}</button>
+                        </div>
+
+                        {/* likes  */}
+                        <span className="font-semibold text-sm cursor-pointer">{props.likes.length} likes</span>
+
+                        {/* comment */}
+                        <div className="flex flex-auto items-center space-x-1">
+                            <p className="text-sm font-semibold hover:underline">{props.user.username}</p>
+                            <span className="text-sm truncate line-clamp-1">{props.title}</span>
+                        </div>
+
+                        <div className={` ${showMoreDesc ? "flex" : "hidden"} gap-[2px] flex-col`}>
+                            <span className="text-sm truncate">{props.description}</span>
+                            <span className="text-sm truncate text-primary-blue">{props.hashtags}</span>
+                        </div>
+
+                        <button onClick={() => setShowMoreDesc(prev => !prev)} className='text-left text-[14px] text-gray-500 cursor-pointer'>{showMoreDesc ? "...close" : "...more"}</button>
+
+                        {/* time */}
+                        {props.comments.length > 0 ? (
+                            <span onClick={() => setViewComment(!viewComment)} className="text-[13px] text-gray-500 cursor-pointer">
+                                {viewComment ? "Hide Comments" : `View All ${props.comments.length} Comments`
+                                }
+                            </span>
+                        ) : (
+                            <span className="text-[13px] text-gray-500">No Comments Yet!</span>
+                        )}
+
+                        <span className="text-xs text-gray-500">{<DateConverter date={props.createdAt} />}</span>
+
+                        {viewComment &&
+                            <ScrollToBottom className="w-full h-52 overflow-y-auto py-1">
+                                {props.comments.map((c) => (
+                                    <div className="flex items-start mb-2 border-b space-x-3" key={c._id}>
+                                        <img draggable="false" className="h-7 w-7 rounded-full shrink-0 object-cover mr-0.5" src={`/src/assets/images/hero.png`} alt="avatar" />
+                                        <div className='flex flex-col items-start mb-2 space-y-1'>
+                                            <p className="text-sm font-semibold hover:underline">{c.userid}</p>
+                                            <p className="text-sm line-clamp-3">{c.content}</p>
+                                            <span className="text-xs text-gray-500">{<DateConverter date={c.createdAt} />}</span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </ScrollToBottom>
+                        }
+
                     </div>
-                    <button>{saved ? saveIconFill : saveIconOutline}</button>
+
+                    {/* other content here (e.g., list of comments) */}
+
+
+                    <form onSubmit={e => e.preventDefault()} className="flex items-center justify-between p-3 w-full space-x-3">
+                        <span onClick={() => setShowEmojis(!showEmojis)} className="cursor-pointer">
+                            {emojiIcon}
+                        </span>
+
+                        {showEmojis && (
+                            <div className="absolute bottom-12 -left-2">
+                                <EmojiPicker
+                                    set="google"
+                                    title="Emojis"
+                                    onEmojiSelect={handleEmojiSelect}
+                                />
+                            </div>
+                        )}
+
+                        <input
+                            className="flex-auto text-sm outline-none border-none bg-transparent"
+                            type="text"
+                            value={comment}
+                            ref={commentInput}
+                            required
+                            onFocus={() => setShowEmojis(false)}
+                            onChange={(e) => setComment(e.target.value)}
+                            placeholder="Add a comment..."
+                        />
+                        <button
+                            onClick={() => submitComment(props._id)}
+                            type="submit"
+                            className={`${comment.trim().length < 1 ? 'text-blue-300' : 'text-primary-blue'} text-sm font-semibold`}
+                            disabled={comment.trim().length < 1}
+                        >
+                            Post
+                        </button>
+                    </form>
                 </div>
-
-                {/* likes  */}
-                <span className="font-semibold text-sm cursor-pointer">{props.likes.length} likes</span>
-
-                {/* comment */}
-                <div className="flex flex-auto items-center space-x-1">
-                    <p className="text-sm font-semibold hover:underline">{props.user.username}</p>
-                    <span className="text-sm truncate">{props.title}</span>
-
-                </div>
-
-                <div className='flex flex-col gap-[2px]'>
-                    <span className="text-sm truncate">{props.description}</span>
-                    <span className="text-sm truncate text-primary-blue">{props.hashtags}</span>
-                </div>
-
-                {/* time */}
-
-                <span onClick={() => setViewComment(!viewComment)} className="text-[13px] text-gray-500 cursor-pointer">
-                    {viewComment ? "Hide Comments" :
-                        1 === 1 ?
-                            `View ${props.comments.length} Comment` :
-                            `View All ${props.comments.length} Comments`
-                    }
-                </span> :
-
-                {/* <span className="text-[13px] text-gray-500">No Comments Yet!</span> */}
-                <span className="text-xs text-gray-500 cursor-pointer">{<DateConverter date={props.createdAt} />}</span>
-
-                {/* {viewComment &&
-            <ScrollToBottom className="w-full h-52 overflow-y-auto py-1">
-                {allComments.map((c) => (
-                    <div className="flex items-start mb-2 space-x-2" key={c._id}>
-                        <img draggable="false" className="h-7 w-7 rounded-full object-cover mr-0.5" src={c.user.avatar} alt="avatar" />
-                        <Link to={`/${c.user}`} className="text-sm font-semibold hover:underline">{c.user.username}</Link>
-                        <p className="text-sm">{c.comment}</p>
-                    </div>
-                ))}
-            </ScrollToBottom>
-        } */}
-
             </div>
 
-            {/* comment input container */}
-            <form onSubmit={e => e.preventDefault()} className="flex items-center justify-between p-3 w-full space-x-3">
-                <span onClick={() => setShowEmojis(!showEmojis)} className="cursor-pointer">{emojiIcon}</span>
 
-                {showEmojis && (
-                    <div className="absolute bottom-12 -left-2">
-                        <EmojiPicker
-                            set="google"
-                            title="Emojis"
-                        />
-                    </div>
-                )}
 
-                <input
-                    className="flex-auto text-sm outline-none border-none bg-transparent"
-                    type="text"
-                    value={comment}
-                    ref={commentInput}
-                    required
-                    onFocus={() => setShowEmojis(false)}
-                    onChange={(e) => setComment(e.target.value)}
-                    placeholder="Add a comment..." />
-                <button type="submit" className={`${comment.trim().length < 1 ? 'text-blue-300' : 'text-primary-blue'} text-sm font-semibold`} disabled={comment.trim().length < 1}>Post</button>
-            </form>
 
         </div >
     )

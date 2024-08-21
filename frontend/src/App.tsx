@@ -12,9 +12,15 @@ function App() {
   const client = new QueryClient({
     defaultOptions: {
       queries: {
-        cacheTime: 7000,
+        staleTime: 1000 * 60 * 5,
+        cacheTime: 1000 * 60 * 10,
+        refetchOnWindowFocus: true,
+        retry: 1,
       },
-    },
+      mutations: {
+        retry: 0,
+      }
+    }
   });
 
 
