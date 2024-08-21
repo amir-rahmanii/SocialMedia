@@ -8,3 +8,7 @@ export type comment = {
     title: string,
     content: string
 }
+
+export type deletecomment = {
+    commentid: string,
+}

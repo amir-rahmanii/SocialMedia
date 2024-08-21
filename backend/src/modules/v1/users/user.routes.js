@@ -11,6 +11,6 @@ router.route("/user-ban-toggle").post(auth, controller.userBanToggle);
 router.route("/reset-password").post(controller.resetPassword);
 router.route("/refresh-token").post(controller.refreshToken);
 // * GET
-router.route("/user-information").post(auth, controller.userInformation);
+router.route("/user-information").get(auth, controller.userInformation);
 
 module.exports = router;

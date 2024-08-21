@@ -10,6 +10,7 @@ const postModel = require("../../../models/v1/post");
 const likeToggleModel = require("../../../models/v1/likeToggle");
 const savepostsModel = require("../../../models/v1/savePost");
 const commentModel = require("../../../models/v1/comment");
+const userModel = require("../../../models/v1/user");
 // ------------------->
 exports.createPost = async (req, res) => {
   try {
@@ -83,8 +84,9 @@ exports.searchPosts = async (req, res) => {
     const regex = new RegExp(query, "i");
     const resultSearch = await postModel
       .find({ title: { $regex: regex } })
-      .populate("comments")
-      .populate("likes", "-__v");
+      .populate("comments") // پر کردن داده‌های کامنت‌ها
+      .populate("likes", "-__v") // پر کردن داده‌های لایک‌ها بدون فیلد __v
+      .populate("saved") // پر کردن داده‌های ذخیره‌شده
 
     successResponse(res, 200, { resultSearch });
   } catch (error) {
@@ -229,23 +231,42 @@ exports.savePostToggle = async (req, res) => {
 
 exports.addComment = async (req, res) => {
   try {
-    const user = req.user;
+    const user = req.user; // Assume `req.user` contains the authenticated user's info
     const { postid, title, content } = req.body;
+
+    // Validate access to add a comment
     await postValidator.addCommentPostsAccess(req, res);
+
+    // Retrieve user details to get the username
+    const userData = await userModel.findById(user._id);
+    if (!userData) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const username = userData.username; // Get the username
+
+    // Create a new comment
     let comment = new commentModel({
       postid,
       userid: user._id,
+      username, // Include the username
       title,
       content,
     });
+
+    // Save the comment
     comment = await comment.save();
+
+    // Update the post with the new comment ID
     await postModel.findByIdAndUpdate(postid, {
       $push: { comments: comment._id },
     });
 
-    successResponse(res, 201, { message: "comment submitted successfully" });
+    // Send success response
+    successResponse(res, 201, { message: "Comment submitted successfully" });
   } catch (error) {
-    errorResponse(res, error.statusCode, { message: error.message });
+    // Send error response
+    errorResponse(res, error.statusCode || 500, { message: error.message });
   }
 };
 exports.deleteComment = async (req, res) => {
@@ -282,8 +303,9 @@ exports.postDetails = async (req, res) => {
     const { postid } = req.body;
     const result = await postModel
       .findOne({ _id: postid })
-      .populate("comments")
-      .populate("likes", "-__v");
+      .populate("comments") // پر کردن داده‌های کامنت‌ها
+      .populate("likes", "-__v") // پر کردن داده‌های لایک‌ها بدون فیلد __v
+      .populate("saved") // پر کردن داده‌های ذخیره‌شده
 
     if (result == null) {
       throwError("post is not found", 404);

@@ -26,7 +26,6 @@
     "react-helmet-async": "^2.0.5",
     "react-hook-form": "^7.52.2",
     "react-hot-toast": "^2.4.1",
-    "react-infinite-scroll-component": "^6.1.0",
     "react-query": "^3.39.3",
     "react-router-dom": "^6.26.1",
     "react-scroll-to-bottom": "^4.2.0",

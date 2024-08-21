@@ -1,20 +1,21 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { commentIcon, emojiIcon, likeIconOutline, moreIcons, saveIconFill, saveIconOutline, shareIcon } from '../../SvgIcon/SvgIcon'
+import { commentIcon, deleteIcon, emojiIcon, likeIconOutline, moreIcons, saveIconFill, saveIconOutline, shareIcon } from '../../SvgIcon/SvgIcon'
 import { likeFill } from '../../SvgIcon/SvgIcon';
 import EmojiPicker from '@emoji-mart/react';
 import { PostItemProps } from '../PostsContainer/PostsContainer';
 import DateConverter from '../../../utils/DateConverter';
-import { usePostAddComment, usePostLikeToggle, usePostSavePostToggle } from '../../../hooks/post/usePost';
+import { useDeleteComment, usePostAddComment, usePostLikeToggle, usePostSavePostToggle } from '../../../hooks/post/usePost';
 import toast from 'react-hot-toast';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import apiRequest from '../../../Services/axios';
+import { AuthContext } from '../../../../Context/AuthContext';
 
 
 
 function PostItem(props: PostItemProps) {
     const commentInput = useRef<HTMLInputElement>(null);
-
+    const authContext = useContext(AuthContext)
     const [liked, setLiked] = useState(false);
     const [saved, setSaved] = useState(false);
     const [comment, setComment] = useState("");
@@ -23,9 +24,10 @@ function PostItem(props: PostItemProps) {
     const [likeEffect, setLikeEffect] = useState(false);
     const [showMoreDesc, setShowMoreDesc] = useState(false);
 
-    const { mutate: addPostLikeToggle } = usePostLikeToggle()
-    const { mutate: addPostSaveToggle } = usePostSavePostToggle()
-    const { mutate: addComment, isSuccess: isSuccessAddComment, isError: isErrorAddComment, error } = usePostAddComment()
+    const { mutate: addPostLikeToggle } = usePostLikeToggle();
+    const { mutate: addPostSaveToggle } = usePostSavePostToggle();
+    const { mutate: addComment, isSuccess: isSuccessAddComment, isError: isErrorAddComment, error } = usePostAddComment();
+    const { mutate: deleteComment, isSuccess: isSuccessDeleteComment, isError: isErroeDeleteComment, error: errorDeleteComment } = useDeleteComment();
 
     const setLike = (postid: string) => {
         setLikeEffect(true)
@@ -55,9 +57,9 @@ function PostItem(props: PostItemProps) {
     }
 
     //for show liked
-    useEffect(() => {
-        let isLiked = props.likes.some(id => props.user.id === id.userid);
-        let isPosted = props.saved.some(id => props.user.id === id);
+    useEffect(() => { 
+        let isLiked = props.likes.some(id => authContext?.user?._id === id.userid);
+        let isPosted = props.saved.some(id => authContext?.user?._id === id);
         setSaved(isPosted);
         setLiked(isLiked);
     }, [])
@@ -107,6 +109,37 @@ function PostItem(props: PostItemProps) {
             )
         }
     }, [isErrorAddComment, isSuccessAddComment])
+
+
+    useEffect(() => {
+        if (isErroeDeleteComment) {
+            if (errorDeleteComment && (errorDeleteComment as any).response) {
+                toast.error((errorDeleteComment as any).response.data.error.message,
+                    {
+                        icon: '❌',
+                        style: {
+                            borderRadius: '10px',
+                            background: '#333',
+                            color: '#fff',
+                        },
+                    }
+                )
+            }
+        }
+
+        if (isSuccessDeleteComment) {
+            toast.success("Comment removed successfuly",
+                {
+                    icon: '✅',
+                    style: {
+                        borderRadius: '10px',
+                        background: '#333',
+                        color: '#fff',
+                    },
+                }
+            )
+        }
+    }, [isErroeDeleteComment, isSuccessDeleteComment])
 
 
 
@@ -179,10 +212,22 @@ function PostItem(props: PostItemProps) {
                                 {props.comments.map((c) => (
                                     <div className="flex items-start mb-2 border-b space-x-3" key={c._id}>
                                         <img draggable="false" className="h-7 w-7 rounded-full shrink-0 object-cover mr-0.5" src={`/src/assets/images/hero.png`} alt="avatar" />
-                                        <div className='flex flex-col items-start mb-2 space-y-1'>
-                                            <p className="text-sm font-semibold hover:underline">{c.userid}</p>
-                                            <p className="text-sm line-clamp-3">{c.content}</p>
-                                            <span className="text-xs text-gray-500">{<DateConverter date={c.createdAt} />}</span>
+                                        <div className='flex justify-between w-full p-1'>
+                                            <div className='flex flex-col items-start mb-2 space-y-1'>
+                                                <p className="text-sm font-semibold hover:underline">{c.userid}</p>
+                                                <p className="text-sm line-clamp-3">{c.content}</p>
+                                                <span className="text-xs text-gray-500">{<DateConverter date={c.createdAt} />}</span>
+                                            </div>
+                                                <button onClick={() => {
+                                                    let objDeleteComment = {
+                                                        commentid: c._id
+                                                    }
+                                                    deleteComment(objDeleteComment)
+                                                }}>
+                                                    <div className='w-4 h-4'>
+                                                    {deleteIcon}
+                                                    </div>
+                                                </button>
                                         </div>
                                     </div>
                                 ))}

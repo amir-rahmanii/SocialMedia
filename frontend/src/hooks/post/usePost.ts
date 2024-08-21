@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import apiRequest from "../../Services/axios"
-import { comment, postid } from "./post.types";
+import { comment, deletecomment, postid } from "./post.types";
 
 
 
@@ -42,9 +42,6 @@ function useGetMyPost() {
         {
             onSuccess : (res) => {
                 console.log(res);
-            },
-            onError : (err) => {
-                console.log(err);
                 
             }
         }
@@ -96,5 +93,23 @@ function usePostAddComment() {
 }
 
 
+function useDeleteComment() {
+    const queryClient = useQueryClient();
+    return useMutation(async (idcomment : deletecomment) => {
+        return apiRequest.delete(`posts/delete-comment`,  {
+            data: idcomment, // Use the data field to send the body
+        })
+    },
+        {
+            onSuccess: (res) => {
+                console.log(res);
+                queryClient.invalidateQueries(["AllPostAllUsers"]);
+                queryClient.invalidateQueries(["myPost"]);
+            }
+        }
+    )
+}
 
-export { usePostCreatePost, useGetAllPostAllUsers, usePostLikeToggle, usePostSavePostToggle , usePostAddComment , useGetMyPost }
+
+
+export { usePostCreatePost, useGetAllPostAllUsers, usePostLikeToggle, usePostSavePostToggle , usePostAddComment , useGetMyPost , useDeleteComment }

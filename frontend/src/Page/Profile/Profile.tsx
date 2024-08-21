@@ -19,25 +19,25 @@ function Profile() {
   const [savedTab, setSavedTab] = useState(false);
   const authContext = useContext(AuthContext)
   const [newPost, setNewPost] = useState(false);
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
 
-  const { data: myPost, isError, isLoading } = useGetMyPost();
+  const { data: myPost, isLoading } = useGetMyPost();
 
-  useEffect(() => {
-    if (isError) {
-      toast.error("Sorry you should login again",
-        {
-          icon: '😩',
-          style: {
-            borderRadius: '10px',
-            background: '#333',
-            color: '#fff',
-          },
-        }
-      )
-      navigate("/login")
-    }
-  }, [isError])
+  // useEffect(() => {
+  //   if (isError) {
+  //     toast.error("Sorry you should login again",
+  //       {
+  //         icon: '😩',
+  //         style: {
+  //           borderRadius: '10px',
+  //           background: '#333',
+  //           color: '#fff',
+  //         },
+  //       }
+  //     )
+  //     navigate("/login")
+  //   }
+  // }, [isError])
 
 
 

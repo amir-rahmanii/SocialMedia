@@ -66,7 +66,7 @@ exports.deletePostsAccess = async (req, res) => {
   if (!post) {
     throwError("post is not found", 404);
   }
-  const isUserCreator = user._id.toString() == post.user.toString();
+  const isUserCreator = user._id.toString() == post.user._id.toString();
 
   if (!isUserCreator) {
     throwError("user is not create this post or is not admin", 403);
@@ -137,21 +137,37 @@ exports.addCommentPostsAccess = async (req, res) => {
 exports.deleteCommentPostValidator = async (req, res) => {
   const { commentid } = req.body;
   const user = req.user;
+
+  // Validate the comment ID
   await deleteCommentValidator.validate({ commentid }, { abortEarly: false });
+
+  // Check if the comment ID is a valid ObjectId
   const isValidObjectId = mongoose.Types.ObjectId.isValid(commentid);
   if (!isValidObjectId) {
-    throwError("postid is not valid", 400);
+    throwError("commentid is not valid", 400);
   }
+
+  // Find the comment in the database
   const comment = await commentModel.findOne({ _id: commentid });
   if (!comment) {
     throwError("comment is not found", 404);
   }
-  const isUserCreator = user._id.toString() == comment.userid.toString();
 
-  if (!isUserCreator) {
-    throwError("user is not create this post or is not admin", 403);
+  const post = await postModel.findOne({ comments: commentid });
+  if (!post) {
+      throwError("post is not found", 404);
   }
-  if (user.role !== "ADMIN") {
-    throwError("user is not create this post or is not admin", 403);
+
+  // Check if the user is the creator of the comment or if the user is an admin
+  const isUserAuthorPost = user._id.toString() === post.user.id.toString();
+  const isUserCreatorComment = user._id.toString() === comment.userid.toString();
+  const isAdmin = user.role === "ADMIN";
+
+  if (!isUserCreatorComment && !isAdmin && !isUserAuthorPost) {
+    throwError("user is not the creator of this comment or user is not the creator of this post or is not an admin", 403);
   }
+
+  // If the checks pass, proceed to delete the comment
+  // Your deletion logic goes here
 };
+

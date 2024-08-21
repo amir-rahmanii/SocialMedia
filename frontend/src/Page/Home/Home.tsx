@@ -13,7 +13,7 @@ function Home() {
     const navigate = useNavigate()
     const authContext = useContext(AuthContext);
 
-    const { mutate: informationUser, isLoading, data, isError , isSuccess } = usePostUserInformation();
+    const { mutate: informationUser, isLoading, data , isSuccess } = usePostUserInformation();
 
     useEffect(() => {
         const userid = localStorage.getItem("userId")
@@ -23,23 +23,23 @@ function Home() {
     }, [])
 
     useEffect(() => {
-        if (isError) {
-            toast.error("Sorry you should login again",
-                {
-                    icon: '😩',
-                    style: {
-                        borderRadius: '10px',
-                        background: '#333',
-                        color: '#fff',
-                    },
-                }
-            )
-            navigate("/login")
-        }
+        // if (isError) {
+        //     toast.error("Sorry you should login again",
+        //         {
+        //             icon: '😩',
+        //             style: {
+        //                 borderRadius: '10px',
+        //                 background: '#333',
+        //                 color: '#fff',
+        //             },
+        //         }
+        //     )
+        //     navigate("/login")
+        // }
         if(isSuccess){
             authContext?.setUser(data?.data.response.user)  
         }
-    }, [isError , isSuccess])
+    }, [isSuccess])
     
 
 

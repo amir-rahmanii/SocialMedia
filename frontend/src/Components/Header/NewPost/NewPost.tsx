@@ -104,16 +104,16 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
 
     return (
         <Dialog open={newPost} onClose={() => setNewPost(false)} maxWidth='xl'>
-            <div className="flex flex-col sm:w-screen max-w-4xl">
+            <div className="flex flex-col xl:w-screen max-w-4xl">
                 <div className="bg-white py-3 border-b px-4 flex justify-between w-full">
                     <span className="font-medium">Create new post</span>
                 </div>
                 {/* <LinearProgress /> */}
 
-                <div className="flex sm:flex-row sm:items-start items-center flex-col w-full">
+                <div className="flex md:flex-row md:items-start items-center flex-col w-full">
 
                     {postImage ?
-                        <div className="bg-black h-48 sm:h-[80vh] w-full">
+                        <div className="bg-black h-48 xl:h-[80vh] w-full">
                             <img draggable="false" className="object-contain h-full w-full" src={postPreview as string} alt="post" />
                         </div>
                         :
@@ -177,7 +177,7 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
                             </div>
 
                             <textarea
-                                className="outline-none my-4 resize-none h-32 sm:h-auto"
+                                className="outline-none w-full my-4 resize-none h-32 sm:h-auto"
                                 placeholder="Write a discription..."
                                 required
                                 name="description"
