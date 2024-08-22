@@ -23,6 +23,30 @@ function usePostCreatePost() {
     )
 }
 
+function usePutUpdatePost() {
+    const queryClient = useQueryClient();
+    return useMutation(async (post: FormData) => {
+        return apiRequest.put(`posts/update-post`, post, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        })
+    },
+        {
+            onSuccess: (res) => {
+                console.log(res);
+                queryClient.invalidateQueries(["AllPostAllUsers"]);
+                queryClient.invalidateQueries(["myPost"]);
+            },
+            onError : (err) => {
+                console.log(err);
+            }
+        }
+    )
+}
+
+
+
 
 function useGetAllPostAllUsers() {
     return useQuery(['AllPostAllUsers'],
@@ -39,12 +63,6 @@ function useGetMyPost() {
             const response = await apiRequest.get("posts/my-posts");
             return response.data
         },
-        {
-            onSuccess : (res) => {
-                console.log(res);
-                
-            }
-        }
     )
 }
 
@@ -80,7 +98,7 @@ function usePostSavePostToggle() {
 
 function usePostAddComment() {
     const queryClient = useQueryClient();
-    return useMutation(async (comment : comment) => {
+    return useMutation(async (comment: comment) => {
         return apiRequest.post(`posts/add-comment`, comment)
     },
         {
@@ -95,14 +113,30 @@ function usePostAddComment() {
 
 function useDeleteComment() {
     const queryClient = useQueryClient();
-    return useMutation(async (idcomment : deletecomment) => {
-        return apiRequest.delete(`posts/delete-comment`,  {
+    return useMutation(async (idcomment: deletecomment) => {
+        return apiRequest.delete(`posts/delete-comment`, {
             data: idcomment, // Use the data field to send the body
         })
     },
         {
-            onSuccess: (res) => {
-                console.log(res);
+            onSuccess: () => {
+                queryClient.invalidateQueries(["AllPostAllUsers"]);
+                queryClient.invalidateQueries(["myPost"]);
+            }
+        }
+    )
+}
+
+
+function useDeletePost() {
+    const queryClient = useQueryClient();
+    return useMutation(async (postid: postid) => {
+        return apiRequest.delete(`posts/delete-post`, {
+            data: postid, // Use the data field to send the body
+        })
+    },
+        {
+            onSuccess: () => {
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
                 queryClient.invalidateQueries(["myPost"]);
             }
@@ -112,4 +146,14 @@ function useDeleteComment() {
 
 
 
-export { usePostCreatePost, useGetAllPostAllUsers, usePostLikeToggle, usePostSavePostToggle , usePostAddComment , useGetMyPost , useDeleteComment }
+export {
+    usePostCreatePost,
+    usePutUpdatePost,
+    useGetAllPostAllUsers,
+    usePostLikeToggle,
+    usePostSavePostToggle,
+    usePostAddComment,
+    useGetMyPost,
+    useDeleteComment,
+    useDeletePost
+}

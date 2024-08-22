@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Auth from '../../LayOut/Auth/Auth'
-import { Avatar, TextField } from '@mui/material'
+import {TextField } from '@mui/material'
 import { Link, useNavigate } from 'react-router-dom'
 import registerSchema from '../../Validation/register';
 import { useForm } from 'react-hook-form';
@@ -8,12 +8,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import IsLoaderBtn from '../../Components/IsLoaderBtn/IsLoaderBtn';
 import { usePostUserRegister } from '../../hooks/user/useUser';
 import toast from 'react-hot-toast';
-import Cookies from 'js-cookie';
+
 
 function Register() {
+
     const navigate = useNavigate();
-    // const [profileState, setProfileState] = useState({})
-    const { mutate: registerUser, isLoading, isError, error, isSuccess } = usePostUserRegister();
+    const { mutate: registerUser, isLoading, data , isError, error, isSuccess } = usePostUserRegister();
 
     useEffect(() => {
         if (isError) {
@@ -42,7 +42,7 @@ function Register() {
                     },
                 }
             )
-            navigate("/login")
+            navigate('/')
         }
     }, [isError, isSuccess])
 

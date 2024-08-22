@@ -2,6 +2,7 @@ const userValidator = require("./user.validation");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const userModel = require("../../../models/v1/user");
+const postModel = require("../../../models/v1/post");
 const RefreshTokenModel = require("../../../models/v1/refreshToken");
 const {
   successResponse,
@@ -66,7 +67,7 @@ exports.register = async (req, res) => {
     });
     return successResponse(res, 201, {
       message: "User created successfully :))",
-      user: { ...user.toObject(), password: undefined, accessToken },
+      user: { ...user.toObject(), password: undefined, userId: user._id, accessToken },
     });
   } catch (error) {
     return errorResponse(res, error.statusCode, { message: error.message });
@@ -274,20 +275,25 @@ exports.userBanToggle = async (req, res) => {
   try {
     const { userid } = req.body;
 
+    // اعتبارسنجی کاربر
     const user = await userValidator.banUserToAccess(req);
-    if (user.isban) {
-      await userModel.findByIdAndUpdate({ _id: userid }, { isban: false });
-      successResponse(res, 201, {
-        message: "The user was successfully unbanned",
-      });
-    } else {
-      await userModel.findByIdAndUpdate({ _id: userid }, { isban: true });
-      successResponse(res, 201, {
-        message: "The user was successfully banned",
-      });
-    }
+
+    // تغییر وضعیت بن کاربر
+    const newBanStatus = !user.isban;
+    await userModel.findByIdAndUpdate({ _id: userid }, { isban: newBanStatus });
+
+    // به‌روزرسانی وضعیت بن در پست‌های کاربر
+    await postModel.updateMany(
+      { "user.id": userid },
+      { $set: { "user.isban": newBanStatus } }
+    );
+
+    // ارسال پاسخ موفقیت
+    successResponse(res, 201, {
+      message: `The user was successfully ${newBanStatus ? "banned" : "unbanned"}`,
+    });
   } catch (error) {
-    errorResponse(res, error.statusCode, { message: error.message });
+    errorResponse(res, error.statusCode || 500, { message: error.message });
   }
 };
 exports.userInformation = async (req, res) => {

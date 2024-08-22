@@ -1,75 +1,70 @@
-import { Dialog, LinearProgress, TextField } from '@mui/material'
+import { Dialog, TextField } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
-import toast from 'react-hot-toast';
-import { emojiIcon } from '../../SvgIcon/SvgIcon';
-import EmojiPicker from '@emoji-mart/react';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm } from 'react-hook-form';
-import newPostSchema from '../../../Validation/newPost';
-import { usePostCreatePost } from '../../../hooks/post/usePost';
-import IsLoaderBtn from '../../IsLoaderBtn/IsLoaderBtn';
-import apiRequest from '../../../Services/axios';
-import { AuthContext } from '../../../../Context/AuthContext';
+import { AuthContext } from '../../../../Context/AuthContext'
+import { PostItemProps } from '../PostsContainer/PostsContainer'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import newPostSchema from '../../../Validation/newPost'
+import EmojiPicker from '@emoji-mart/react'
+import toast from 'react-hot-toast'
+import { emojiIcon } from '../../SvgIcon/SvgIcon'
+import { usePutUpdatePost } from '../../../hooks/post/usePost'
+import IsLoaderBtn from '../../IsLoaderBtn/IsLoaderBtn'
 
-type NewPostProps = {
-    newPost: boolean,
-    setNewPost: (value: boolean) => void
+
+
+type UpdatePostProps = {
+    postInfo: PostItemProps,
+    updatePost: boolean,
+    setUpdatePost: (value: boolean) => void,
 }
 
 
 
-
-function NewPost({ newPost, setNewPost }: NewPostProps) {
-
-    const [postImage, setPostImage] = useState<File | null>(null);
-    const [postPreview, setPostPreview] = useState<string | null>(null);
-    const [description, setdescription] = useState("");
-    const [showEmojis, setShowEmojis] = useState(false);
-    const [dragged, setDragged] = useState(false);
+function UpdatePost({ postInfo, updatePost, setUpdatePost }: UpdatePostProps) {
 
     const authContext = useContext(AuthContext);
+    const [postImage, setPostImage] = useState<File | null>(null);
+    const [postPreview, setPostPreview] = useState<string | null>(null);
+    const [description, setdescription] = useState(postInfo.description);
+    const [showEmojis, setShowEmojis] = useState(false);
+    // const [dragged, setDragged] = useState(false);
 
-    const { mutate: addNewPost, isLoading, isError, error, isSuccess } = usePostCreatePost();
+    const { mutate: updatedPost, isLoading } = usePutUpdatePost();
 
+    // useEffect(() => {
+    //     if (isError) {
+    //         if (error && (error as any).response) {
+    //             toast.error((error as any).response.data.error.message,
+    //                 {
+    //                     icon: '❌',
+    //                     style: {
+    //                         borderRadius: '10px',
+    //                         background: '#333',
+    //                         color: '#fff',
+    //                     },
+    //                 }
+    //             )
+    //         }
+    //     }
 
-    useEffect(() => {
-        if (isError) {
-            if (error && (error as any).response) {
-                toast.error((error as any).response.data.error.message,
-                    {
-                        icon: '❌',
-                        style: {
-                            borderRadius: '10px',
-                            background: '#333',
-                            color: '#fff',
-                        },
-                    }
-                )
-            }
-        }
-
-        if (isSuccess) {
-            toast.success("Post Created successfuly",
-                {
-                    icon: '✅',
-                    style: {
-                        borderRadius: '10px',
-                        background: '#333',
-                        color: '#fff',
-                    },
-                }
-            )
-            setPostImage(null)
-            setPostPreview(null)
-            setdescription('')
-            setNewPost(false)
-        }
-    }, [isError, isSuccess])
-
-
-    const handleDragChange = () => {
-        setDragged(!dragged);
-    }
+    //     if (isSuccess) {
+    //         toast.success("Post Updated successfuly",
+    //             {
+    //                 icon: '✅',
+    //                 style: {
+    //                     borderRadius: '10px',
+    //                     background: '#333',
+    //                     color: '#fff',
+    //                 },
+    //             }
+    //         )
+    //         setPostImage(null)
+    //         setPostPreview(null)
+    //         setdescription('')
+    //         setUpdatePost(false)
+    //     }
+    // }, [isError, isSuccess])
 
     const handleEmojiSelect = (emoji: any) => {
         setdescription(description + emoji.native)
@@ -91,43 +86,42 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
         }
     }
 
-
     // hook form
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm({
+        defaultValues: {
+            title: postInfo.title,
+            hashtags: postInfo.hashtags,
+        },
         resolver: yupResolver(newPostSchema)
     });
 
 
     return (
-        <Dialog open={newPost} onClose={() => setNewPost(false)} maxWidth='xl'>
+        <Dialog open={updatePost} onClose={() => { setUpdatePost(false) }} maxWidth='xl'>
             <div className="flex flex-col xl:w-screen max-w-4xl">
                 <div className="bg-white py-3 border-b px-4 flex justify-between w-full">
-                    <span className="font-medium">Create new post</span>
-                    <button onClick={() => setNewPost(false)} className="font-medium">Close</button>
+                    <span className="font-medium">Update post</span>
+                    <button onClick={() => setUpdatePost(false)} className="font-medium">Close</button>
                 </div>
                 {/* <LinearProgress /> */}
 
                 <div className="flex md:flex-row md:items-start items-center flex-col w-full">
 
-                    {postImage ?
+                    {postImage ? (
                         <div className="bg-black h-48 xl:h-[80vh] w-full">
                             <img draggable="false" className="object-contain h-full w-full" src={postPreview as string} alt="post" />
                         </div>
-                        :
-                        <div onDragEnter={handleDragChange} onDragLeave={handleDragChange} className={`${dragged && 'opacity-40'} relative bg-white h-36 sm:h-[80vh] w-full flex flex-col gap-2 items-center justify-center mx-16`}>
-                            <svg aria-label="Icon to represent media such as images or videos" color="#262626" fill="#262626" height="77" role="img" viewBox="0 0 97.6 77.3" width="96"><path d="M16.3 24h.3c2.8-.2 4.9-2.6 4.8-5.4-.2-2.8-2.6-4.9-5.4-4.8s-4.9 2.6-4.8 5.4c.1 2.7 2.4 4.8 5.1 4.8zm-2.4-7.2c.5-.6 1.3-1 2.1-1h.2c1.7 0 3.1 1.4 3.1 3.1 0 1.7-1.4 3.1-3.1 3.1-1.7 0-3.1-1.4-3.1-3.1 0-.8.3-1.5.8-2.1z" fill="currentColor"></path><path d="M84.7 18.4L58 16.9l-.2-3c-.3-5.7-5.2-10.1-11-9.8L12.9 6c-5.7.3-10.1 5.3-9.8 11L5 51v.8c.7 5.2 5.1 9.1 10.3 9.1h.6l21.7-1.2v.6c-.3 5.7 4 10.7 9.8 11l34 2h.6c5.5 0 10.1-4.3 10.4-9.8l2-34c.4-5.8-4-10.7-9.7-11.1zM7.2 10.8C8.7 9.1 10.8 8.1 13 8l34-1.9c4.6-.3 8.6 3.3 8.9 7.9l.2 2.8-5.3-.3c-5.7-.3-10.7 4-11 9.8l-.6 9.5-9.5 10.7c-.2.3-.6.4-1 .5-.4 0-.7-.1-1-.4l-7.8-7c-1.4-1.3-3.5-1.1-4.8.3L7 49 5.2 17c-.2-2.3.6-4.5 2-6.2zm8.7 48c-4.3.2-8.1-2.8-8.8-7.1l9.4-10.5c.2-.3.6-.4 1-.5.4 0 .7.1 1 .4l7.8 7c.7.6 1.6.9 2.5.9.9 0 1.7-.5 2.3-1.1l7.8-8.8-1.1 18.6-21.9 1.1zm76.5-29.5l-2 34c-.3 4.6-4.3 8.2-8.9 7.9l-34-2c-4.6-.3-8.2-4.3-7.9-8.9l2-34c.3-4.4 3.9-7.9 8.4-7.9h.5l34 2c4.7.3 8.2 4.3 7.9 8.9z" fill="currentColor"></path><path d="M78.2 41.6L61.3 30.5c-2.1-1.4-4.9-.8-6.2 1.3-.4.7-.7 1.4-.7 2.2l-1.2 20.1c-.1 2.5 1.7 4.6 4.2 4.8h.3c.7 0 1.4-.2 2-.5l18-9c2.2-1.1 3.1-3.8 2-6-.4-.7-.9-1.3-1.5-1.8zm-1.4 6l-18 9c-.4.2-.8.3-1.3.3-.4 0-.9-.2-1.2-.4-.7-.5-1.2-1.3-1.1-2.2l1.2-20.1c.1-.9.6-1.7 1.4-2.1.8-.4 1.7-.3 2.5.1L77 43.3c1.2.8 1.5 2.3.7 3.4-.2.4-.5.7-.9.9z" fill="currentColor"></path></svg>
-                            <p className="text-xl">Drag photos and videos here</p>
-                            <input
-                                accept="image/*"
-                                type="file"
-                                onChange={handleFileChange}
-                                className="absolute h-full w-full opacity-0" />
+                    ) : (
+                        <div className="bg-black h-48 xl:h-[80vh] w-full">
+                            <img draggable="false" className="object-contain h-full w-full" src={`http://localhost:4002/images/posts/${postInfo.media.filename}`} alt="post" />
                         </div>
-                    }
+
+                    )}
+
 
                     <div className="flex flex-col border-l sm:h-[80vh] w-full bg-white">
 
@@ -215,11 +209,12 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
 
                                     const formData = new FormData();
                                     formData.append('title', data.title);
+                                    formData.append('postid', postInfo._id);
                                     formData.append('description', description);
                                     formData.append('hashtags', data.hashtags);
                                     formData.append('media', postImage);
 
-                                    addNewPost(formData)
+                                    updatedPost(formData)
 
 
 
@@ -238,4 +233,4 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
     )
 }
 
-export default NewPost
+export default UpdatePost

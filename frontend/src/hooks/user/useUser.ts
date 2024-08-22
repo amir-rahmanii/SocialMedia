@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "react-query"
+import { useMutation, useQuery, useQueryClient } from "react-query"
 import apiRequest from "../../Services/axios"
 import { forgetPassword, resetPassword, userId, userRegister } from "./user.types";
 import { userLogin } from "./user.types";
@@ -8,6 +8,12 @@ function usePostUserRegister() {
     return useMutation(async (user: userRegister) => {
         return apiRequest.post(`users/register`, user)
     },
+        {
+            onSuccess(res) {
+                console.log(res);
+                localStorage.setItem("userId", res.data.response.user._id)
+            },
+        }
     )
 }
 
@@ -18,7 +24,7 @@ function usePostUserLogin() {
     },
         {
             onSuccess(res) {
-                localStorage.setItem("userId" , res.data.response.data._id)
+                localStorage.setItem("userId", res.data.response.data._id)
             },
         }
     )
@@ -46,7 +52,21 @@ function usePostUserInformation() {
     )
 }
 
+function usePostUserBan() {
+    const queryClient = useQueryClient();
+    return useMutation(async (userId: userId) => {
+        return apiRequest.post(`users/user-ban-toggle`, userId)
+    },
+    {
+        onSuccess: () => {
+            queryClient.invalidateQueries(["AllPostAllUsers"]);
+            queryClient.invalidateQueries(["myPost"]);
+        }
+    }
+    )
+}
 
 
 
-export { usePostUserRegister, usePostUserLogin, usePostUserForgetPassword, usePostUserResetPassword, usePostUserInformation }
+
+export { usePostUserRegister, usePostUserLogin, usePostUserForgetPassword, usePostUserResetPassword, usePostUserInformation, usePostUserBan }

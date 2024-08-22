@@ -66,11 +66,12 @@ exports.deletePostsAccess = async (req, res) => {
   if (!post) {
     throwError("post is not found", 404);
   }
-  const isUserCreator = user._id.toString() == post.user._id.toString();
+  const isUserCreator = user._id.toString() == post.user.id.toString();
 
-  if (!isUserCreator) {
-    throwError("user is not create this post or is not admin", 403);
-  }
+  // if (!isUserCreator) {
+  //   throwError("user is not create this post or is not admin", 403);
+  // }
+
   if (user.role !== "ADMIN" && !isUserCreator) {
     throwError("user is not create this post or is not admin", 403);
   }

@@ -11,6 +11,7 @@ const schema = mongoose.Schema(
       ref: "user",
       required: true,
     },
+    username: { type: String, required: true }, // Added username field
   },
   { timestamps: true }
 );

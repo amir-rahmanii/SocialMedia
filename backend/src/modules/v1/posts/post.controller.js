@@ -65,7 +65,6 @@ exports.myPosts = async (req, res) => {
       .find({ "user.id": user._id }) // استفاده از `user.id` برای مطابقت با شناسه کاربر
       .populate("comments") // پر کردن داده‌های کامنت‌ها
       .populate("likes", "-__v") // پر کردن داده‌های لایک‌ها بدون فیلد __v
-      .populate("saved") // پر کردن داده‌های ذخیره‌شده
       .exec();
 
     // لاگ کردن نتایج برای بررسی
@@ -125,7 +124,14 @@ exports.updatePost = async (req, res) => {
         title,
         description,
         hashtags,
-        user: user._id,
+        user: {
+          id: user._id,
+          username: user.username,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          isban: user.isban,
+        }
       }
     );
     successResponse(res, 201, { message: "post updated", post });
@@ -143,46 +149,52 @@ exports.updatePost = async (req, res) => {
     errorResponse(res, error.statusCode, { message: error.message });
   }
 };
-exports.likeToggle = async (req, res) => {
-  try {
-    const user = req.user;
-    const { postid } = req.body;
-    await postValidator.likeTogglePostsAccess(req, res);
-    const likeToggleRecord = await likeToggleModel.findOne({
-      userid: user._id,
-      postid,
-    });
-    // ----------
-    if (likeToggleRecord) {
-      await likeToggleModel.deleteOne({
-        userid: user._id,
-        postid,
-      });
+exports.likeToggle = async (req, res) => { 
+  try { 
+    const user = req.user; 
+    const { postid } = req.body; 
+    await postValidator.likeTogglePostsAccess(req, res); 
+    
+    const likeToggleRecord = await likeToggleModel.findOne({ 
+      userid: user._id, 
+      postid, 
+    }); 
 
-      await postModel.updateOne(
-        { _id: postid },
-        {
-          $pull: {
-            likes: likeToggleRecord._id,
-          },
-        }
-      );
+    if (likeToggleRecord) { 
+      await likeToggleModel.deleteOne({ 
+        userid: user._id, 
+        postid, 
+      }); 
 
-      successResponse(res, 201, { message: "post is disLiked" });
-    } else {
-      let record = new likeToggleModel({
-        userid: user._id,
-        postid,
-      });
-      record = await record.save();
-      await postModel.findByIdAndUpdate(postid, {
-        $push: { likes: record._id },
-      });
-      successResponse(res, 201, { message: "post is liked" });
-    }
-  } catch (error) {
-    errorResponse(res, error.statusCode, { message: error.message });
-  }
+      await postModel.updateOne( 
+        { _id: postid }, 
+        { 
+          $pull: { 
+            likes: likeToggleRecord._id, 
+          }, 
+        } 
+      ); 
+
+      successResponse(res, 201, { message: "post is disLiked" }); 
+    } else { 
+      // مقدار username را از user استخراج کنید
+      let record = new likeToggleModel({ 
+        userid: user._id, 
+        postid, 
+        username: user.username, // اضافه کردن username
+      }); 
+      
+      record = await record.save(); 
+
+      await postModel.findByIdAndUpdate(postid, { 
+        $push: { likes: record._id }, 
+      }); 
+
+      successResponse(res, 201, { message: "post is liked" }); 
+    } 
+  } catch (error) { 
+    errorResponse(res, error.statusCode || 500, { message: error.message }); // اطمینان از وجود statusCode
+  } 
 };
 exports.savePostToggle = async (req, res) => {
   try {

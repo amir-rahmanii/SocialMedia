@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, {useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { commentIcon, deleteIcon, emojiIcon, likeIconOutline, moreIcons, saveIconFill, saveIconOutline, shareIcon } from '../../SvgIcon/SvgIcon'
 import { likeFill } from '../../SvgIcon/SvgIcon';
@@ -8,14 +8,15 @@ import DateConverter from '../../../utils/DateConverter';
 import { useDeleteComment, usePostAddComment, usePostLikeToggle, usePostSavePostToggle } from '../../../hooks/post/usePost';
 import toast from 'react-hot-toast';
 import ScrollToBottom from 'react-scroll-to-bottom';
-import apiRequest from '../../../Services/axios';
-import { AuthContext } from '../../../../Context/AuthContext';
+import ShowWhoLiked from '../../ShowWhoLiked/ShowWhoLiked';
+import PostDetails from '../../PostDetails/PostDetails';
+// import { AuthContext } from '../../../../Context/AuthContext';
 
 
 
 function PostItem(props: PostItemProps) {
     const commentInput = useRef<HTMLInputElement>(null);
-    const authContext = useContext(AuthContext)
+    // const authContext = useContext(AuthContext)
     const [liked, setLiked] = useState(false);
     const [saved, setSaved] = useState(false);
     const [comment, setComment] = useState("");
@@ -23,6 +24,8 @@ function PostItem(props: PostItemProps) {
     const [showEmojis, setShowEmojis] = useState(false);
     const [likeEffect, setLikeEffect] = useState(false);
     const [showMoreDesc, setShowMoreDesc] = useState(false);
+    const [isOpenShowLiked, setIsOpenShowLiked] = useState(false);
+    const [postDatailsToggle, setPostDetailsToggle] = useState(false);
 
     const { mutate: addPostLikeToggle } = usePostLikeToggle();
     const { mutate: addPostSaveToggle } = usePostSavePostToggle();
@@ -57,9 +60,10 @@ function PostItem(props: PostItemProps) {
     }
 
     //for show liked
-    useEffect(() => { 
-        let isLiked = props.likes.some(id => authContext?.user?._id === id.userid);
-        let isPosted = props.saved.some(id => authContext?.user?._id === id);
+    useEffect(() => {
+        const userid = localStorage.getItem("userId")
+        let isLiked = props.likes.some(id => userid === id.userid);
+        let isPosted = props.saved.some(id => userid === id);
         setSaved(isPosted);
         setLiked(isLiked);
     }, [])
@@ -151,8 +155,12 @@ function PostItem(props: PostItemProps) {
                     <Link to=""><img draggable="false" className="w-10 h-10 rounded-full object-cover" src={"/src/assets/images/hero.png"} alt="avatar" /></Link>
                     <Link to="" className="text-black text-sm font-semibold">{props.user.username}</Link>
                 </div>
-                <span className="cursor-pointer">{moreIcons}</span>
+                <button onClick={() => setPostDetailsToggle(prev => !prev)} className="cursor-pointer">{moreIcons}</button>
             </div>
+
+            {postDatailsToggle && (
+                <PostDetails postInfo={props} isBan={props.user.isban} postId={props._id} userID={props.user.id} setPostDetailsToggle={setPostDetailsToggle} />
+            )}
 
             {/* post image container */}
             <div className="relative flex items-center justify-center" onDoubleClick={() => setLike(props._id)}>
@@ -180,7 +188,7 @@ function PostItem(props: PostItemProps) {
                         </div>
 
                         {/* likes  */}
-                        <span className="font-semibold text-sm cursor-pointer">{props.likes.length} likes</span>
+                        <button onClick={() => setIsOpenShowLiked(true)} className="font-semibold text-sm cursor-pointer text-left">{props.likes.length} likes</button>
 
                         {/* comment */}
                         <div className="flex flex-auto items-center space-x-1">
@@ -214,20 +222,20 @@ function PostItem(props: PostItemProps) {
                                         <img draggable="false" className="h-7 w-7 rounded-full shrink-0 object-cover mr-0.5" src={`/src/assets/images/hero.png`} alt="avatar" />
                                         <div className='flex justify-between w-full p-1'>
                                             <div className='flex flex-col items-start mb-2 space-y-1'>
-                                                <p className="text-sm font-semibold hover:underline">{c.userid}</p>
+                                                <p className="text-sm font-semibold hover:underline">{c.username}</p>
                                                 <p className="text-sm line-clamp-3">{c.content}</p>
                                                 <span className="text-xs text-gray-500">{<DateConverter date={c.createdAt} />}</span>
                                             </div>
-                                                <button onClick={() => {
-                                                    let objDeleteComment = {
-                                                        commentid: c._id
-                                                    }
-                                                    deleteComment(objDeleteComment)
-                                                }}>
-                                                    <div className='w-4 h-4'>
+                                            <button onClick={() => {
+                                                let objDeleteComment = {
+                                                    commentid: c._id
+                                                }
+                                                deleteComment(objDeleteComment)
+                                            }}>
+                                                <div className='w-4 h-4'>
                                                     {deleteIcon}
-                                                    </div>
-                                                </button>
+                                                </div>
+                                            </button>
                                         </div>
                                     </div>
                                 ))}
@@ -277,7 +285,7 @@ function PostItem(props: PostItemProps) {
             </div>
 
 
-
+            <ShowWhoLiked userLiked={props.likes} isOpenShowLiked={isOpenShowLiked} setIsOpenShowLiked={setIsOpenShowLiked} />
 
         </div >
     )

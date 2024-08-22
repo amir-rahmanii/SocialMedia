@@ -9,6 +9,7 @@ import toast from 'react-hot-toast'
 import PostContainerUser from '../../Components/User/PostContainerUser/PostContainerUser'
 import SpinLoader from '../../Components/SpinLoader/SpinLoader'
 import NewPost from '../../Components/Header/NewPost/NewPost'
+import { usePostUserInformation } from '../../hooks/user/useUser'
 
 
 function Profile() {
@@ -22,6 +23,7 @@ function Profile() {
   // const navigate = useNavigate()
 
   const { data: myPost, isLoading } = useGetMyPost();
+
 
   // useEffect(() => {
   //   if (isError) {

@@ -5,12 +5,10 @@ import Sidebar from '../../Components/Home/Sidebar/Sidebar'
 import Header from '../../Parts/Header/Header'
 import { usePostUserInformation } from '../../hooks/user/useUser'
 import SpinLoader from '../../Components/SpinLoader/SpinLoader'
-import { useNavigate } from 'react-router-dom'
-import toast from 'react-hot-toast'
 import { AuthContext } from '../../../Context/AuthContext'
 
 function Home() {
-    const navigate = useNavigate()
+
     const authContext = useContext(AuthContext);
 
     const { mutate: informationUser, isLoading, data , isSuccess } = usePostUserInformation();
@@ -23,23 +21,10 @@ function Home() {
     }, [])
 
     useEffect(() => {
-        // if (isError) {
-        //     toast.error("Sorry you should login again",
-        //         {
-        //             icon: '😩',
-        //             style: {
-        //                 borderRadius: '10px',
-        //                 background: '#333',
-        //                 color: '#fff',
-        //             },
-        //         }
-        //     )
-        //     navigate("/login")
-        // }
-        if(isSuccess){
+        if(isSuccess && data){
             authContext?.setUser(data?.data.response.user)  
         }
-    }, [isSuccess])
+    }, [isSuccess , data])
     
 
 

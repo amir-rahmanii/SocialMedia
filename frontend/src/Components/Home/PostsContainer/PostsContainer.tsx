@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
 import StoriesContainer from '../StoriesContainer/StoriesContainer'
 import SkeletonPost from '../../SkeletonPost/SkeletonPost'
-import InfiniteScroll from 'react-infinite-scroll-component'
 import PostItem from '../PostItem/PostItem';
-import SpinLoader from '../../SpinLoader/SpinLoader';
 import { useGetAllPostAllUsers } from '../../../hooks/post/usePost';
 import PostItemProps from '../PostItem/PostItem'
 import NewPost from '../../Header/NewPost/NewPost';
@@ -19,6 +17,7 @@ export type PostItemProps = {
         postid: string,
         updatedAt: Date,
         userid: string,
+        username : string,
         _id: string,
     }[],
     description: string,
@@ -27,6 +26,7 @@ export type PostItemProps = {
         createdAt: Date,
         postid: string,
         updatedAt: Date,
+        username : string,
         userid: string,
         _id: string,
     }[],
@@ -82,20 +82,6 @@ function PostsContainer() {
                 )
                 }
 
-
-                {/* 
-                <InfiniteScroll
-                    dataLength={posts.length}
-                    next={fetchMorePosts}
-                    hasMore={posts.length !== totalPosts}
-                    loader={<SpinLoader />}
-                >
-                    <div className="w-full h-full mt-1 sm:mt-6 flex flex-col space-y-4">
-                        {posts?.map((post) => (
-                            <PostItem key={post._id} {...post} setUsersDialog={setUsersDialog} setUsersList={setUsersList} />
-                        ))}
-                    </div>
-                </InfiniteScroll> */}
 
             </div>
         </>
