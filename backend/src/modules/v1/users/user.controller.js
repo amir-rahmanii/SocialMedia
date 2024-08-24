@@ -156,26 +156,29 @@ exports.updatePassword = async (req, res) => {
       },
       { abortEarly: false }
     );
-    const decodedPayloadJwt =
-      accessTokenExpiredTimeValidator(authorizationHeader);
+
+    const decodedPayloadJwt = accessTokenExpiredTimeValidator(authorizationHeader);
     const userId = decodedPayloadJwt.userId;
 
     let user = await userModel.findOne({ _id: userId });
     const isPasswordMatch = await bcrypt.compare(pervPassword, user.password);
     if (!isPasswordMatch) {
-      throwError("pervPassword is not match", 401);
+      throwError("Current password does not match", 401);
     }
+
     user.password = newPassword;
     user = await user.save();
 
     return successResponse(res, 201, {
-      message: "reset password is  successfully",
+      message: "Password reset successfully",
       user: { ...user.toObject(), password: undefined },
     });
   } catch (error) {
-    return errorResponse(res, error.message, { message: error.message });
+    // اصلاح شده: استفاده از error.statusCode برای ارسال وضعیت صحیح
+    return errorResponse(res, error.statusCode || 500, { message: error.message });
   }
 };
+
 exports.forgetPassword = async (req, res) => {
   const { email } = req.body;
   try {

@@ -5,6 +5,7 @@ import Login from "./Page/Login/Login";
 import Profile from "./Page/Profile/Profile";
 import Register from "./Page/Register/Register";
 import ResetPassword from "./Page/ResetPassword/ResetPassword";
+import UpdatePassword from "./Page/UpdatePassword/UpdatePassword";
 
 
 
@@ -16,6 +17,7 @@ const routes = [
     { path: "/register", element: <Register /> },
     { path: "/forget-password", element: <ForgetPassword /> },
     { path: "/reset-password", element: <ResetPassword /> },
+    { path: "/update-password", element: <PrivateRoutes><UpdatePassword /></PrivateRoutes> },
 ]
 
 

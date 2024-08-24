@@ -110,16 +110,28 @@ exports.updatePost = async (req, res) => {
   try {
     const { title, description, hashtags } = req.body;
     const user = req.user;
+
+    // دریافت پست قبلی
+    const existingPost = await postModel.findById(req.body.postid);
+
     await postValidator.updatePostsAccess(req, res);
 
-    const mediaUrlPath = `images/posts/${req.file.filename}`;
+    // اگر فایل جدیدی ارسال نشده بود، مسیر فایل قبلی را نگه می‌داریم
+    let mediaUrlPath, filename;
+    if (req.file) {
+      mediaUrlPath = `images/posts/${req.file.filename}`;
+      filename = req.file.filename;
+    } else {
+      mediaUrlPath = existingPost.media.path;
+      filename = existingPost.media.filename;
+    }
 
     const post = await postModel.findOneAndUpdate(
       { _id: req.body.postid },
       {
         media: {
           path: mediaUrlPath,
-          filename: req.file.filename,
+          filename: filename,
         },
         title,
         description,
@@ -132,7 +144,8 @@ exports.updatePost = async (req, res) => {
           role: user.role,
           isban: user.isban,
         }
-      }
+      },
+      { new: true } // برای بازگرداندن پست به‌روزرسانی شده
     );
     successResponse(res, 201, { message: "post updated", post });
   } catch (error) {
@@ -296,15 +309,22 @@ exports.deleteComment = async (req, res) => {
 };
 exports.mySavePosts = async (req, res) => {
   try {
-    user = req.user;
+    const user = req.user;
     const mySavesRecord = await savepostsModel.find({ userid: user.id });
     let myPosts = [];
+
     for (const item of mySavesRecord) {
-      const result = await postModel.findOne({ _id: item.postid });
+      const result = await postModel
+        .findOne({ _id: item.postid })
+        .populate('comments') // Populate the comments array with full details
+        .populate('likes')    // Populate the likes array with full details
+        .populate('saved');   // Populate the saved array with full details
+
       if (result) {
         myPosts.push(result);
       }
     }
+
     successResponse(res, 200, { myPosts });
   } catch (error) {
     errorResponse(res, 500, { message: error.message });

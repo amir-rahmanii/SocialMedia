@@ -26,7 +26,7 @@ apiRequest.interceptors.response.use(
     },
     async (error) => {
         const originalRequest = error.config;
-
+        console.log(error);
         if (error.response.data.status === 409 && !originalRequest._retry) {
             originalRequest._retry = true;
             const refreshToken = Cookies.get("refresh-token")
@@ -42,7 +42,6 @@ apiRequest.interceptors.response.use(
                     // Handle token refresh failure
                     // mostly logout the user and re-authenticate by login again
                     toast.error("try again later!!!")
-
                 }
             }
         }

@@ -80,9 +80,11 @@ exports.updatePostsAccess = async (req, res) => {
   const { title, description, hashtags, postid } = req.body;
   const user = req.user;
 
-  if (!req.file) {
-    throwError("enter media is required", 400);
-  }
+  // حذف این خط که در صورت عدم ارسال فایل ارور می‌داد
+  // if (!req.file) {
+  //   throwError("enter media is required", 400);
+  // }
+
   await createPostValidator.validate(
     {
       title,
@@ -102,7 +104,7 @@ exports.updatePostsAccess = async (req, res) => {
     throwError("post is not found", 404);
   }
   const userId = user._id.toString();
-  const postCreatorId = post.user.toString();
+  const postCreatorId = post.user.id.toString();
   if (postCreatorId !== userId) {
     throwError("user is not create this post", 403);
   }

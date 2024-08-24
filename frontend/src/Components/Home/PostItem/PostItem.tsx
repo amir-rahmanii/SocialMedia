@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { commentIcon, deleteIcon, emojiIcon, likeIconOutline, moreIcons, saveIconFill, saveIconOutline, shareIcon } from '../../SvgIcon/SvgIcon'
 import { likeFill } from '../../SvgIcon/SvgIcon';
@@ -26,6 +26,7 @@ function PostItem(props: PostItemProps) {
     const [showMoreDesc, setShowMoreDesc] = useState(false);
     const [isOpenShowLiked, setIsOpenShowLiked] = useState(false);
     const [postDatailsToggle, setPostDetailsToggle] = useState(false);
+
 
     const { mutate: addPostLikeToggle } = usePostLikeToggle();
     const { mutate: addPostSaveToggle } = usePostSavePostToggle();
@@ -61,12 +62,13 @@ function PostItem(props: PostItemProps) {
 
     //for show liked
     useEffect(() => {
-        const userid = localStorage.getItem("userId")
+        const userid = localStorage.getItem("userId");
         let isLiked = props.likes.some(id => userid === id.userid);
         let isPosted = props.saved.some(id => userid === id);
-        setSaved(isPosted);
         setLiked(isLiked);
+        setSaved(isPosted);
     }, [])
+
 
 
     const handleEmojiSelect = (emoji: any) => {

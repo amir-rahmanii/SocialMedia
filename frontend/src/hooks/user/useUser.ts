@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import apiRequest from "../../Services/axios"
-import { forgetPassword, resetPassword, userId, userRegister } from "./user.types";
+import { forgetPassword, resetPassword, updatePassword, userId, userRegister } from "./user.types";
 import { userLogin } from "./user.types";
 // import Cookies from "js-cookie";
 
@@ -37,6 +37,18 @@ function usePostUserForgetPassword() {
     )
 }
 
+function usePostUserUpdatePassword() {
+    return useMutation(async (data: updatePassword) => {
+        return apiRequest.post(`users/update-password`, data)
+    },
+    {
+        onSuccess : (res) => {
+            console.log(res);
+        },
+    }
+    )
+}
+
 
 function usePostUserResetPassword() {
     return useMutation(async (data: resetPassword) => {
@@ -57,16 +69,25 @@ function usePostUserBan() {
     return useMutation(async (userId: userId) => {
         return apiRequest.post(`users/user-ban-toggle`, userId)
     },
-    {
-        onSuccess: () => {
-            queryClient.invalidateQueries(["AllPostAllUsers"]);
-            queryClient.invalidateQueries(["myPost"]);
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries(["AllPostAllUsers"]);
+                queryClient.invalidateQueries(["myPost"]);
+                queryClient.invalidateQueries(["mySavedPost"]);
+            }
         }
-    }
     )
 }
 
 
 
 
-export { usePostUserRegister, usePostUserLogin, usePostUserForgetPassword, usePostUserResetPassword, usePostUserInformation, usePostUserBan }
+export {
+    usePostUserRegister,
+    usePostUserLogin,
+    usePostUserForgetPassword,
+    usePostUserUpdatePassword,
+    usePostUserResetPassword,
+    usePostUserInformation,
+    usePostUserBan
+}

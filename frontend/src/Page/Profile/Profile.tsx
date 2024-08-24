@@ -4,7 +4,7 @@ import MetaData from '../../Components/MetaData/MetaData'
 import { Link, useNavigate } from 'react-router-dom'
 import { postsIconFill, postsIconOutline, postUploadOutline, reelsIcon, savedIconFill, savedIconOutline, settingsIcon, taggedIcon } from '../../Components/SvgIcon/SvgIcon'
 import Header from '../../Parts/Header/Header'
-import { useGetMyPost } from '../../hooks/post/usePost'
+import { useGetMyPost, useGetMySavedPost } from '../../hooks/post/usePost'
 import toast from 'react-hot-toast'
 import PostContainerUser from '../../Components/User/PostContainerUser/PostContainerUser'
 import SpinLoader from '../../Components/SpinLoader/SpinLoader'
@@ -13,16 +13,51 @@ import { usePostUserInformation } from '../../hooks/user/useUser'
 
 
 function Profile() {
-  const [follow, setFollow] = useState(false);
-  const [viewModal, setViewModal] = useState(false);
-  const [followersModal, setFollowersModal] = useState(false);
-  const [usersArr, setUsersArr] = useState([]);
+  // const [follow, setFollow] = useState(false);
+  // const [viewModal, setViewModal] = useState(false);
+  // const [followersModal, setFollowersModal] = useState(false);
+  // const [usersArr, setUsersArr] = useState([]);
   const [savedTab, setSavedTab] = useState(false);
-  const authContext = useContext(AuthContext)
   const [newPost, setNewPost] = useState(false);
   // const navigate = useNavigate()
 
+  const authContext = useContext(AuthContext);
+
   const { data: myPost, isLoading } = useGetMyPost();
+  const { data: mySavedPost, isLoading: isLoadingMySavedPost } = useGetMySavedPost();
+
+  const { mutate: informationUser, data, isSuccess } = usePostUserInformation();
+
+  useEffect(() => {
+    const userid = localStorage.getItem("userId");
+    const tab = localStorage.getItem("tab");
+
+
+    if(tab === "mySavedPosts"){
+      setSavedTab(true)
+    }else{
+      setSavedTab(false)
+    }
+
+
+    if (userid) {
+      informationUser({ userid })
+    }
+  }, [])
+
+  useEffect(() => {
+    if (isSuccess && data) {
+      authContext?.setUser(data?.data.response.user)
+    }
+  }, [isSuccess, data])
+
+
+  useEffect(() => {
+    localStorage.setItem("tab" , savedTab ? "mySavedPosts" : "myPosts")
+  } , [savedTab])
+
+
+
 
 
   // useEffect(() => {
@@ -47,9 +82,9 @@ function Profile() {
     <>
       <MetaData title={`Profile • Instagram photos and videos`} />
       <Header />
-      <div className="mt-16 xl:w-2/3 mx-auto   p-3">
+      <div className="mt-16 xl:w-2/3 mx-auto p-3">
 
-        <div className="sm:flex w-full sm:py-8 bg-white rounded">
+        <div className="sm:flex w-full sm:py-8 bg-white rounded-t">
 
           {/* profile picture */}
           <div className="sm:w-1/3 flex justify-center mx-auto sm:mx-0">
@@ -83,13 +118,13 @@ function Profile() {
 
             <div className="flex justify-between items-center max-w-[21.5rem]">
               <div className="cursor-pointer"><span className="font-semibold">
-              {myPost && myPost.response && myPost.response.allPosts ?(
-               myPost.response.allPosts.length
-              ) : (
-                0
-              )}
-                
-                </span> posts</div>
+                {myPost && myPost.response && myPost.response.allPosts ? (
+                  myPost.response.allPosts.length
+                ) : (
+                  0
+                )}
+
+              </span> posts</div>
               <div className="cursor-pointer"><span className="font-semibold">0</span> followers</div>
               <div className="cursor-pointer"><span className="font-semibold">0</span> following</div>
             </div>
@@ -112,7 +147,7 @@ function Profile() {
                 <UsersDialog title="Following" open={viewModal} onClose={closeModal} usersList={user?.following} />
             } */}
 
-        <div className="border-t  bg-white">
+        <div className="border-t  bg-white rounded-b">
 
           {/* tabs */}
           <div className="flex gap-12 justify-center">
@@ -130,33 +165,48 @@ function Profile() {
 
           {/* posts grid data */}
 
-          {
-            isLoading ? (
-              <SpinLoader />
-            ) : (
-              myPost && myPost.response && myPost.response.allPosts ? (
-                <PostContainerUser posts={myPost.response.allPosts} />
-              ) : (
-                <div className='bg-white text-center mt-2 p-4 text-xl rounded'>
-                Sorry, no posts have been registered yet😩
-                <div className='flex items-center justify-center gap-3 mt-2'>
-                    <span> You be the first</span>
-                    <div onClick={() => setNewPost(true)} className="cursor-pointer">{postUploadOutline}</div>
-                </div>
-                <NewPost newPost={newPost} setNewPost={setNewPost} />
-            </div>
-              )
-            )
-          }
-          {/* <div className="bg-white mt-2 mb-10 drop-shadow-sm rounded flex sm:flex-row flex-col sm:gap-0 gap-5 sm:p-0 p-4 items-center justify-between">
-                <img draggable="false" className="w-2/5 rounded-l" src="https://www.instagram.com/static/images/mediaUpsell.jpg/6efc710a1d5a.jpg" alt="" />
-                <div className="mx-auto flex flex-col items-center">
-                  <h4 className="font-medium text-lg sm:text-xl">Start capturing and sharing your moments.</h4>
-                  <p>Get the app to share your first photo or video.</p>
-                </div>
 
-              </div> */}
+          {savedTab ? (
+            <>
+              {isLoadingMySavedPost ? <SpinLoader /> : (
+                (mySavedPost && mySavedPost.response && mySavedPost.response.myPosts.length > 0) ? (
+                  <PostContainerUser posts={mySavedPost.response.myPosts} />
+                ) : (
+                  <div className='bg-white text-center mt-2 p-4 text-xl rounded'>
+                    Sorry, no posts have been Saved yet😩
+                    <div className='flex items-center justify-center gap-3 mt-2'>
+                      <span> You be the first Save Post</span>
+                    </div>
+                  </div>
+                )
+              )}
+            </>
+          ) : (
+            <>
+              {isLoading ? <SpinLoader /> : (
+                (myPost && myPost.response && myPost.response.allPosts.length > 0) ? (
+                  <PostContainerUser posts={myPost.response.allPosts} />
+                ) : (
+                  <div className='bg-white text-center mt-2 p-4 text-xl rounded'>
+                    Sorry, no posts have been registered yet😩
+                    <div className='flex items-center justify-center gap-3 mt-2'>
+                      <span> You be the first</span>
+                      <div onClick={() => setNewPost(true)} className="cursor-pointer">{postUploadOutline}</div>
+                    </div>
+                    <NewPost newPost={newPost} setNewPost={setNewPost} />
+                  </div>
+                )
+              )}
+            </>
+          )}
 
+        </div>
+        <div className="bg-white mt-2 mb-10 drop-shadow-sm rounded flex sm:flex-row flex-col sm:gap-0 gap-5 sm:p-0 p-4 items-center justify-between">
+          <img draggable="false" className="w-2/5 rounded-l" src="https://www.instagram.com/static/images/mediaUpsell.jpg/6efc710a1d5a.jpg" alt="" />
+          <div className="mx-auto flex flex-col items-center">
+            <h4 className="font-medium text-lg sm:text-xl">Start capturing and sharing your moments.</h4>
+            <p>Get the app to share your first photo or video.</p>
+          </div>
 
         </div>
       </div>

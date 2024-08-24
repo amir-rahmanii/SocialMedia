@@ -30,41 +30,41 @@ function UpdatePost({ postInfo, updatePost, setUpdatePost }: UpdatePostProps) {
     const [showEmojis, setShowEmojis] = useState(false);
     // const [dragged, setDragged] = useState(false);
 
-    const { mutate: updatedPost, isLoading } = usePutUpdatePost();
+    const { mutate: updatedPost, isLoading , isError , error , isSuccess } = usePutUpdatePost();
 
-    // useEffect(() => {
-    //     if (isError) {
-    //         if (error && (error as any).response) {
-    //             toast.error((error as any).response.data.error.message,
-    //                 {
-    //                     icon: '❌',
-    //                     style: {
-    //                         borderRadius: '10px',
-    //                         background: '#333',
-    //                         color: '#fff',
-    //                     },
-    //                 }
-    //             )
-    //         }
-    //     }
+    useEffect(() => {
+        if (isError) {
+            if (error && (error as any).response) {
+                toast.error((error as any).response.data.error.message,
+                    {
+                        icon: '❌',
+                        style: {
+                            borderRadius: '10px',
+                            background: '#333',
+                            color: '#fff',
+                        },
+                    }
+                )
+            }
+        }
 
-    //     if (isSuccess) {
-    //         toast.success("Post Updated successfuly",
-    //             {
-    //                 icon: '✅',
-    //                 style: {
-    //                     borderRadius: '10px',
-    //                     background: '#333',
-    //                     color: '#fff',
-    //                 },
-    //             }
-    //         )
-    //         setPostImage(null)
-    //         setPostPreview(null)
-    //         setdescription('')
-    //         setUpdatePost(false)
-    //     }
-    // }, [isError, isSuccess])
+        if (isSuccess) {
+            toast.success("Post Updated successfuly",
+                {
+                    icon: '✅',
+                    style: {
+                        borderRadius: '10px',
+                        background: '#333',
+                        color: '#fff',
+                    },
+                }
+            )
+            setPostImage(null)
+            setPostPreview(null)
+            setdescription('')
+            setUpdatePost(false)
+        }
+    }, [isError, isSuccess])
 
     const handleEmojiSelect = (emoji: any) => {
         setdescription(description + emoji.native)
@@ -197,10 +197,6 @@ function UpdatePost({ postInfo, updatePost, setUpdatePost }: UpdatePostProps) {
                             </div>
                             <div className="flex items-center justify-between">
                                 <button onClick={handleSubmit((data) => {
-                                    if (!postImage) {
-                                        toast.error("please uploaded image")
-                                        return
-                                    }
 
                                     if (!description.trim()) {
                                         toast.error("please fill the descreption")
@@ -212,7 +208,9 @@ function UpdatePost({ postInfo, updatePost, setUpdatePost }: UpdatePostProps) {
                                     formData.append('postid', postInfo._id);
                                     formData.append('description', description);
                                     formData.append('hashtags', data.hashtags);
-                                    formData.append('media', postImage);
+                                    if (postImage) {
+                                        formData.append('media', postImage);
+                                    }
 
                                     updatedPost(formData)
 

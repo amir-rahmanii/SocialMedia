@@ -8,6 +8,7 @@ import AuthContextProvider from '../Context/AuthContext'
 function App() {
 
   const route = useRoutes(routes)
+  
 
   const client = new QueryClient({
     defaultOptions: {

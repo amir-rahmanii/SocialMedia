@@ -18,6 +18,7 @@ function usePostCreatePost() {
             onSuccess: () => {
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
                 queryClient.invalidateQueries(["myPost"]);
+                queryClient.invalidateQueries(["mySavedPost"]);
             },
         }
     )
@@ -33,14 +34,11 @@ function usePutUpdatePost() {
         })
     },
         {
-            onSuccess: (res) => {
-                console.log(res);
+            onSuccess: () => {
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
                 queryClient.invalidateQueries(["myPost"]);
+                queryClient.invalidateQueries(["mySavedPost"]);
             },
-            onError : (err) => {
-                console.log(err);
-            }
         }
     )
 }
@@ -66,6 +64,21 @@ function useGetMyPost() {
     )
 }
 
+function useGetMySavedPost() {
+    return useQuery(['mySavedPost'],
+        async () => {
+            const response = await apiRequest.get("posts/my-save-posts");
+            return response.data
+        },
+        {
+            onSuccess : (res) => {
+                console.log(res);
+                
+            }
+        }
+    )
+}
+
 
 function usePostLikeToggle() {
     const queryClient = useQueryClient();
@@ -76,6 +89,7 @@ function usePostLikeToggle() {
             onSuccess: () => {
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
                 queryClient.invalidateQueries(["myPost"]);
+                queryClient.invalidateQueries(["mySavedPost"]);
             },
         }
     )
@@ -90,6 +104,7 @@ function usePostSavePostToggle() {
             onSuccess: () => {
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
                 queryClient.invalidateQueries(["myPost"]);
+                queryClient.invalidateQueries(["mySavedPost"]);
             }
         }
     )
@@ -105,6 +120,7 @@ function usePostAddComment() {
             onSuccess: () => {
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
                 queryClient.invalidateQueries(["myPost"]);
+                queryClient.invalidateQueries(["mySavedPost"]);
             }
         }
     )
@@ -122,6 +138,7 @@ function useDeleteComment() {
             onSuccess: () => {
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
                 queryClient.invalidateQueries(["myPost"]);
+                queryClient.invalidateQueries(["mySavedPost"]);
             }
         }
     )
@@ -139,6 +156,7 @@ function useDeletePost() {
             onSuccess: () => {
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
                 queryClient.invalidateQueries(["myPost"]);
+                queryClient.invalidateQueries(["mySavedPost"]);
             }
         }
     )
@@ -150,10 +168,11 @@ export {
     usePostCreatePost,
     usePutUpdatePost,
     useGetAllPostAllUsers,
+    useGetMyPost,
+    useGetMySavedPost,
     usePostLikeToggle,
     usePostSavePostToggle,
     usePostAddComment,
-    useGetMyPost,
     useDeleteComment,
     useDeletePost
 }
