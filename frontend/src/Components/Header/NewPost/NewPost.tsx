@@ -8,7 +8,6 @@ import { useForm } from 'react-hook-form';
 import newPostSchema from '../../../Validation/newPost';
 import { usePostCreatePost } from '../../../hooks/post/usePost';
 import IsLoaderBtn from '../../IsLoaderBtn/IsLoaderBtn';
-import apiRequest from '../../../Services/axios';
 import { AuthContext } from '../../../../Context/AuthContext';
 
 type NewPostProps = {
@@ -132,7 +131,7 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
                     <div className="flex flex-col border-l sm:h-[80vh] w-full bg-white">
 
                         <div className="flex gap-3 px-3 py-2 items-center">
-                            <img draggable="false" className="w-11 h-11 rounded-full object-cover" src="/src/assets/images/hero.png" alt="avatar" />
+                            <img draggable="false" className="w-11 h-11 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${authContext?.user?.profilePicture.filename}`} alt="avatar" />
                             <span className="text-black text-sm font-semibold">{authContext?.user?.username}</span>
                         </div>
 

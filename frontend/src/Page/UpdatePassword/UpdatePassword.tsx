@@ -1,7 +1,7 @@
-import React, { useContext, useEffect } from 'react'
+import React, {useEffect } from 'react'
 import Auth from '../../LayOut/Auth/Auth'
 import { TextField } from '@mui/material'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import updatePassSchema from '../../Validation/updatePassword';
@@ -12,23 +12,24 @@ import { AuthContext } from '../../../Context/AuthContext';
 
 function UpdatePassword() {
     const { mutate: updatePass, isLoading, isError, error, isSuccess } = usePostUserUpdatePassword();
-    const { mutate: informationUser, data, isSuccess: isSuccessUserInformation } = usePostUserInformation();
+    // const { mutate: informationUser, data, isSuccess: isSuccessUserInformation } = usePostUserInformation();
 
-    const authContext = useContext(AuthContext);
+    // const authContext = useContext(AuthContext);
+    const navigate = useNavigate()
 
 
-    useEffect(() => {
-        const userid = localStorage.getItem("userId")
-        if (userid) {
-            informationUser({ userid })
-        }
-    }, [])
+    // useEffect(() => {
+    //     const userid = localStorage.getItem("userId")
+    //     if (userid) {
+    //         informationUser({ userid })
+    //     }
+    // }, [])
 
-    useEffect(() => {
-        if (isSuccess && data) {
-            authContext?.setUser(data?.data.response.user)
-        }
-    }, [isSuccessUserInformation, data])
+    // useEffect(() => {
+    //     if (isSuccess && data) {
+    //         authContext?.setUser(data?.data.response.user)
+    //     }
+    // }, [isSuccessUserInformation, data])
 
 
     useEffect(() => {
@@ -58,7 +59,7 @@ function UpdatePassword() {
                     },
                 }
             )
-            // navigate("/login")
+            navigate("/")
         }
     }, [isError, isSuccess])
 

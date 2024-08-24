@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { exploreOutline, homeFill, homeOutline, likeOutline, messageFill, messageOutline, postUploadOutline } from '../../Components/SvgIcon/SvgIcon';
 import SearchBox from '../../Components/Header/SearchBox/SearchBox';
 import ProfileDetails from '../../Components/Header/ProfileDetails/ProfileDetails';
 import NewPost from '../../Components/Header/NewPost/NewPost';
+import { AuthContext } from '../../../Context/AuthContext';
 
 
 export default function Header() {
@@ -12,6 +13,7 @@ export default function Header() {
 
     const [profileToggle, setProfileToggle] = useState(false)
     const [newPost, setNewPost] = useState(false);
+    const authContext = useContext(AuthContext);
 
     const location = useLocation();
     const [onHome, setOnHome] = useState(false);
@@ -45,7 +47,7 @@ export default function Header() {
                     <span className="hidden sm:block">{exploreOutline}</span>
                     <span className="hidden sm:block">{likeOutline}</span>
 
-                    <div onClick={() => setProfileToggle(!profileToggle)} className={`${profileToggle && 'border-black border' || (!onHome && !onChat) && 'border-black border'} rounded-full cursor-pointer h-7 w-7 p-[0.5px]`}><img draggable="false" loading="lazy" className="w-full h-full rounded-full object-cover" src="/src/assets/images/hero.png" alt="profile" /></div>
+                    <div onClick={() => setProfileToggle(!profileToggle)} className={`${profileToggle && 'border-black border' || (!onHome && !onChat) && 'border-black border'} rounded-full cursor-pointer h-7 w-7 p-[0.5px]`}><img draggable="false" loading="lazy" className="w-full h-full rounded-full object-cover" src={`http://localhost:4002/images/profiles/${authContext?.user?.profilePicture.filename}`} alt="profile" /></div>
                 </div>
 
                 {profileToggle &&

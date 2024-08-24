@@ -1,15 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../../Context/AuthContext'
 import MetaData from '../../Components/MetaData/MetaData'
-import { Link, useNavigate } from 'react-router-dom'
-import { postsIconFill, postsIconOutline, postUploadOutline, reelsIcon, savedIconFill, savedIconOutline, settingsIcon, taggedIcon } from '../../Components/SvgIcon/SvgIcon'
+import { Link } from 'react-router-dom'
+import { changeProfilePicture, postsIconFill, postsIconOutline, postUploadOutline, reelsIcon, savedIconFill, savedIconOutline, settingsIcon, taggedIcon } from '../../Components/SvgIcon/SvgIcon'
 import Header from '../../Parts/Header/Header'
 import { useGetMyPost, useGetMySavedPost } from '../../hooks/post/usePost'
-import toast from 'react-hot-toast'
 import PostContainerUser from '../../Components/User/PostContainerUser/PostContainerUser'
 import SpinLoader from '../../Components/SpinLoader/SpinLoader'
 import NewPost from '../../Components/Header/NewPost/NewPost'
-import { usePostUserInformation } from '../../hooks/user/useUser'
+import { usePostUserInformation, useUpdateUserProfile } from '../../hooks/user/useUser'
+import toast from 'react-hot-toast'
+import ChangeProfile from '../../Components/User/ChangeProfile/ChangeProfile'
 
 
 function Profile() {
@@ -19,7 +20,10 @@ function Profile() {
   // const [usersArr, setUsersArr] = useState([]);
   const [savedTab, setSavedTab] = useState(false);
   const [newPost, setNewPost] = useState(false);
+  const [isShowChangeProfile, setIsShowChangeProfile] = useState(false);
+
   // const navigate = useNavigate()
+
 
   const authContext = useContext(AuthContext);
 
@@ -28,14 +32,15 @@ function Profile() {
 
   const { mutate: informationUser, data, isSuccess } = usePostUserInformation();
 
+
   useEffect(() => {
     const userid = localStorage.getItem("userId");
     const tab = localStorage.getItem("tab");
 
 
-    if(tab === "mySavedPosts"){
+    if (tab === "mySavedPosts") {
       setSavedTab(true)
-    }else{
+    } else {
       setSavedTab(false)
     }
 
@@ -43,7 +48,7 @@ function Profile() {
     if (userid) {
       informationUser({ userid })
     }
-  }, [])
+  }, [isShowChangeProfile])
 
   useEffect(() => {
     if (isSuccess && data) {
@@ -53,8 +58,8 @@ function Profile() {
 
 
   useEffect(() => {
-    localStorage.setItem("tab" , savedTab ? "mySavedPosts" : "myPosts")
-  } , [savedTab])
+    localStorage.setItem("tab", savedTab ? "mySavedPosts" : "myPosts")
+  }, [savedTab])
 
 
 
@@ -88,7 +93,22 @@ function Profile() {
 
           {/* profile picture */}
           <div className="sm:w-1/3 flex justify-center mx-auto sm:mx-0">
-            <img draggable="false" className="w-40 h-40 rounded-full object-cover" src={`/src/assets/images/hero.png`} alt="profile" />
+            <img draggable="false" className="w-40 h-40 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${authContext?.user?.profilePicture.filename}`} alt="profile" />
+
+
+            <button onClick={() => setIsShowChangeProfile(true)} className=' flex flex-col items-center group self-end cursor-pointer'>
+              <div className='flex flex-col items-center'>
+                <div className='w-10 h-10 text-black hover:w-12 hover-h-12 transition-all duration-300'>
+                  {changeProfilePicture}
+                </div>
+              </div>
+            </button>
+
+            {isShowChangeProfile && (
+              <ChangeProfile isShowChangeProfile={isShowChangeProfile} setIsShowChangeProfile={setIsShowChangeProfile} />
+            )}
+
+
           </div>
 
           {/* profile details */}

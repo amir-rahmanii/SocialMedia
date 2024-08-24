@@ -13,6 +13,7 @@ type userInfo = {
     name: string,
     role: "ADMIN" | "USER",
     updatedAt: Date,
+    profilePicture : { path: string, filename: string },
     username: string,
     __v: number,
     _id: string

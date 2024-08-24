@@ -68,6 +68,7 @@ function PostItem(props: PostItemProps) {
         setLiked(isLiked);
         setSaved(isPosted);
     }, [])
+    
 
 
 
@@ -154,7 +155,7 @@ function PostItem(props: PostItemProps) {
 
             <div className="flex justify-between px-3 py-2.5 border-b items-center">
                 <div className="flex space-x-3 items-center">
-                    <Link to=""><img draggable="false" className="w-10 h-10 rounded-full object-cover" src={"/src/assets/images/hero.png"} alt="avatar" /></Link>
+                    <Link to=""><img draggable="false" className="w-10 h-10 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${props.user.userPicture.filename}`} alt="avatar" /></Link>
                     <Link to="" className="text-black text-sm font-semibold">{props.user.username}</Link>
                 </div>
                 <button onClick={() => setPostDetailsToggle(prev => !prev)} className="cursor-pointer">{moreIcons}</button>
@@ -186,7 +187,7 @@ function PostItem(props: PostItemProps) {
                                 <button onClick={() => commentInput.current?.focus()}>{commentIcon}</button>
                                 {shareIcon}
                             </div>
-                            <button onClick={() => handleSave(props._id)}>{saved ? saveIconFill : saveIconOutline}</button>
+                            <button onClick={() => handleSave(props._id)}>{(props.isSaved || saved) ? saveIconFill : saveIconOutline}</button>
                         </div>
 
                         {/* likes  */}
@@ -221,7 +222,7 @@ function PostItem(props: PostItemProps) {
                             <ScrollToBottom className="w-full h-52 overflow-y-auto py-1">
                                 {props.comments.map((c) => (
                                     <div className="flex items-start mb-2 border-b space-x-3" key={c._id}>
-                                        <img draggable="false" className="h-7 w-7 rounded-full shrink-0 object-cover mr-0.5" src={`/src/assets/images/hero.png`} alt="avatar" />
+                                        <img draggable="false" className="h-7 w-7 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/images/profiles/${c.userPicture.filename}`} alt="avatar" />
                                         <div className='flex justify-between w-full p-1'>
                                             <div className='flex flex-col items-start mb-2 space-y-1'>
                                                 <p className="text-sm font-semibold hover:underline">{c.username}</p>

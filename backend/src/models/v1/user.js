@@ -37,7 +37,16 @@ const userSchema = new mongoose.Schema(
       type: String,
     },
     profilePicture: {
-      type: String,
+      path: { 
+        type: String, 
+        required: true, 
+        default: "images/profiles/default.jpg" // Default profile picture path
+      },
+      filename: { 
+        type: String, 
+        required: true, 
+        default: "default.jpg" // Default filename
+      },
     },
     isVerified: {
       type: Boolean,

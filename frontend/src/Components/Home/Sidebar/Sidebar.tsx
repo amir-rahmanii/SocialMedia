@@ -13,7 +13,7 @@ function Sidebar() {
                 {/* <!-- self profile card --> */}
                 <div className="flex justify-between items-center">
                     <div className="flex flex-auto space-x-4 items-center">
-                        <img draggable="false" className="w-14 h-14 rounded-full object-cover" src="/src/assets/images/hero.png" alt="{user.name}" />
+                        <img draggable="false" className="w-14 h-14 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${authContext?.user?.profilePicture.filename}`} alt="avatar" />
                         <div className="flex flex-col">
                             <p className="text-black text-sm font-semibold line-clamp-1">{authContext?.user?.email}</p>
                             <span className="text-gray-400 text-sm line-clamp-1">{authContext?.user?.username}</span>

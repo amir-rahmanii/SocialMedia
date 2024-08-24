@@ -18,9 +18,9 @@ const ProfileDetails = ({setProfileToggle} : ProfileDetailsProps) => {
             redirect: `/profile`
         },
         {
-            title: "Saved",
-            icon: savedIcon,
-            redirect: `/`
+            title: "Change Password",
+            icon: switchAccountIcon,
+            redirect: `/update-password`
         },
         {
             title: "Settings",

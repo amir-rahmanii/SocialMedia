@@ -7,7 +7,13 @@ exports.accessTokenCreator = (user, expireTime) => {
   return accessToken;
 };
 exports.accessTokenExpiredTimeValidator = (authorizationHeader) => {
-  let accessToken = authorizationHeader.split(" ")[1];
-  const decodedPayloadJwt = jwt.verify(accessToken, process.env.JWT_SECRET);
-  return decodedPayloadJwt;
+  try {
+    const token = authorizationHeader.split(' ')[1];
+    return jwt.verify(token, process.env.JWT_SECRET); // Adjust according to your setup
+  } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      error.statusCode = 409; // Set status code for expired token
+    }
+    throw error; // Re-throw the error to be handled in the catch block
+  }
 };

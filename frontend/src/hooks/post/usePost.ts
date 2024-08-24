@@ -70,12 +70,6 @@ function useGetMySavedPost() {
             const response = await apiRequest.get("posts/my-save-posts");
             return response.data
         },
-        {
-            onSuccess : (res) => {
-                console.log(res);
-                
-            }
-        }
     )
 }
 

@@ -19,6 +19,7 @@ export type PostItemProps = {
         userid: string,
         username: string,
         _id: string,
+        userPicture : { path: string, filename: string }
     }[],
     description: string,
     hashtags: string,
@@ -29,6 +30,7 @@ export type PostItemProps = {
         username: string,
         userid: string,
         _id: string,
+        userPicture : { path: string, filename: string }
     }[],
     media: { path: string, filename: string },
     title: string,
@@ -38,10 +40,12 @@ export type PostItemProps = {
         isban: boolean,
         name: string,
         role: "ADMIN" | "USER",
-        username: string
+        username: string,
+        userPicture : { path: string, filename: string }
     },
     createdAt: Date,
     updatedAt: Date,
+    isSaved: boolean
 }
 
 

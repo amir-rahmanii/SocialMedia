@@ -12,6 +12,7 @@ type ShowWhoLikedProps = {
         username: string,
         userid: string,
         _id: string,
+        userPicture : { path: string, filename: string }
     }[]
 }
 
@@ -30,7 +31,7 @@ function ShowWhoLiked({ userLiked, isOpenShowLiked, setIsOpenShowLiked }: ShowWh
                 <div className='py-3 px-4 flex flex-col'>
                     {userLiked.map((data , index) => (
                         <div key={index} className='flex items-center gap-2  border-b p-2'>
-                            <img draggable="false" className="h-8 w-8 rounded-full shrink-0 object-cover mr-0.5" src={`/src/assets/images/hero.png`} alt="avatar" />
+                            <img draggable="false" className="h-8 w-8 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/images/profiles/${data.userPicture.filename}`} alt="avatar" />
                             <div className='flex flex-col'>
                                 <p className="text-sm font-semibold hover:underline">{data.username}</p>
                                 <p className='text-xs text-gray-500"'><DateConverter date={data.createdAt}/></p>

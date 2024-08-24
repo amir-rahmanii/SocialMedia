@@ -11,6 +11,10 @@ const schema = mongoose.Schema(
       ref: "user",
       required: true,
     },
+    userPicture: {
+      path: { type: String, required: true },
+      filename: { type: String, required: true }
+    },
     username: { type: String, required: true }, // Added username field
   },
   { timestamps: true }

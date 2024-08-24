@@ -3,6 +3,8 @@ const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const userModel = require("../../../models/v1/user");
 const postModel = require("../../../models/v1/post");
+const likeToggleModel = require("../../../models/v1/likeToggle");
+const commentModel = require("../../../models/v1/comment");
 const RefreshTokenModel = require("../../../models/v1/refreshToken");
 const {
   successResponse,
@@ -16,7 +18,6 @@ const {
 const nodeMailer = require("nodemailer");
 
 const forgetPasswordModel = require("../../../models/v1/forgetPassword");
-
 // ------>
 
 exports.register = async (req, res) => {
@@ -163,7 +164,7 @@ exports.updatePassword = async (req, res) => {
     let user = await userModel.findOne({ _id: userId });
     const isPasswordMatch = await bcrypt.compare(pervPassword, user.password);
     if (!isPasswordMatch) {
-      throwError("Current password does not match", 401);
+      throwError("Current password does not match", 401); // 401 Unauthorized
     }
 
     user.password = newPassword;
@@ -174,8 +175,12 @@ exports.updatePassword = async (req, res) => {
       user: { ...user.toObject(), password: undefined },
     });
   } catch (error) {
-    // اصلاح شده: استفاده از error.statusCode برای ارسال وضعیت صحیح
-    return errorResponse(res, error.statusCode || 500, { message: error.message });
+    if (error.name === 'TokenExpiredError') {
+      // Handle token expired error specifically
+      return errorResponse(res, 409, { message: "Token has expired" });
+    }
+    const statusCode = error.statusCode || 500;
+    return errorResponse(res, statusCode, { message: error.message });
   }
 };
 
@@ -299,11 +304,74 @@ exports.userBanToggle = async (req, res) => {
     errorResponse(res, error.statusCode || 500, { message: error.message });
   }
 };
+
 exports.userInformation = async (req, res) => {
   try {
     const user = await userValidator.userInformation(req);
     successResponse(res, 200, { message: " successfully ", user });
   } catch (error) {
     errorResponse(res, error.statusCode, { message: error.message });
+  }
+};
+
+exports.updateUserProfile = async (req, res) => {
+  try {
+    if (!req.file) {
+      throwError("Media is required", 400);
+    }
+
+    const userId = req.user._id; // فرض بر این است که کاربر احراز هویت شده است
+    const file = req.file;
+
+    // آپدیت تصویر پروفایل کاربر
+    const updatedUser = await userModel.findByIdAndUpdate(
+      userId,
+      {
+        $set: {
+          "profilePicture.path": file.path,
+          "profilePicture.filename": file.filename,
+        },
+      },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // آپدیت تصویر پروفایل در تمام پست‌های کاربر
+    await postModel.updateMany(
+      { "user.id": userId },
+      {
+        $set: {
+          "user.userPicture.path": file.path,
+          "user.userPicture.filename": file.filename,
+        },
+      }
+    );
+    
+    await commentModel.updateMany(
+      { userid: userId },
+      {
+        $set: {
+          "userPicture.path": file.path,
+          "userPicture.filename": file.filename,
+        },
+      }
+    );
+
+    await likeToggleModel.updateMany(
+      { userid: userId },
+      {
+        $set: {
+          "userPicture.path": file.path,
+          "userPicture.filename": file.filename,
+        },
+      }
+    );
+
+    res.status(200).json({ message: "Profile picture updated", user: updatedUser });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ message: error.message });
   }
 };

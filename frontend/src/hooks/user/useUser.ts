@@ -41,11 +41,6 @@ function usePostUserUpdatePassword() {
     return useMutation(async (data: updatePassword) => {
         return apiRequest.post(`users/update-password`, data)
     },
-    {
-        onSuccess : (res) => {
-            console.log(res);
-        },
-    }
     )
 }
 
@@ -79,10 +74,31 @@ function usePostUserBan() {
     )
 }
 
+function useUpdateUserProfile() {
+    const queryClient = useQueryClient();
+    return useMutation(async (profilePicture: FormData) => {
+        return apiRequest.put(`users/update-profile-picture`, profilePicture)
+    },
+        {
+            onSuccess: (res) => {
+                console.log(res);
+                queryClient.invalidateQueries(["AllPostAllUsers"]);
+                queryClient.invalidateQueries(["myPost"]);
+                queryClient.invalidateQueries(["mySavedPost"]);
+            },
+            onError(error) {
+                console.log(error);
+
+            },
+        }
+    )
+}
+
 
 
 
 export {
+    useUpdateUserProfile,
     usePostUserRegister,
     usePostUserLogin,
     usePostUserForgetPassword,

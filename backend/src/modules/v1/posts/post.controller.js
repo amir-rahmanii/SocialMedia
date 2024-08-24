@@ -33,6 +33,7 @@ exports.createPost = async (req, res) => {
         name: user.name,
         role: user.role,
         isban: user.isban,
+        userPicture: user.profilePicture,
       }
     });
     await post.save();
@@ -43,6 +44,10 @@ exports.createPost = async (req, res) => {
 };
 exports.getAllPosts = async (req, res) => {
   try {
+    // Update all posts to set isSaved to false
+    await postModel.updateMany({}, { isSaved: false });
+
+    // Retrieve all posts with isSaved set to false
     const allPosts = await postModel
       .find({}, { __v: 0 })
       .populate("comments", "-__v")
@@ -53,21 +58,22 @@ exports.getAllPosts = async (req, res) => {
     errorResponse(res, 500, { message: error.message, error });
   }
 };
+
 exports.myPosts = async (req, res) => {
   try {
     const user = req.user;
-    
-    // لاگ کردن شناسه کاربر برای اطمینان
-    console.log("User ID:", user._id);
 
-    // پیدا کردن پست‌های مرتبط با کاربر
+    // Update all user's posts to set isSaved to false
+    await postModel.updateMany({ "user.id": user._id }, { isSaved: false });
+
+    // Find posts related to the user
     const allPosts = await postModel
-      .find({ "user.id": user._id }) // استفاده از `user.id` برای مطابقت با شناسه کاربر
-      .populate("comments") // پر کردن داده‌های کامنت‌ها
-      .populate("likes", "-__v") // پر کردن داده‌های لایک‌ها بدون فیلد __v
+      .find({ "user.id": user._id }) // Match with user ID
+      .populate("comments") // Populate comments data
+      .populate("likes", "-__v") // Populate likes data without __v field
       .exec();
 
-    // لاگ کردن نتایج برای بررسی
+    // Log the results for inspection
     console.log("All Posts:", allPosts);
 
     successResponse(res, 200, { allPosts });
@@ -75,6 +81,7 @@ exports.myPosts = async (req, res) => {
     errorResponse(res, 500, { message: error.message, error });
   }
 };
+
 
 exports.searchPosts = async (req, res) => {
   try {
@@ -162,52 +169,56 @@ exports.updatePost = async (req, res) => {
     errorResponse(res, error.statusCode, { message: error.message });
   }
 };
-exports.likeToggle = async (req, res) => { 
-  try { 
-    const user = req.user; 
-    const { postid } = req.body; 
-    await postValidator.likeTogglePostsAccess(req, res); 
-    
-    const likeToggleRecord = await likeToggleModel.findOne({ 
-      userid: user._id, 
-      postid, 
-    }); 
+exports.likeToggle = async (req, res) => {
+  try {
+    const user = req.user;
+    const { postid } = req.body;
+    await postValidator.likeTogglePostsAccess(req, res);
 
-    if (likeToggleRecord) { 
-      await likeToggleModel.deleteOne({ 
-        userid: user._id, 
-        postid, 
-      }); 
+    const likeToggleRecord = await likeToggleModel.findOne({
+      userid: user._id,
+      postid,
+    });
 
-      await postModel.updateOne( 
-        { _id: postid }, 
-        { 
-          $pull: { 
-            likes: likeToggleRecord._id, 
-          }, 
-        } 
-      ); 
+    if (likeToggleRecord) {
+      await likeToggleModel.deleteOne({
+        userid: user._id,
+        postid,
+      });
 
-      successResponse(res, 201, { message: "post is disLiked" }); 
-    } else { 
+      await postModel.updateOne(
+        { _id: postid },
+        {
+          $pull: {
+            likes: likeToggleRecord._id,
+          },
+        }
+      );
+
+      successResponse(res, 201, { message: "post is disLiked" });
+    } else {
       // مقدار username را از user استخراج کنید
-      let record = new likeToggleModel({ 
-        userid: user._id, 
-        postid, 
+      let record = new likeToggleModel({
+        userid: user._id,
+        postid,
         username: user.username, // اضافه کردن username
-      }); 
-      
-      record = await record.save(); 
+        userPicture: {
+          path: user.profilePicture.path,
+          filename: user.profilePicture.filename,
+        },
+      });
 
-      await postModel.findByIdAndUpdate(postid, { 
-        $push: { likes: record._id }, 
-      }); 
+      record = await record.save();
 
-      successResponse(res, 201, { message: "post is liked" }); 
-    } 
-  } catch (error) { 
+      await postModel.findByIdAndUpdate(postid, {
+        $push: { likes: record._id },
+      });
+
+      successResponse(res, 201, { message: "post is liked" });
+    }
+  } catch (error) {
     errorResponse(res, error.statusCode || 500, { message: error.message }); // اطمینان از وجود statusCode
-  } 
+  }
 };
 exports.savePostToggle = async (req, res) => {
   try {
@@ -275,6 +286,10 @@ exports.addComment = async (req, res) => {
       postid,
       userid: user._id,
       username, // Include the username
+      userPicture: {
+        path: user.profilePicture.path,
+        filename: user.profilePicture.filename,
+      },
       title,
       content,
     });
@@ -315,7 +330,11 @@ exports.mySavePosts = async (req, res) => {
 
     for (const item of mySavesRecord) {
       const result = await postModel
-        .findOne({ _id: item.postid })
+        .findOneAndUpdate(
+          { _id: item.postid },
+          { isSaved: true }, // Set isSaved to true
+          { new: true } // Return the updated document
+        )
         .populate('comments') // Populate the comments array with full details
         .populate('likes')    // Populate the likes array with full details
         .populate('saved');   // Populate the saved array with full details
@@ -330,6 +349,7 @@ exports.mySavePosts = async (req, res) => {
     errorResponse(res, 500, { message: error.message });
   }
 };
+
 exports.postDetails = async (req, res) => {
   try {
     const { postid } = req.body;
