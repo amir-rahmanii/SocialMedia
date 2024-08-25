@@ -32,7 +32,7 @@ export type PostItemProps = {
         _id: string,
         userPicture : { path: string, filename: string }
     }[],
-    media: { path: string, filename: string },
+    media: {_id:string , path: string, filename: string }[],
     title: string,
     user: {
         email: string,

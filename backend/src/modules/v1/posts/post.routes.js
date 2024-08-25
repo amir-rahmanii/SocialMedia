@@ -11,7 +11,8 @@ const router = express.Router();
 
 router
   .route("/create-post")
-  .post(auth, upload.single("media"), controller.createPost);
+  .post(auth, upload.array("media", 5), controller.createPost); // The number `5` limits the number of files.
+
 router.route("/like-toggle").post(auth, controller.likeToggle);
 router.route("/save-post-toggle").post(auth, controller.savePostToggle);
 router.route("/add-comment").post(auth, controller.addComment);
@@ -20,7 +21,7 @@ router.route("/add-comment").post(auth, controller.addComment);
 
 router
   .route("/update-post")
-  .put(auth, upload.single("media"), controller.updatePost);
+  .put(auth, upload.array("media", 5), controller.updatePost);
 
 // DELETE -------------------->
 

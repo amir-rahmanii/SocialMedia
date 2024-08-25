@@ -1,6 +1,6 @@
 import { ClickAwayListener } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
-import { deleteIcon } from '../SvgIcon/SvgIcon';
+import { banIcon, deleteIcon, editPostIcon } from '../SvgIcon/SvgIcon';
 import { useDeletePost } from '../../hooks/post/usePost';
 import toast from 'react-hot-toast';
 import { AuthContext } from '../../Context/AuthContext';
@@ -119,15 +119,15 @@ function PostDetails({ postInfo, setPostDetailsToggle, postId, userID, isBan }: 
                                 <button onClick={() => setUpdatePost(true)} className="flex items-center justify-between p-2.5 text-sm pl-4 cursor-pointer hover:bg-gray-50 duration-300 transition-all">
                                     Edit
                                     <div className='w-4 h-4'>
-                                        {deleteIcon}
+                                        {editPostIcon}
                                     </div>
                                 </button>
                             )}
                             {authContext?.user?.role === "ADMIN" && (
                                 <button onClick={() => banUserHandler(userID)} className="flex items-center justify-between p-2.5 text-sm pl-4 cursor-pointer hover:bg-gray-50 duration-300 transition-all">
                                     {isBan ? "Un Ban User" : "Ban User"}
-                                    <div className='w-4 h-4'>
-                                        {deleteIcon}
+                                    <div className='w-5 h-5'>
+                                        {banIcon}
                                     </div>
                                 </button>
                             )}

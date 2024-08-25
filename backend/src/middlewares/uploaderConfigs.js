@@ -28,7 +28,7 @@ exports.multerStorage = (destination, allowedTypes = /jpg|jpeg| png |webp/) => {
   const uploader = multer({
     storage,
     limits: {
-      fileSize: 512_000_000, // 5 mb
+      fileSize: 50 * 1024 * 1024, // 5 mb
     },
     fileFilter,
   });

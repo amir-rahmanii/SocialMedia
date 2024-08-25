@@ -16,13 +16,24 @@ exports.createPost = async (req, res) => {
   try {
     const user = req.user;
     const { title, description, hashtags } = req.body;
-    await postValidator.createPostAccess(req, res);
-    const mediaUrlPath = `images/posts/${req.file.filename}`;
+
+    // Handle case where no files are uploaded
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ message: "At least one image is required" });
+    }
+
+    // Handle case where files exceed the limit
+    if (req.files.length > 5) {
+      return res.status(400).json({ message: "You can upload up to 5 files only" });
+    }
+
+    const media = req.files.map(file => ({
+      path: `images/posts/${file.filename}`,
+      filename: file.filename,
+    }));
+
     const post = new postModel({
-      media: {
-        path: mediaUrlPath,
-        filename: req.file.filename,
-      },
+      media,
       title,
       description,
       hashtags,
@@ -36,12 +47,15 @@ exports.createPost = async (req, res) => {
         userPicture: user.profilePicture,
       }
     });
+
     await post.save();
-    successResponse(res, 201, { message: "post created", post });
+    res.status(201).json({ message: "Post created successfully", post });
   } catch (error) {
-    return errorResponse(res, error.statusCode, { message: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
+
+
 exports.getAllPosts = async (req, res) => {
   try {
     // Update all posts to set isSaved to false
@@ -126,6 +140,7 @@ exports.deletePost = async (req, res) => {
     errorResponse(res, error.statusCode, { message: error.message });
   }
 };
+
 exports.updatePost = async (req, res) => {
   try {
     const { title, description, hashtags } = req.body;
@@ -136,23 +151,39 @@ exports.updatePost = async (req, res) => {
 
     await postValidator.updatePostsAccess(req, res);
 
-    // اگر فایل جدیدی ارسال نشده بود، مسیر فایل قبلی را نگه می‌داریم
-    let mediaUrlPath, filename;
-    if (req.file) {
-      mediaUrlPath = `images/posts/${req.file.filename}`;
-      filename = req.file.filename;
+    let media;
+
+    // اگر فایل‌های جدید ارسال شده باشد، فایل‌های قدیمی حذف و فایل‌های جدید جایگزین می‌شوند
+    if (req.files && req.files.length > 0) {
+      // بررسی اینکه تعداد فایل‌ها بیش از ۵ نباشد
+      if (req.files.length > 5) {
+        return res.status(400).json({ message: "You can upload up to 5 files only" });
+      }
+
+      // حذف فایل‌های قبلی از سیستم
+      existingPost.media.forEach(file => {
+        const mediaUrlPath = `images/posts/${file.filename}`;
+        fs.unlink(mediaUrlPath, (err) => {
+          if (err) {
+            console.error(err);
+          }
+        });
+      });
+
+      // جایگزینی با فایل‌های جدید
+      media = req.files.map(file => ({
+        path: `images/posts/${file.filename}`,
+        filename: file.filename,
+      }));
     } else {
-      mediaUrlPath = existingPost.media.path;
-      filename = existingPost.media.filename;
+      // اگر فایل جدیدی ارسال نشده باشد، فایل‌های قبلی را نگه می‌داریم
+      media = existingPost.media;
     }
 
     const post = await postModel.findOneAndUpdate(
       { _id: req.body.postid },
       {
-        media: {
-          path: mediaUrlPath,
-          filename: filename,
-        },
+        media,
         title,
         description,
         hashtags,
@@ -163,25 +194,30 @@ exports.updatePost = async (req, res) => {
           name: user.name,
           role: user.role,
           isban: user.isban,
+          userPicture : user.profilePicture
         }
       },
       { new: true } // برای بازگرداندن پست به‌روزرسانی شده
     );
-    successResponse(res, 201, { message: "post updated", post });
+
+    res.status(201).json({ message: "Post updated successfully", post });
   } catch (error) {
-    if (req.file) {
-      const mediaUrlPath = `public/images/posts/${req.file.filename}`;
-      fs.unlink(mediaUrlPath, (err) => {
-        if (err) {
-          console.error(err);
-          return;
-        }
+    if (req.files && req.files.length > 0) {
+      req.files.forEach(file => {
+        const mediaUrlPath = `images/posts/${file.filename}`;
+        fs.unlink(mediaUrlPath, (err) => {
+          if (err) {
+            console.error(err);
+            return;
+          }
+        });
       });
     }
 
-    errorResponse(res, error.statusCode, { message: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
+
 exports.likeToggle = async (req, res) => {
   try {
     const user = req.user;

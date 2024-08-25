@@ -1,10 +1,12 @@
 const mongoose = require("mongoose");
 const schema = mongoose.Schema(
   {
-    media: {
-      path: { type: String, required: true },
-      filename: { type: String, required: true },
-    },
+    media: [
+      {
+        path: { type: String, required: true },
+        filename: { type: String, required: true },
+      },
+    ],
     title: { type: String, required: true },
     description: { type: String, required: true },
     hashtags: { type: String, required: true },

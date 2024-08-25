@@ -1,6 +1,7 @@
 import { Dialog } from '@mui/material'
 import React from 'react'
 import DateConverter from '../../utils/DateConverter'
+import { closeIcon } from '../SvgIcon/SvgIcon'
 
 type ShowWhoLikedProps = {
     isOpenShowLiked: boolean,
@@ -23,8 +24,8 @@ function ShowWhoLiked({ userLiked, isOpenShowLiked, setIsOpenShowLiked }: ShowWh
             <div className="flex flex-col xl:w-screen max-w-xl bg-white">
                 <div className="bg-white py-3 border-b px-4 flex justify-between w-full">
                     <span className="font-medium">List Users Liked</span>
-                    <button onClick={() => setIsOpenShowLiked(false)}>
-                        close
+                    <button className='w-5 h-5' onClick={() => setIsOpenShowLiked(false)}>
+                       {closeIcon}
                     </button>
                 </div>
                 {userLiked.length > 0 ? (

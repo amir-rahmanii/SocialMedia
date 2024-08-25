@@ -1,7 +1,7 @@
-import { Dialog, LinearProgress, TextField } from '@mui/material'
+import { Dialog, TextField } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
-import { emojiIcon } from '../../SvgIcon/SvgIcon';
+import { closeIcon, emojiIcon } from '../../SvgIcon/SvgIcon';
 import EmojiPicker from '@emoji-mart/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
@@ -20,8 +20,8 @@ type NewPostProps = {
 
 function NewPost({ newPost, setNewPost }: NewPostProps) {
 
-    const [postImage, setPostImage] = useState<File | null>(null);
-    const [postPreview, setPostPreview] = useState<string | null>(null);
+    const [postImage, setPostImage] = useState<File[]>([]);
+    const [postPreview, setPostPreview] = useState<string[]>([]);
     const [description, setdescription] = useState("");
     const [showEmojis, setShowEmojis] = useState(false);
     const [dragged, setDragged] = useState(false);
@@ -58,8 +58,8 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
                     },
                 }
             )
-            setPostImage(null)
-            setPostPreview(null)
+            setPostImage([])
+            setPostPreview([])
             setdescription('')
             setNewPost(false)
         }
@@ -75,20 +75,44 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
     }
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            setPostImage(null);
-            setPostPreview("")
-            reader.onload = () => {
-                if (reader.readyState === 2) {
-                    setPostPreview(reader.result as string);
-                }
-            };
-            reader.readAsDataURL(file);
-            setPostImage(file);
+        if (postImage.length === 5) {
+            toast.error("You can't uplouded image more than 5")
+        } else {
+            if (e.target.files) {
+                const files = Array.from(e.target.files);
+
+                // Create previews for the files
+                const previews: string[] = [];
+                files.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        if (reader.result) {
+                            previews.push(reader.result as string);
+                            if (previews.length === files.length) {
+                                // All previews have been processed
+                                setPostPreview(prev => [...prev, ...previews]);
+                            }
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                });
+
+                // Update state with new files
+                setPostImage(prevFiles => [...prevFiles, ...files]);
+            }
         }
+    };
+
+    const removeImageFromFiles = (index: number) => {
+        const newPostImages = [...postImage]
+        const newPostPreview = [...postPreview]
+        newPostImages.splice(index , 1)
+        newPostPreview.splice(index , 1)
+        setPostImage(newPostImages)
+        setPostPreview(newPostPreview)
     }
+
+
 
 
     // hook form
@@ -106,15 +130,20 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
             <div className="flex flex-col xl:w-screen max-w-4xl">
                 <div className="bg-white py-3 border-b px-4 flex justify-between w-full">
                     <span className="font-medium">Create new post</span>
-                    <button onClick={() => setNewPost(false)} className="font-medium">Close</button>
+                    <button onClick={() => setNewPost(false)} className="font-medium w-5 h-5">{closeIcon}</button>
                 </div>
-                {/* <LinearProgress /> */}
+
 
                 <div className="flex md:flex-row md:items-start items-center flex-col w-full">
 
-                    {postImage ?
-                        <div className="bg-black h-48 xl:h-[80vh] w-full">
-                            <img draggable="false" className="object-contain h-full w-full" src={postPreview as string} alt="post" />
+                    {postImage.length > 0 ?
+                        <div className='grid grid-cols-3 gap-4 p-3'>
+                            {postPreview.map((post, index) => (
+                                <div key={index} className="bg-black relative h-52 w-full">
+                                    <img draggable="false" className="object-contain h-full w-full" src={post as string} alt={`Preview ${index}`} />
+                                    <button onClick={() => removeImageFromFiles(index)} className='absolute bottom-0 bg-black rounded-full'>❌</button>
+                                </div>
+                            ))}
                         </div>
                         :
                         <div onDragEnter={handleDragChange} onDragLeave={handleDragChange} className={`${dragged && 'opacity-40'} relative bg-white h-36 sm:h-[80vh] w-full flex flex-col gap-2 items-center justify-center mx-16`}>
@@ -123,6 +152,7 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
                             <input
                                 accept="image/*"
                                 type="file"
+                                multiple
                                 onChange={handleFileChange}
                                 className="absolute h-full w-full opacity-0" />
                         </div>
@@ -140,6 +170,7 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
                             <div className='flex items-center'>
                                 <input
                                     type="file"
+                                    multiple
                                     accept="image/*"
                                     onChange={handleFileChange}
                                     className="block w-[150px] text-sm text-white
@@ -149,7 +180,7 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
                             file:bg-purple-100 file:text-purple-700
                             hover:file:bg-purple-200
                             "/>
-                                <p className='text-sm text-slate-500'> {postImage ? postImage.name : "No file Choosen"}</p>
+                                {/* <p className='text-sm text-slate-500'> {postImage ? postImage.name : "No file Choosen"}</p> */}
                             </div>
                             <div className='my-4'>
                                 <TextField
@@ -202,10 +233,10 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
                             </div>
                             <div className="flex items-center justify-between">
                                 <button onClick={handleSubmit((data) => {
-                                    if (!postImage) {
-                                        toast.error("please uploaded image")
-                                        return
-                                    }
+                                    // if (postImage.length == 0) {
+                                    //     toast.error("please uploaded image")
+                                    //     return
+                                    // }
 
                                     if (!description.trim()) {
                                         toast.error("please fill the descreption")
@@ -216,7 +247,8 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
                                     formData.append('title', data.title);
                                     formData.append('description', description);
                                     formData.append('hashtags', data.hashtags);
-                                    formData.append('media', postImage);
+                                    // Append each selected file to the FormData object
+                                    postImage.forEach(file => formData.append('media', file));
 
                                     addNewPost(formData)
 

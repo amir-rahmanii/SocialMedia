@@ -4,6 +4,7 @@ import { Dialog } from '@mui/material';
 import IsLoaderBtn from '../../IsLoaderBtn/IsLoaderBtn';
 import { AuthContext } from '../../../Context/AuthContext';
 import toast from 'react-hot-toast';
+import { closeIcon } from '../../SvgIcon/SvgIcon';
 
 type ChangeProfileProps = {
     isShowChangeProfile: boolean,
@@ -94,7 +95,7 @@ function ChangeProfile({ isShowChangeProfile, setIsShowChangeProfile }: ChangePr
             <div className="flex flex-col max-w-4xl xl:w-screen">
                 <div className="bg-white py-3 border-b px-4 flex justify-between w-full">
                     <span className="font-medium">Create new post</span>
-                    <button onClick={() => setIsShowChangeProfile(false)} className="font-medium">Close</button>
+                    <button onClick={() => setIsShowChangeProfile(false)} className="font-medium w-5 h-5">{closeIcon}</button>
                 </div>
                 {/* <LinearProgress /> */}
 

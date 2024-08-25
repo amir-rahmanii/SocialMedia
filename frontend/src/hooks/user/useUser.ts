@@ -58,11 +58,6 @@ function useGetUserInformation(userId : string) {
             const response = await apiRequest.get(`users/user-information/${userId}`);
             return response.data
         },
-        {
-            onSuccess : (res) => {
-                console.log(res);
-            }
-        }
     )
 }
 

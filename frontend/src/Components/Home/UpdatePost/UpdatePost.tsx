@@ -7,7 +7,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import newPostSchema from '../../../Validation/newPost'
 import EmojiPicker from '@emoji-mart/react'
 import toast from 'react-hot-toast'
-import { emojiIcon } from '../../SvgIcon/SvgIcon'
+import { closeIcon, emojiIcon } from '../../SvgIcon/SvgIcon'
 import { usePutUpdatePost } from '../../../hooks/post/usePost'
 import IsLoaderBtn from '../../IsLoaderBtn/IsLoaderBtn'
 
@@ -24,13 +24,13 @@ type UpdatePostProps = {
 function UpdatePost({ postInfo, updatePost, setUpdatePost }: UpdatePostProps) {
 
     const authContext = useContext(AuthContext);
-    const [postImage, setPostImage] = useState<File | null>(null);
-    const [postPreview, setPostPreview] = useState<string | null>(null);
+    const [postImage, setPostImage] = useState<File[]>([]);
+    const [postPreview, setPostPreview] = useState<string[]>([]);
     const [description, setdescription] = useState(postInfo.description);
     const [showEmojis, setShowEmojis] = useState(false);
     // const [dragged, setDragged] = useState(false);
 
-    const { mutate: updatedPost, isLoading , isError , error , isSuccess } = usePutUpdatePost();
+    const { mutate: updatedPost, isLoading, isError, error, isSuccess } = usePutUpdatePost();
 
     useEffect(() => {
         if (isError) {
@@ -59,32 +59,45 @@ function UpdatePost({ postInfo, updatePost, setUpdatePost }: UpdatePostProps) {
                     },
                 }
             )
-            setPostImage(null)
-            setPostPreview(null)
+            setPostImage([])
+            setPostPreview([])
             setdescription('')
             setUpdatePost(false)
         }
-    }, [isError, isSuccess])
+    }, [isError , isSuccess])
 
     const handleEmojiSelect = (emoji: any) => {
         setdescription(description + emoji.native)
     }
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            setPostImage(null);
-            setPostPreview("")
-            reader.onload = () => {
-                if (reader.readyState === 2) {
-                    setPostPreview(reader.result as string);
-                }
-            };
-            reader.readAsDataURL(file);
-            setPostImage(file);
+        if (postImage.length === 5) {
+            toast.error("You can't uplouded image more than 5")
+        } else {
+            if (e.target.files) {
+                const files = Array.from(e.target.files);
+
+                // Create previews for the files
+                const previews: string[] = [];
+                files.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        if (reader.result) {
+                            previews.push(reader.result as string);
+                            if (previews.length === files.length) {
+                                // All previews have been processed
+                                setPostPreview(prev => [...prev, ...previews]);
+                            }
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                });
+
+                // Update state with new files
+                setPostImage(prevFiles => [...prevFiles, ...files]);
+            }
         }
-    }
+    };
 
     // hook form
     const {
@@ -100,24 +113,43 @@ function UpdatePost({ postInfo, updatePost, setUpdatePost }: UpdatePostProps) {
     });
 
 
+    const removeImageFromFiles = (index: number) => {
+        const newPostImages = [...postImage]
+        const newPostPreview = [...postPreview]
+        newPostImages.splice(index, 1)
+        newPostPreview.splice(index, 1)
+        setPostImage(newPostImages)
+        setPostPreview(newPostPreview)
+    }
+
+
     return (
         <Dialog open={updatePost} onClose={() => { setUpdatePost(false) }} maxWidth='xl'>
             <div className="flex flex-col xl:w-screen max-w-4xl">
                 <div className="bg-white py-3 border-b px-4 flex justify-between w-full">
                     <span className="font-medium">Update post</span>
-                    <button onClick={() => setUpdatePost(false)} className="font-medium">Close</button>
+                    <button onClick={() => setUpdatePost(false)} className="font-medium w-5 h-5">{closeIcon}</button>
                 </div>
                 {/* <LinearProgress /> */}
 
                 <div className="flex md:flex-row md:items-start items-center flex-col w-full">
 
-                    {postImage ? (
-                        <div className="bg-black h-48 xl:h-[80vh] w-full">
-                            <img draggable="false" className="object-contain h-full w-full" src={postPreview as string} alt="post" />
+                    {postImage.length > 0 ? (
+                        <div className='grid grid-cols-3 gap-4 p-3'>
+                            {postPreview.map((post, index) => (
+                                <div key={index} className="bg-black relative h-52 w-full">
+                                    <img draggable="false" className="object-contain h-full w-full" src={post as string} alt={`Preview ${index}`} />
+                                    <button onClick={() => removeImageFromFiles(index)} className='absolute bottom-0 bg-black rounded-full'>❌</button>
+                                </div>
+                            ))}
                         </div>
                     ) : (
-                        <div className="bg-black h-48 xl:h-[80vh] w-full">
-                            <img draggable="false" className="object-contain h-full w-full" src={`http://localhost:4002/images/posts/${postInfo.media.filename}`} alt="post" />
+                        <div className='grid grid-cols-3 gap-4 p-3'>
+                            {postInfo.media.map(data => (
+                                <div key={data._id} className="bg-black relative h-52 w-full">
+                                    <img draggable="false" className="object-contain h-full w-full" src={`http://localhost:4002/images/posts/${data.filename}`} alt="post" />
+                                </div>
+                            ))}
                         </div>
 
                     )}
@@ -144,7 +176,7 @@ function UpdatePost({ postInfo, updatePost, setUpdatePost }: UpdatePostProps) {
                             file:bg-purple-100 file:text-purple-700
                             hover:file:bg-purple-200
                             "/>
-                                <p className='text-sm text-slate-500'> {postImage ? postImage.name : "No file Choosen"}</p>
+                                {/* <p className='text-sm text-slate-500'> {postImage ? postImage.name : "No file Choosen"}</p> */}
                             </div>
                             <div className='my-4'>
                                 <TextField
@@ -204,16 +236,16 @@ function UpdatePost({ postInfo, updatePost, setUpdatePost }: UpdatePostProps) {
                                     }
 
                                     const formData = new FormData();
-                                    formData.append('title', data.title);
                                     formData.append('postid', postInfo._id);
+                                    formData.append('title', data.title);
                                     formData.append('description', description);
                                     formData.append('hashtags', data.hashtags);
-                                    if (postImage) {
-                                        formData.append('media', postImage);
+                                    // Append each selected file to the FormData object
+                                    if(postImage.length > 0){
+                                        postImage.forEach(file => formData.append('media', file));
                                     }
 
                                     updatedPost(formData)
-
 
 
                                 })} disabled={isLoading} type="submit" className={`font-medium py-2 rounded text-white w-full  duration-300 transition-all ${isLoading ? "bg-primaryLoading-blue" : "bg-primary-blue hover:bg-primaryhover-blue"}`}>

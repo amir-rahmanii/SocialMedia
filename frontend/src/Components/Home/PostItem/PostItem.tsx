@@ -9,7 +9,7 @@ import { useDeleteComment, usePostAddComment, usePostLikeToggle, usePostSavePost
 import toast from 'react-hot-toast';
 import ShowWhoLiked from '../../ShowWhoLiked/ShowWhoLiked';
 import PostDetails from '../../PostDetails/PostDetails';
-// import { AuthContext } from '../../../../Context/AuthContext';
+import Slider from "react-slick";
 
 
 
@@ -67,7 +67,15 @@ function PostItem(props: PostItemProps) {
         setLiked(isLiked);
         setSaved(isPosted);
     }, [])
-    
+
+    const settings = {
+        dots: true,
+        infinite: false,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+    };
+
 
 
 
@@ -165,15 +173,37 @@ function PostItem(props: PostItemProps) {
             )}
 
             {/* post image container */}
-            <div className="relative flex items-center justify-center" onDoubleClick={() => setLike(props._id)}>
-                <img draggable="false" loading="lazy" className="w-full h-full object-cover object-center" src={`http://localhost:4002/images/posts/${props.media.filename}`} alt="post image" />
-                {likeEffect &&
-                    <img draggable="false" height="80px" className="likeEffect" alt="heart" src="https://img.icons8.com/ios-filled/2x/ffffff/like.png" />
-                }
-            </div>
+
+            <Slider {...settings} className='w-full'>
+                {props.media.map((data) => (
+                    <div key={data._id} className='relative w-full h-full'>
+                        <div onDoubleClick={() => setLike(props._id)} className='flex justify-center items-center w-full h-full'>
+                            <img
+                                draggable="false"
+                                loading="lazy"
+                                className="w-full h-auto object-cover object-center"
+                                src={`http://localhost:4002/images/posts/${data.filename}`}
+                                alt="post image"
+                            />
+                        </div>
+                        {likeEffect && (
+                            <img
+                                draggable="false"
+                                height="80px"
+                                className="likeEffect absolute inset-0 m-auto"
+                                alt="heart"
+                                src="https://img.icons8.com/ios-filled/2x/ff0000/like.png"
+                            />
+                        )}
+                    </div>
+                ))}
+            </Slider>
+
+
+
 
             {/* container for the entire component */}
-            <div className="flex flex-col justify-between h-full">
+            <div className="flex flex-col justify-between h-full mt-1">
                 {/* comment input container */}
                 <div className="mt-auto">
                     {/* like comment container */}
