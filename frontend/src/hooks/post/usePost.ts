@@ -17,9 +17,9 @@ function usePostCreatePost() {
         {
             onSuccess: () => {
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
-                queryClient.invalidateQueries(["myPost"]);
                 queryClient.invalidateQueries(["mySavedPost"]);
-                queryClient.invalidateQueries(["searchPosts"]);
+                queryClient.invalidateQueries(["searchPosts"]);   
+                queryClient.invalidateQueries(["getUserData"]);
             },
         }
     )
@@ -37,9 +37,9 @@ function usePutUpdatePost() {
         {
             onSuccess: () => {
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
-                queryClient.invalidateQueries(["myPost"]);
                 queryClient.invalidateQueries(["mySavedPost"]);
                 queryClient.invalidateQueries(["searchPosts"]);
+                queryClient.invalidateQueries(["getUserData"]);
             },
         }
     )
@@ -57,14 +57,14 @@ function useGetAllPostAllUsers() {
     )
 }
 
-function useGetMyPost() {
-    return useQuery(['myPost'],
-        async () => {
-            const response = await apiRequest.get("posts/my-posts");
-            return response.data
-        },
-    )
-}
+// function useGetMyPost() {
+//     return useQuery(['myPost'],
+//         async () => {
+//             const response = await apiRequest.get("posts/my-posts");
+//             return response.data
+//         },
+//     )
+// }
 
 function useGetMySavedPost() {
     return useQuery(['mySavedPost'],
@@ -93,9 +93,9 @@ function usePostLikeToggle() {
         {
             onSuccess: () => {
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
-                queryClient.invalidateQueries(["myPost"]);
                 queryClient.invalidateQueries(["mySavedPost"]);
                 queryClient.invalidateQueries(["searchPosts"]);
+                queryClient.invalidateQueries(["getUserData"]);
             },
         }
     )
@@ -109,9 +109,9 @@ function usePostSavePostToggle() {
         {
             onSuccess: () => {
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
-                queryClient.invalidateQueries(["myPost"]);
                 queryClient.invalidateQueries(["mySavedPost"]);
                 queryClient.invalidateQueries(["searchPosts"]);
+                queryClient.invalidateQueries(["getUserData"]);
             }
         }
     )
@@ -126,9 +126,9 @@ function usePostAddComment() {
         {
             onSuccess: () => {
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
-                queryClient.invalidateQueries(["myPost"]);
                 queryClient.invalidateQueries(["mySavedPost"]);
                 queryClient.invalidateQueries(["searchPosts"]);
+                queryClient.invalidateQueries(["getUserData"]);
             }
         }
     )
@@ -145,9 +145,9 @@ function useDeleteComment() {
         {
             onSuccess: () => {
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
-                queryClient.invalidateQueries(["myPost"]);
                 queryClient.invalidateQueries(["mySavedPost"]);
                 queryClient.invalidateQueries(["searchPosts"]);
+                queryClient.invalidateQueries(["getUserData"]);
             }
         }
     )
@@ -164,9 +164,9 @@ function useDeletePost() {
         {
             onSuccess: () => {
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
-                queryClient.invalidateQueries(["myPost"]);
                 queryClient.invalidateQueries(["mySavedPost"]);
                 queryClient.invalidateQueries(["searchPosts"]);
+                queryClient.invalidateQueries(["getUserData"]);
             }
         }
     )
@@ -178,7 +178,6 @@ export {
     usePostCreatePost,
     usePutUpdatePost,
     useGetAllPostAllUsers,
-    useGetMyPost,
     useGetAllSearchPosts,
     useGetMySavedPost,
     usePostLikeToggle,

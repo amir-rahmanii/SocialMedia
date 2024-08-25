@@ -12,7 +12,7 @@ import UpdatePassword from "./Page/UpdatePassword/UpdatePassword";
 
 const routes = [
     { path: "/", element: <PrivateRoutes><Home /></PrivateRoutes> },
-    { path: "/profile", element: <PrivateRoutes><Profile /></PrivateRoutes> },
+    { path: "/profile/:userid", element: <PrivateRoutes><Profile /></PrivateRoutes> },
     { path: "/search/:title", element: <PrivateRoutes><SearchPosts /></PrivateRoutes> },
 
     { path: "/login", element: <Login /> },

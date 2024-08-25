@@ -1,8 +1,9 @@
 import { ClickAwayListener } from '@mui/material'
-import React from 'react'
+import React, { useContext } from 'react'
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
 import { profileIcon, savedIcon, settingsIcon, switchAccountIcon } from '../../SvgIcon/SvgIcon';
+import { AuthContext } from '../../../Context/AuthContext';
 
 type ProfileDetailsProps = {
     setProfileToggle: (value: boolean) => void;
@@ -10,12 +11,14 @@ type ProfileDetailsProps = {
 
 const ProfileDetails = ({setProfileToggle} : ProfileDetailsProps) => {
     const navigate = useNavigate();
+    const authContext = useContext(AuthContext)
+    
 
     const tabs = [
         {
             title: "Profile",
             icon: profileIcon,
-            redirect: `/profile`
+            redirect: `/profile/${authContext?.user?._id}`
         },
         {
             title: "Change Password",
@@ -26,11 +29,6 @@ const ProfileDetails = ({setProfileToggle} : ProfileDetailsProps) => {
             title: "Settings",
             icon: settingsIcon,
             redirect: "/accounts/edit"
-        },
-        {
-            title: "Switch Account",
-            icon: switchAccountIcon,
-            redirect: "/"
         },
     ]
 

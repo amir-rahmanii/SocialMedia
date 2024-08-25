@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import apiRequest from "../../Services/axios"
-import { forgetPassword, resetPassword, updatePassword, userId, userRegister } from "./user.types";
+import { forgetPassword, profile, resetPassword, updatePassword, userId, userRegister } from "./user.types";
 import { userLogin } from "./user.types";
 // import Cookies from "js-cookie";
 
@@ -52,7 +52,7 @@ function usePostUserResetPassword() {
     )
 }
 
-function useGetUserInformation(userId : string) {
+function useGetUserInformation(userId: string) {
     return useQuery(['getUserInformation'],
         async () => {
             const response = await apiRequest.get(`users/user-information/${userId}`);
@@ -60,6 +60,16 @@ function useGetUserInformation(userId : string) {
         },
     )
 }
+
+function useGetUserData(userId: string) {
+    return useQuery<profile>(['getUserData'],
+        async () => {
+            const response = await apiRequest.get(`users/user-allData/${userId}`);
+            return response.data
+        },
+    )
+}
+
 
 function usePostUserBan() {
     const queryClient = useQueryClient();
@@ -69,9 +79,9 @@ function usePostUserBan() {
         {
             onSuccess: () => {
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
-                queryClient.invalidateQueries(["myPost"]);
                 queryClient.invalidateQueries(["mySavedPost"]);
                 queryClient.invalidateQueries(["searchPosts"]);
+                queryClient.invalidateQueries(["getUserData"]);
             }
         }
     )
@@ -85,10 +95,10 @@ function useUpdateUserProfile() {
         {
             onSuccess: () => {
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
-                queryClient.invalidateQueries(["myPost"]);
                 queryClient.invalidateQueries(["mySavedPost"]);
                 queryClient.invalidateQueries(["getUserInformation"]);
                 queryClient.invalidateQueries(["searchPosts"]);
+                queryClient.invalidateQueries(["getUserData"]);
             },
         }
     )
@@ -98,6 +108,7 @@ function useUpdateUserProfile() {
 
 
 export {
+    useGetUserData,
     useGetUserInformation,
     useUpdateUserProfile,
     usePostUserRegister,

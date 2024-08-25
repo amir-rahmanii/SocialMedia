@@ -87,9 +87,6 @@ exports.myPosts = async (req, res) => {
       .populate("likes", "-__v") // Populate likes data without __v field
       .exec();
 
-    // Log the results for inspection
-    console.log("All Posts:", allPosts);
-
     successResponse(res, 200, { allPosts });
   } catch (error) {
     errorResponse(res, 500, { message: error.message, error });

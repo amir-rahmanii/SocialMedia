@@ -1,3 +1,5 @@
+import { PostItemProps } from "../../Components/Home/PostsContainer/PostsContainer"
+
 export type userRegister = {
     name: string,
     email: string,
@@ -29,3 +31,25 @@ export type updatePassword = {
     newPassword: string,
     newConfrimPassword: string
 }
+
+
+export type profile =
+    {
+        user: {
+            profilePicture: {
+                path: string,
+                filename: string
+            },
+            _id: string,
+            name: string,
+            username: string,
+            email: string,
+            isVerified: boolean,
+            role: "ADMIN" | "USER",
+            isban: boolean,
+            createdAt: Date,
+            updatedAt: Date,
+            __v: 0
+        },
+        posts: PostItemProps[],
+    }

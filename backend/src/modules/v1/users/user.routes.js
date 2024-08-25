@@ -20,6 +20,7 @@ router.route("/reset-password").post(controller.resetPassword);
 router.route("/refresh-token").post(controller.refreshToken);
 // * GET
 router.route("/user-information/:userid").get(auth, controller.userInformation);
+router.route("/user-allData/:userid").get(auth, controller.userAllData);
 
 // * PUT
 router

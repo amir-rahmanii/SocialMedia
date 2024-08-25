@@ -381,3 +381,35 @@ exports.updateUserProfile = async (req, res) => {
     res.status(error.statusCode || 500).json({ message: error.message });
   }
 };
+
+
+exports.userAllData = async (req, res) => {
+  try {
+    const { userid } = req.params;
+
+    // پیدا کردن کاربر با توجه به userid
+    const user = await userModel.findById(userid).select('-password'); // حذف رمز عبور از اطلاعات برگردانده شده
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // پیدا کردن پست‌های مرتبط با کاربر و populate کردن اطلاعات liked و comment
+    const posts = await postModel.find({ 'user.id': userid })
+      .populate('likes') // پر کردن اطلاعات مربوط به لایک‌ها
+      .populate('comments'); // پر کردن اطلاعات مربوط به کامنت‌ها
+
+    // تنظیم مقدار isSaved به false برای تمامی پست‌ها
+    posts.forEach(post => {
+      post.isSaved = false;
+    });
+
+    // برگرداندن اطلاعات کاربر و پست‌های او
+    res.json({
+      user,
+      posts
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
