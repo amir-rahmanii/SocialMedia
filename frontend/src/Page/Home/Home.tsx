@@ -3,28 +3,23 @@ import MetaData from '../../Components/MetaData/MetaData'
 import PostsContainer from '../../Components/Home/PostsContainer/PostsContainer'
 import Sidebar from '../../Components/Home/Sidebar/Sidebar'
 import Header from '../../Parts/Header/Header'
-import { usePostUserInformation } from '../../hooks/user/useUser'
+import { useGetUserInformation } from '../../hooks/user/useUser'
 import SpinLoader from '../../Components/SpinLoader/SpinLoader'
-import { AuthContext } from '../../../Context/AuthContext'
+import { AuthContext } from '../../Context/AuthContext'
 
 function Home() {
 
     const authContext = useContext(AuthContext);
 
-    const { mutate: informationUser, isLoading, data , isSuccess } = usePostUserInformation();
+    const userid = localStorage.getItem("userId")
+    const { data: informationUser, isLoading , isSuccess } = useGetUserInformation(userid as string);
 
+  
     useEffect(() => {
-        const userid = localStorage.getItem("userId")
-        if (userid) {
-            informationUser({ userid })
+        if(isSuccess && informationUser){
+            authContext?.setUser(informationUser?.response?.user)  
         }
-    }, [])
-
-    useEffect(() => {
-        if(isSuccess && data){
-            authContext?.setUser(data?.data.response.user)  
-        }
-    }, [isSuccess , data])
+    }, [isSuccess , informationUser])
     
 
 

@@ -86,19 +86,32 @@ exports.myPosts = async (req, res) => {
 exports.searchPosts = async (req, res) => {
   try {
     const query = req.query.query;
+
+    // تنظیم فیلد isSaved برای تمام پست‌ها به false
+    await postModel.updateMany({}, { $set: { isSaved: false } });
+
+    // ولیدیت کردن دسترسی جستجو
     postValidator.searchPostsAccess(req, res);
+
+    // جستجوی پست‌ها با استفاده از regex
     const regex = new RegExp(query, "i");
     const resultSearch = await postModel
       .find({ title: { $regex: regex } })
-      .populate("comments") // پر کردن داده‌های کامنت‌ها
-      .populate("likes", "-__v") // پر کردن داده‌های لایک‌ها بدون فیلد __v
-      .populate("saved") // پر کردن داده‌های ذخیره‌شده
+      .populate("comments")
+      .populate("likes", "-__v")
+      .lean(); // استفاده از lean برای برگرداندن نتایج به شکل plain objects
+
+    // تبدیل saved از ObjectId به String
+    resultSearch.forEach(post => {
+      post.saved = post.saved.map(userId => userId.toString());
+    });
 
     successResponse(res, 200, { resultSearch });
   } catch (error) {
     errorResponse(res, error.statusCode, { message: error.message });
   }
 };
+
 exports.deletePost = async (req, res) => {
   try {
     const { postid } = req.body;

@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { deleteIcon } from '../SvgIcon/SvgIcon';
 import { useDeletePost } from '../../hooks/post/usePost';
 import toast from 'react-hot-toast';
-import { AuthContext } from '../../../Context/AuthContext';
+import { AuthContext } from '../../Context/AuthContext';
 import { usePostUserBan } from '../../hooks/user/useUser';
 import UpdatePost from '../Home/UpdatePost/UpdatePost';
 import { PostItemProps } from '../Home/PostsContainer/PostsContainer';

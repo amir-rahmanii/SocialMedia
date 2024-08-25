@@ -6,30 +6,14 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import updatePassSchema from '../../Validation/updatePassword';
 import toast from 'react-hot-toast';
-import { usePostUserInformation, usePostUserUpdatePassword } from '../../hooks/user/useUser';
+import { usePostUserUpdatePassword } from '../../hooks/user/useUser';
 import IsLoaderBtn from '../../Components/IsLoaderBtn/IsLoaderBtn';
-import { AuthContext } from '../../../Context/AuthContext';
+import { AuthContext } from '../../Context/AuthContext';
 
 function UpdatePassword() {
     const { mutate: updatePass, isLoading, isError, error, isSuccess } = usePostUserUpdatePassword();
-    // const { mutate: informationUser, data, isSuccess: isSuccessUserInformation } = usePostUserInformation();
-
-    // const authContext = useContext(AuthContext);
+  
     const navigate = useNavigate()
-
-
-    // useEffect(() => {
-    //     const userid = localStorage.getItem("userId")
-    //     if (userid) {
-    //         informationUser({ userid })
-    //     }
-    // }, [])
-
-    // useEffect(() => {
-    //     if (isSuccess && data) {
-    //         authContext?.setUser(data?.data.response.user)
-    //     }
-    // }, [isSuccessUserInformation, data])
 
 
     useEffect(() => {

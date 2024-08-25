@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { AuthContext } from '../../../Context/AuthContext'
+import { AuthContext } from '../../Context/AuthContext'
 import MetaData from '../../Components/MetaData/MetaData'
 import { Link } from 'react-router-dom'
 import { changeProfilePicture, postsIconFill, postsIconOutline, postUploadOutline, reelsIcon, savedIconFill, savedIconOutline, settingsIcon, taggedIcon } from '../../Components/SvgIcon/SvgIcon'
@@ -8,7 +8,7 @@ import { useGetMyPost, useGetMySavedPost } from '../../hooks/post/usePost'
 import PostContainerUser from '../../Components/User/PostContainerUser/PostContainerUser'
 import SpinLoader from '../../Components/SpinLoader/SpinLoader'
 import NewPost from '../../Components/Header/NewPost/NewPost'
-import { usePostUserInformation, useUpdateUserProfile } from '../../hooks/user/useUser'
+import {useGetUserInformation } from '../../hooks/user/useUser'
 import toast from 'react-hot-toast'
 import ChangeProfile from '../../Components/User/ChangeProfile/ChangeProfile'
 
@@ -30,11 +30,11 @@ function Profile() {
   const { data: myPost, isLoading } = useGetMyPost();
   const { data: mySavedPost, isLoading: isLoadingMySavedPost } = useGetMySavedPost();
 
-  const { mutate: informationUser, data, isSuccess } = usePostUserInformation();
+  const userid = localStorage.getItem("userId");
+  const { data: informationUser, isSuccess } = useGetUserInformation(userid as string);
 
 
   useEffect(() => {
-    const userid = localStorage.getItem("userId");
     const tab = localStorage.getItem("tab");
 
 
@@ -44,17 +44,13 @@ function Profile() {
       setSavedTab(false)
     }
 
-
-    if (userid) {
-      informationUser({ userid })
-    }
   }, [isShowChangeProfile])
 
   useEffect(() => {
-    if (isSuccess && data) {
-      authContext?.setUser(data?.data.response.user)
+    if (isSuccess && informationUser) {
+      authContext?.setUser(informationUser?.response.user)
     }
-  }, [isSuccess, data])
+  }, [isSuccess, informationUser])
 
 
   useEffect(() => {

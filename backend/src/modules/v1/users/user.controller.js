@@ -307,12 +307,18 @@ exports.userBanToggle = async (req, res) => {
 
 exports.userInformation = async (req, res) => {
   try {
+    // دریافت userid از params
+    req.body.userid = req.params.userid;
+
+    // فراخوانی ولیدیتور با استفاده از req
     const user = await userValidator.userInformation(req);
-    successResponse(res, 200, { message: " successfully ", user });
+
+    successResponse(res, 200, { message: "User information retrieved successfully", user });
   } catch (error) {
     errorResponse(res, error.statusCode, { message: error.message });
   }
 };
+
 
 exports.updateUserProfile = async (req, res) => {
   try {

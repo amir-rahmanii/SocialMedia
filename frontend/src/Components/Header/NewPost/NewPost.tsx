@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 import newPostSchema from '../../../Validation/newPost';
 import { usePostCreatePost } from '../../../hooks/post/usePost';
 import IsLoaderBtn from '../../IsLoaderBtn/IsLoaderBtn';
-import { AuthContext } from '../../../../Context/AuthContext';
+import { AuthContext } from '../../../Context/AuthContext';
 
 type NewPostProps = {
     newPost: boolean,

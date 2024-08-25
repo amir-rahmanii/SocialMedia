@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { usePostUserInformation, useUpdateUserProfile } from '../../../hooks/user/useUser';
+import { useUpdateUserProfile } from '../../../hooks/user/useUser';
 import { Dialog } from '@mui/material';
 import IsLoaderBtn from '../../IsLoaderBtn/IsLoaderBtn';
-import { AuthContext } from '../../../../Context/AuthContext';
+import { AuthContext } from '../../../Context/AuthContext';
 import toast from 'react-hot-toast';
 
 type ChangeProfileProps = {
@@ -14,7 +14,6 @@ type ChangeProfileProps = {
 function ChangeProfile({ isShowChangeProfile, setIsShowChangeProfile }: ChangeProfileProps) {
 
     const { mutate: updateProfilePicture, isLoading, isError, error, isSuccess } = useUpdateUserProfile();
-    // const { mutate: informationUser, data, isSuccess: isSuccessUserInformation } = usePostUserInformation();
     const [postImage, setPostImage] = useState<File | null>(null);
     const [postPreview, setPostPreview] = useState<string | null>(null);
     const [dragged, setDragged] = useState(false);

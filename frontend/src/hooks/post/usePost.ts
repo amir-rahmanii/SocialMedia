@@ -19,6 +19,7 @@ function usePostCreatePost() {
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
                 queryClient.invalidateQueries(["myPost"]);
                 queryClient.invalidateQueries(["mySavedPost"]);
+                queryClient.invalidateQueries(["searchPosts"]);
             },
         }
     )
@@ -38,6 +39,7 @@ function usePutUpdatePost() {
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
                 queryClient.invalidateQueries(["myPost"]);
                 queryClient.invalidateQueries(["mySavedPost"]);
+                queryClient.invalidateQueries(["searchPosts"]);
             },
         }
     )
@@ -73,6 +75,15 @@ function useGetMySavedPost() {
     )
 }
 
+function useGetAllSearchPosts(search : string) {
+    return useQuery(['searchPosts'],
+        async () => {
+            const response = await apiRequest.get(`posts/search-posts?query=${search}`);
+            return response.data
+        },
+    )
+}
+
 
 function usePostLikeToggle() {
     const queryClient = useQueryClient();
@@ -84,6 +95,7 @@ function usePostLikeToggle() {
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
                 queryClient.invalidateQueries(["myPost"]);
                 queryClient.invalidateQueries(["mySavedPost"]);
+                queryClient.invalidateQueries(["searchPosts"]);
             },
         }
     )
@@ -99,6 +111,7 @@ function usePostSavePostToggle() {
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
                 queryClient.invalidateQueries(["myPost"]);
                 queryClient.invalidateQueries(["mySavedPost"]);
+                queryClient.invalidateQueries(["searchPosts"]);
             }
         }
     )
@@ -115,6 +128,7 @@ function usePostAddComment() {
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
                 queryClient.invalidateQueries(["myPost"]);
                 queryClient.invalidateQueries(["mySavedPost"]);
+                queryClient.invalidateQueries(["searchPosts"]);
             }
         }
     )
@@ -133,6 +147,7 @@ function useDeleteComment() {
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
                 queryClient.invalidateQueries(["myPost"]);
                 queryClient.invalidateQueries(["mySavedPost"]);
+                queryClient.invalidateQueries(["searchPosts"]);
             }
         }
     )
@@ -151,6 +166,7 @@ function useDeletePost() {
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
                 queryClient.invalidateQueries(["myPost"]);
                 queryClient.invalidateQueries(["mySavedPost"]);
+                queryClient.invalidateQueries(["searchPosts"]);
             }
         }
     )
@@ -163,6 +179,7 @@ export {
     usePutUpdatePost,
     useGetAllPostAllUsers,
     useGetMyPost,
+    useGetAllSearchPosts,
     useGetMySavedPost,
     usePostLikeToggle,
     usePostSavePostToggle,

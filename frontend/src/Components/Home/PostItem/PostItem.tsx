@@ -7,7 +7,6 @@ import { PostItemProps } from '../PostsContainer/PostsContainer';
 import DateConverter from '../../../utils/DateConverter';
 import { useDeleteComment, usePostAddComment, usePostLikeToggle, usePostSavePostToggle } from '../../../hooks/post/usePost';
 import toast from 'react-hot-toast';
-import ScrollToBottom from 'react-scroll-to-bottom';
 import ShowWhoLiked from '../../ShowWhoLiked/ShowWhoLiked';
 import PostDetails from '../../PostDetails/PostDetails';
 // import { AuthContext } from '../../../../Context/AuthContext';
@@ -219,7 +218,7 @@ function PostItem(props: PostItemProps) {
                         <span className="text-xs text-gray-500">{<DateConverter date={props.createdAt} />}</span>
 
                         {viewComment &&
-                            <ScrollToBottom className="w-full h-52 overflow-y-auto py-1">
+                            <div className="w-full h-52 overflow-y-auto py-1">
                                 {props.comments.map((c) => (
                                     <div className="flex items-start mb-2 border-b space-x-3" key={c._id}>
                                         <img draggable="false" className="h-7 w-7 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/images/profiles/${c.userPicture.filename}`} alt="avatar" />
@@ -242,7 +241,7 @@ function PostItem(props: PostItemProps) {
                                         </div>
                                     </div>
                                 ))}
-                            </ScrollToBottom>
+                            </div>
                         }
 
                     </div>

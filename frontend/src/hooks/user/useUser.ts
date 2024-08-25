@@ -52,10 +52,17 @@ function usePostUserResetPassword() {
     )
 }
 
-function usePostUserInformation() {
-    return useMutation(async (userId: userId) => {
-        return apiRequest.post(`users/user-information`, userId)
-    },
+function useGetUserInformation(userId : string) {
+    return useQuery(['getUserInformation'],
+        async () => {
+            const response = await apiRequest.get(`users/user-information/${userId}`);
+            return response.data
+        },
+        {
+            onSuccess : (res) => {
+                console.log(res);
+            }
+        }
     )
 }
 
@@ -69,6 +76,7 @@ function usePostUserBan() {
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
                 queryClient.invalidateQueries(["myPost"]);
                 queryClient.invalidateQueries(["mySavedPost"]);
+                queryClient.invalidateQueries(["searchPosts"]);
             }
         }
     )
@@ -80,15 +88,12 @@ function useUpdateUserProfile() {
         return apiRequest.put(`users/update-profile-picture`, profilePicture)
     },
         {
-            onSuccess: (res) => {
-                console.log(res);
+            onSuccess: () => {
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
                 queryClient.invalidateQueries(["myPost"]);
                 queryClient.invalidateQueries(["mySavedPost"]);
-            },
-            onError(error) {
-                console.log(error);
-
+                queryClient.invalidateQueries(["getUserInformation"]);
+                queryClient.invalidateQueries(["searchPosts"]);
             },
         }
     )
@@ -98,12 +103,12 @@ function useUpdateUserProfile() {
 
 
 export {
+    useGetUserInformation,
     useUpdateUserProfile,
     usePostUserRegister,
     usePostUserLogin,
     usePostUserForgetPassword,
     usePostUserUpdatePassword,
     usePostUserResetPassword,
-    usePostUserInformation,
     usePostUserBan
 }

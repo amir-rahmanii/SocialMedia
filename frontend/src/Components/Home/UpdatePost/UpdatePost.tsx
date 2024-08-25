@@ -1,6 +1,6 @@
 import { Dialog, TextField } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
-import { AuthContext } from '../../../../Context/AuthContext'
+import { AuthContext } from '../../../Context/AuthContext'
 import { PostItemProps } from '../PostsContainer/PostsContainer'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
