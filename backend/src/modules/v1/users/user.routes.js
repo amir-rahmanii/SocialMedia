@@ -18,6 +18,7 @@ router.route("/forget-password").post(controller.forgetPassword);
 router.route("/user-ban-toggle").post(auth, controller.userBanToggle);
 router.route("/reset-password").post(controller.resetPassword);
 router.route("/refresh-token").post(controller.refreshToken);
+router.route("/followToggle/:userId").post(auth, controller.followToggle);
 // * GET
 router.route("/user-information/:userid").get(auth, controller.userInformation);
 router.route("/user-allData/:userid").get(auth, controller.userAllData);

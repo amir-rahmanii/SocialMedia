@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { commentIcon, deleteIcon, emojiIcon, likeIconOutline, moreIcons, saveIconFill, saveIconOutline, shareIcon } from '../../SvgIcon/SvgIcon'
 import { likeFill } from '../../SvgIcon/SvgIcon';
@@ -10,12 +10,13 @@ import toast from 'react-hot-toast';
 import ShowWhoLiked from '../../ShowWhoLiked/ShowWhoLiked';
 import PostDetails from '../../PostDetails/PostDetails';
 import Slider from "react-slick";
+import { AuthContext } from '../../../Context/AuthContext';
 
 
 
 function PostItem(props: PostItemProps) {
     const commentInput = useRef<HTMLInputElement>(null);
-    // const authContext = useContext(AuthContext)
+    const authContext = useContext(AuthContext)
     const [liked, setLiked] = useState(false);
     const [saved, setSaved] = useState(false);
     const [comment, setComment] = useState("");
@@ -252,7 +253,7 @@ function PostItem(props: PostItemProps) {
                                 {props.comments.map((c) => (
                                     <div className="flex items-start mb-2 border-b space-x-3" key={c._id}>
                                         <Link to={`/profile/${c.userid}`} className='mt-2'>
-                                        <img draggable="false" className="h-7 w-7 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/images/profiles/${c.userPicture.filename}`} alt="avatar" />
+                                            <img draggable="false" className="h-7 w-7 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/images/profiles/${c.userPicture.filename}`} alt="avatar" />
                                         </Link>
                                         <div className='flex justify-between w-full p-1'>
                                             <div className='flex flex-col items-start mb-2 space-y-1'>
@@ -260,16 +261,18 @@ function PostItem(props: PostItemProps) {
                                                 <p className="text-sm line-clamp-3">{c.content}</p>
                                                 <span className="text-xs text-gray-500">{<DateConverter date={c.createdAt} />}</span>
                                             </div>
-                                            <button onClick={() => {
-                                                let objDeleteComment = {
-                                                    commentid: c._id
-                                                }
-                                                deleteComment(objDeleteComment)
-                                            }}>
-                                                <div className='w-4 h-4'>
-                                                    {deleteIcon}
-                                                </div>
-                                            </button>
+                                            {(authContext?.user?.role === "ADMIN" || props.user.id === authContext?.user?._id || c.userid === authContext?.user?._id) && (
+                                                <button onClick={() => {
+                                                    let objDeleteComment = {
+                                                        commentid: c._id
+                                                    }
+                                                    deleteComment(objDeleteComment)
+                                                }}>
+                                                    <div className='w-4 h-4'>
+                                                        {deleteIcon}
+                                                    </div>
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                 ))}

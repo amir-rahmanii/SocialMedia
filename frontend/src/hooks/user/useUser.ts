@@ -10,7 +10,6 @@ function usePostUserRegister() {
     },
         {
             onSuccess(res) {
-                console.log(res);
                 localStorage.setItem("userId", res.data.response.user._id)
             },
         }
@@ -62,11 +61,17 @@ function useGetUserInformation(userId: string) {
 }
 
 function useGetUserData(userId: string) {
-    return useQuery<profile>(['getUserData'],
+    return useQuery<profile>(['getUserData', userId],
         async () => {
             const response = await apiRequest.get(`users/user-allData/${userId}`);
             return response.data
         },
+        {
+            onSuccess: (res) => {
+                console.log(res);
+
+            }
+        }
     )
 }
 
@@ -78,10 +83,10 @@ function usePostUserBan() {
     },
         {
             onSuccess: () => {
+                queryClient.invalidateQueries(["getUserData"]);
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
                 queryClient.invalidateQueries(["mySavedPost"]);
                 queryClient.invalidateQueries(["searchPosts"]);
-                queryClient.invalidateQueries(["getUserData"]);
             }
         }
     )
@@ -94,11 +99,28 @@ function useUpdateUserProfile() {
     },
         {
             onSuccess: () => {
+                queryClient.invalidateQueries(["getUserData"]);
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
                 queryClient.invalidateQueries(["mySavedPost"]);
                 queryClient.invalidateQueries(["getUserInformation"]);
                 queryClient.invalidateQueries(["searchPosts"]);
+            },
+        }
+    )
+}
+
+function usePostFollowToggle() {
+    const queryClient = useQueryClient();
+    return useMutation(async (userId: string) => {
+        return apiRequest.post(`users/followToggle/${userId}`)
+    },
+        {
+            onSuccess: () => {
                 queryClient.invalidateQueries(["getUserData"]);
+                queryClient.invalidateQueries(["AllPostAllUsers"]);
+                queryClient.invalidateQueries(["mySavedPost"]);
+                queryClient.invalidateQueries(["getUserInformation"]);
+                queryClient.invalidateQueries(["searchPosts"]);
             },
         }
     )
@@ -111,6 +133,7 @@ export {
     useGetUserData,
     useGetUserInformation,
     useUpdateUserProfile,
+    usePostFollowToggle,
     usePostUserRegister,
     usePostUserLogin,
     usePostUserForgetPassword,

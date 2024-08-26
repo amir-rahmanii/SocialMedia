@@ -2,23 +2,23 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../Context/AuthContext'
 import MetaData from '../../Components/MetaData/MetaData'
 import { Link, useParams } from 'react-router-dom'
-import { changeProfilePicture, postsIconFill, postsIconOutline, postUploadOutline, reelsIcon, savedIconFill, savedIconOutline, settingsIcon, taggedIcon } from '../../Components/SvgIcon/SvgIcon'
+import { changeProfilePicture, metaballsMenu, postsIconFill, postsIconOutline, postUploadOutline, reelsIcon, savedIconFill, savedIconOutline, settingsIcon, taggedIcon } from '../../Components/SvgIcon/SvgIcon'
 import Header from '../../Parts/Header/Header'
 import { useGetMySavedPost } from '../../hooks/post/usePost'
 import PostContainerUser from '../../Components/User/PostContainerUser/PostContainerUser'
 import SpinLoader from '../../Components/SpinLoader/SpinLoader'
 import NewPost from '../../Components/Header/NewPost/NewPost'
-import { useGetUserData, useGetUserInformation } from '../../hooks/user/useUser'
+import { useGetUserData, useGetUserInformation, usePostFollowToggle } from '../../hooks/user/useUser'
 import toast from 'react-hot-toast'
 import ChangeProfile from '../../Components/User/ChangeProfile/ChangeProfile'
+import ShowWhoFollow from '../../Components/Profile/ShowWhoFollow/ShowWhoFollow'
 
 
 
 function Profile() {
-  // const [follow, setFollow] = useState(false);
-  // const [viewModal, setViewModal] = useState(false);
-  // const [followersModal, setFollowersModal] = useState(false);
-  // const [usersArr, setUsersArr] = useState([]);
+  const [followed, setFollowed] = useState(false)
+  const [isShowFollowers, setIsShowFollowers] = useState(false)
+  const [isShowFollowing, setIsShowFollowing] = useState(false)
   const [savedTab, setSavedTab] = useState(false);
   const [newPost, setNewPost] = useState(false);
   const [isShowChangeProfile, setIsShowChangeProfile] = useState(false);
@@ -27,30 +27,33 @@ function Profile() {
 
 
   const authContext = useContext(AuthContext);
-
-  const { data: mySavedPost, isLoading: isLoadingMySavedPost } = useGetMySavedPost();
-
   const param = useParams();
   const { userid } = param;
 
+  const { data: mySavedPost, isLoading: isLoadingMySavedPost } = useGetMySavedPost();
+  const { mutate: followToggle, isSuccess: isSuccessFollowToggle, isError: isErrorFollowToggle, error: errorFollow, data: dataFollow } = usePostFollowToggle();
 
   const Myuserid = localStorage.getItem("userId")
   //this is for my user
-  const { data: informationMyUser, isSuccess: isSuccessInformationUser } = useGetUserInformation(Myuserid as string);
+  const { data: informationMyUser, isSuccess: isSuccessInformationUser} = useGetUserInformation(Myuserid as string);
 
   //this is for all users data
-  const { data: informationUserData, isLoading: isLoadingUserData, refetch } = useGetUserData(userid as string);
+  const { data: informationUserData, isLoading: isLoadingUserData , isSuccess : isSucessGetUserData} = useGetUserData(userid as string);
 
 
   useEffect(() => {
-    refetch();
-  }, [userid])
+    if(isSucessGetUserData){
+      const userid = localStorage.getItem("userId");
+      let isFollowed = informationUserData?.user.followers.some(user => user.userId === userid);
+      setFollowed(isFollowed)
+    }
+  }, [isSucessGetUserData])
+  
+
 
 
   useEffect(() => {
     const tab = localStorage.getItem("tab");
-
-
     if (tab === "mySavedPosts") {
       setSavedTab(true)
     } else {
@@ -71,6 +74,7 @@ function Profile() {
     localStorage.setItem("tab", savedTab ? "mySavedPosts" : "myPosts")
   }, [savedTab])
 
+  
   useEffect(() => {
     if (isSuccessInformationUser && informationMyUser) {
       authContext?.setUser(informationMyUser?.response.user)
@@ -78,24 +82,38 @@ function Profile() {
   }, [isSuccessInformationUser, informationMyUser])
 
 
+  useEffect(() => {
+    if (isErrorFollowToggle) {
+      if (errorFollow && (errorFollow as any).response) {
+        toast.error((errorFollow as any).response.data.error.message,
+          {
+            icon: '❌',
+            style: {
+              borderRadius: '10px',
+              background: '#333',
+              color: '#fff',
+            },
+          }
+        )
+      }
+    }
+
+    if (isSuccessFollowToggle) {
+      toast.success(dataFollow.data.message,
+        {
+          icon: '✅',
+          style: {
+            borderRadius: '10px',
+            background: '#333',
+            color: '#fff',
+          },
+        }
+      )
+    }
+  }, [isErrorFollowToggle, isSuccessFollowToggle])
 
 
 
-  // useEffect(() => {
-  //   if (isError) {
-  //     toast.error("Sorry you should login again",
-  //       {
-  //         icon: '😩',
-  //         style: {
-  //           borderRadius: '10px',
-  //           background: '#333',
-  //           color: '#fff',
-  //         },
-  //       }
-  //     )
-  //     navigate("/login")
-  //   }
-  // }, [isError])
 
 
 
@@ -149,17 +167,15 @@ function Profile() {
                   <Link to="/accounts/edit">{settingsIcon}</Link>
                 </div>
 
-                {/* <div className="flex gap-3 items-center">
-                             {follow ? ( */}
-                {/* //         <>
-                          //             <button onClick={addToChat} className="border rounded px-2.5 py-[0.3rem] text-sm font-medium hover:bg-gray-100">Message</button>
-                          //             <button onClick={handleFollow} className="font-medium text-sm bg-red-50 rounded py-1.5 px-3 text-red-600 hover:bg-red-100 hover:text-red-700">Unfollow</button>
-                          //         </>
-                          //     ) : (
-                          //         <button onClick={handleFollow} className="font-medium bg-primary-blue text-sm text-white hover:shadow rounded px-6 py-1.5">Follow</button>
-                          //     )}
-                          //     <span className="sm:block hidden">{metaballsMenu}</span>
-                          // </div> */}
+                {informationUserData?.user._id !== authContext?.user?._id && (
+                  <div className="flex gap-3 items-center">
+
+                      <button onClick={() => {
+                        setFollowed(prev => !prev);
+                        followToggle(informationUserData?.user._id as string)
+                      }} className="font-medium transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow rounded px-6 py-1.5">{followed ? "UnFollow" : "Follow"}</button>
+                  </div>
+                )}
 
               </div>
 
@@ -168,8 +184,17 @@ function Profile() {
 
                   {informationUserData?.posts.length}
                 </span> posts</div>
-                <div className="cursor-pointer"><span className="font-semibold">0</span> followers</div>
-                <div className="cursor-pointer"><span className="font-semibold">0</span> following</div>
+                <div className="cursor-pointer" onClick={() => setIsShowFollowers(true)}><span className="font-semibold">{informationUserData?.user.followers.length}</span> followers</div>
+
+                {isShowFollowers && (
+                  <ShowWhoFollow title="Followed" dataFollow={informationUserData?.user.followers} isOpenShowWhoFollow={isShowFollowers} setIsOpenShowWhoFollow={setIsShowFollowers} />
+                )}
+
+                <div className="cursor-pointer" onClick={() => setIsShowFollowing(true)}><span className="font-semibold">{informationUserData?.user.following.length}</span> following</div>
+                {isShowFollowing && (
+                  <ShowWhoFollow title="Following" dataFollow={informationUserData?.user.following} isOpenShowWhoFollow={isShowFollowing} setIsOpenShowWhoFollow={setIsShowFollowing} />
+                )}
+
               </div>
 
               {/* bio */}
@@ -235,11 +260,15 @@ function Profile() {
                   ) : (
                     <div className='bg-white text-center mt-2 p-4 text-xl rounded'>
                       Sorry, no posts have been registered yet😩
-                      <div className='flex items-center justify-center gap-3 mt-2'>
-                        <span> You be the first</span>
-                        <div onClick={() => setNewPost(true)} className="cursor-pointer">{postUploadOutline}</div>
-                      </div>
-                      <NewPost newPost={newPost} setNewPost={setNewPost} />
+                      {authContext?.user?._id === informationUserData?.user._id && (
+                        <>
+                          <div className='flex items-center justify-center gap-3 mt-2'>
+                            <span> You be the first</span>
+                            <div onClick={() => setNewPost(true)} className="cursor-pointer">{postUploadOutline}</div>
+                          </div>
+                          <NewPost newPost={newPost} setNewPost={setNewPost} />
+                        </>
+                      )}
                     </div>
                   )
                 )}

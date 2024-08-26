@@ -5,6 +5,8 @@ const userModel = require("../../../models/v1/user");
 const postModel = require("../../../models/v1/post");
 const likeToggleModel = require("../../../models/v1/likeToggle");
 const commentModel = require("../../../models/v1/comment");
+const followToggleModel = require("../../../models/v1/followToggle");
+const path = require('path');
 const RefreshTokenModel = require("../../../models/v1/refreshToken");
 const {
   successResponse,
@@ -74,6 +76,7 @@ exports.register = async (req, res) => {
     return errorResponse(res, error.statusCode, { message: error.message });
   }
 };
+
 exports.login = async (req, res) => {
   const { identity, password } = req.body;
   try {
@@ -109,6 +112,7 @@ exports.login = async (req, res) => {
     return errorResponse(res, error.statusCode, { message: error.message });
   }
 };
+
 exports.refreshToken = async (req, res) => {
   const { refreshToken } = req.body;
   try {
@@ -118,12 +122,12 @@ exports.refreshToken = async (req, res) => {
     }
     // Delete the refresh token document from the model
     await RefreshTokenModel.findOneAndDelete({ token: refreshToken });
-    
+
     const user = await userModel.findOne({ _id: userId });
     if (!user) {
       throwError("user not found, please login", 404);
     }
-    
+
     const accessToken = accessTokenCreator(user, "30s");
     const newRefreshToken = await RefreshTokenModel.createToken(user);
 
@@ -135,7 +139,7 @@ exports.refreshToken = async (req, res) => {
       maxAge: 900_000, // 15 minutes
       httpOnly: false,
     });
-    
+
     return successResponse(res, 201, {
       message: "new access token is set",
       accessToken,
@@ -144,6 +148,7 @@ exports.refreshToken = async (req, res) => {
     return errorResponse(res, error.statusCode, { message: error.message });
   }
 };
+
 exports.updatePassword = async (req, res) => {
   const { pervPassword, newPassword, newConfrimPassword } = req.body;
   try {
@@ -227,6 +232,7 @@ exports.forgetPassword = async (req, res) => {
     return errorResponse(res, error.statusCode, { message: error.message });
   }
 };
+
 exports.resetPassword = async (req, res) => {
   const { token, new_password } = req.body;
 
@@ -320,21 +326,26 @@ exports.userInformation = async (req, res) => {
 };
 
 
+
+
 exports.updateUserProfile = async (req, res) => {
   try {
     if (!req.file) {
       throwError("Media is required", 400);
     }
 
-    const userId = req.user._id; // فرض بر این است که کاربر احراز هویت شده است
+    const userId = req.user._id; // Assume the user is authenticated
     const file = req.file;
 
-    // آپدیت تصویر پروفایل کاربر
+    // Correct the file path format
+    const filePath = file.path.replace(/\\/g, "/").replace("public/", "");
+
+    // Update the user's profile picture
     const updatedUser = await userModel.findByIdAndUpdate(
       userId,
       {
         $set: {
-          "profilePicture.path": file.path,
+          "profilePicture.path": filePath,
           "profilePicture.filename": file.filename,
         },
       },
@@ -345,34 +356,62 @@ exports.updateUserProfile = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // آپدیت تصویر پروفایل در تمام پست‌های کاربر
+    // Update profile picture in all posts by the user
     await postModel.updateMany(
       { "user.id": userId },
       {
         $set: {
-          "user.userPicture.path": file.path,
+          "user.userPicture.path": filePath,
           "user.userPicture.filename": file.filename,
         },
       }
     );
-    
+
+    // Update profile picture in all comments by the user
     await commentModel.updateMany(
       { userid: userId },
       {
         $set: {
-          "userPicture.path": file.path,
+          "userPicture.path": filePath,
           "userPicture.filename": file.filename,
         },
       }
     );
 
+    // Update profile picture in all likes by the user
     await likeToggleModel.updateMany(
       { userid: userId },
       {
         $set: {
-          "userPicture.path": file.path,
+          "userPicture.path": filePath,
           "userPicture.filename": file.filename,
         },
+      }
+    );
+
+    // Update profile picture in all followers
+    await userModel.updateMany(
+      { "followers.userId": userId },
+      {
+        $set: {
+          "followers.$[elem].profilePicture": {path : filePath},
+        },
+      },
+      {
+        arrayFilters: [{ "elem.userId": userId }],
+      }
+    );
+
+    // Update profile picture in all following
+    await userModel.updateMany(
+      { "following.userId": userId },
+      {
+        $set: {
+          "following.$[elem].profilePicture": {path : filePath},
+        },
+      },
+      {
+        arrayFilters: [{ "elem.userId": userId }],
       }
     );
 
@@ -381,6 +420,8 @@ exports.updateUserProfile = async (req, res) => {
     res.status(error.statusCode || 500).json({ message: error.message });
   }
 };
+
+
 
 
 exports.userAllData = async (req, res) => {
@@ -413,3 +454,84 @@ exports.userAllData = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
+
+exports.followToggle = async (req, res) => {
+  try {
+    const userIdToFollow = req.params.userId;
+    const currentUserId = req.user._id;
+
+    if (userIdToFollow === currentUserId.toString()) {
+      return res.status(400).json({ message: "You cannot follow yourself." });
+    }
+
+    // Check if the user to follow exists
+    const userToFollow = await userModel.findById(userIdToFollow);
+    const currentUser = await userModel.findById(currentUserId);
+
+    if (!userToFollow) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // Check if the follow relationship already exists
+    const existingFollow = await followToggleModel.findOne({
+      userId: userIdToFollow,
+      followedBy: currentUserId
+    });
+
+    if (existingFollow) {
+      // Unfollow
+      await followToggleModel.deleteOne({
+        userId: userIdToFollow,
+        followedBy: currentUserId
+      });
+
+      // Remove from both users' follow lists
+      currentUser.following = currentUser.following.filter(follow => follow.userId.toString() !== userIdToFollow);
+      userToFollow.followers = userToFollow.followers.filter(follower => follower.userId.toString() !== currentUserId.toString());
+
+      await currentUser.save();
+      await userToFollow.save();
+
+      return res.status(200).json({ message: "Unfollowed successfully." });
+    } else {
+      // Follow
+      const newFollow = new followToggleModel({
+        userId: userIdToFollow,
+        followedBy: currentUserId
+      });
+      await newFollow.save();
+
+      // Add to both users' follow lists
+      currentUser.following.push({
+        userId: userToFollow._id,
+        username: userToFollow.username,
+        profilePicture: userToFollow.profilePicture
+      });
+      userToFollow.followers.push({
+        userId: currentUser._id,
+        username: currentUser.username,
+        profilePicture: currentUser.profilePicture
+      });
+
+      await currentUser.save();
+      await userToFollow.save();
+
+      return res.status(200).json({
+        message: "Followed successfully.",
+        user: {
+          id: userToFollow._id,
+          username: userToFollow.username,
+          profilePicture: userToFollow.profilePicture,
+          followedAt: newFollow.followedAt
+        }
+      });
+    }
+  } catch (err) {
+    console.error("Error in followToggle:", err);
+    res.status(500).json({ message: "An error occurred.", error: err.message });
+  }
+};
+
+
+

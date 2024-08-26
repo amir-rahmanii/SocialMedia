@@ -43,6 +43,18 @@ export type profile =
             _id: string,
             name: string,
             username: string,
+            following: {
+                profilePicture: { path: string },
+                userId: string,
+                username: string,
+                _id: string,
+            }[],
+            followers: {
+                profilePicture: { path: string },
+                userId: string,
+                username: string,
+                _id: string,
+            }[],
             email: string,
             isVerified: boolean,
             role: "ADMIN" | "USER",

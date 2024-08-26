@@ -266,6 +266,7 @@ exports.likeToggle = async (req, res) => {
     errorResponse(res, error.statusCode || 500, { message: error.message }); // اطمینان از وجود statusCode
   }
 };
+
 exports.savePostToggle = async (req, res) => {
   try {
     const user = req.user;
@@ -355,6 +356,7 @@ exports.addComment = async (req, res) => {
     errorResponse(res, error.statusCode || 500, { message: error.message });
   }
 };
+
 exports.deleteComment = async (req, res) => {
   try {
     const { commentid } = req.body;
@@ -368,6 +370,7 @@ exports.deleteComment = async (req, res) => {
     errorResponse(res, error.statusCode, { message: error.message });
   }
 };
+
 exports.mySavePosts = async (req, res) => {
   try {
     const user = req.user;
