@@ -5,6 +5,7 @@ const { setHeaders } = require("./middlewares/setHeaders");
 const path = require("path");
 const userRouter = require("./modules/v1/users/user.routes");
 const postRouter = require("./modules/v1/posts/post.routes");
+const storyRouter = require("./modules/v1/story/story.routes");
 const errorHandler = require("./middlewares/errorHandler ");
 const convertToTrim = require("./middlewares/convertToTrim");
 const apiDocRoutes = require("./modules/v1/apiDoc/swagger.routes");
@@ -36,6 +37,7 @@ app.use(convertToTrim);
 app.use("/api-doc", apiDocRoutes);
 app.use("/users", userRouter);
 app.use("/posts", postRouter);
+app.use("/story", storyRouter);
 // 404 err handler
 app.use((req, res) => {
   console.log("this path is not found", req.path);

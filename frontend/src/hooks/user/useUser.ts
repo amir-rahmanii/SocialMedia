@@ -65,11 +65,6 @@ function useGetAllUsersInformation() {
             const response = await apiRequest.get(`users/all-users`);
             return response.data
         },
-        {
-            onSuccess : (res) => {
-                console.log(res);
-            }
-        }
     )
 }
 

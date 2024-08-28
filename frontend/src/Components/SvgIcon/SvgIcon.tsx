@@ -91,3 +91,38 @@ viewBox="0 0 32 32"
 >
 <path d="M16 5C9.935 5 5 9.934 5 16c0 6.067 4.935 11 11 11s11-4.933 11-11c0-6.066-4.935-11-11-11zm0 2.75c1.777 0 3.427.569 4.775 1.53L9.279 20.778A8.214 8.214 0 017.75 16c0-4.549 3.701-8.25 8.25-8.25zm0 16.5a8.2 8.2 0 01-4.775-1.53l11.494-11.497A8.205 8.205 0 0124.25 16c0 4.547-3.701 8.25-8.25 8.25z"></path>
 </svg>
+
+
+export const photoIcon =  <svg
+xmlns="http://www.w3.org/2000/svg"
+fill="none"
+viewBox="0 0 24 24"
+>
+<path
+  stroke="#ffffff"
+  strokeLinecap="round"
+  strokeLinejoin="round"
+  strokeWidth="2"
+  d="M3 9a2 2 0 012-2h1.5a2 2 0 001.6-.8l1.05-1.4a2 2 0 011.6-.8h2.5a2 2 0 011.6.8l1.05 1.4a2 2 0 001.6.8H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+></path>
+<circle
+  cx="12"
+  cy="13"
+  r="4"
+  stroke="#ffffff"
+  strokeLinecap="round"
+  strokeLinejoin="round"
+  strokeWidth="2"
+></circle>
+</svg>
+
+
+export const plusIcon = <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+<path
+  stroke="#ffffff"
+  strokeLinecap="round"
+  strokeLinejoin="round"
+  strokeWidth="2"
+  d="M7 12h5m0 0h5m-5 0V7m0 5v5"
+></path>
+</svg>

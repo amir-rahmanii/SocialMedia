@@ -121,8 +121,8 @@ function Sidebar() {
                     <div className='flex flex-col gap-6'>
                         {informationAllUser?.response?.users?.map((data) => (
                             <>
-                                {authContext?.user?._id !== data._id && (
-                                    <div key={data._id} className='flex items-center justify-between border-b'>
+                            {authContext?.user?._id !== data._id && (
+                                    <div className='flex items-center justify-between border-b'>
                                         <div className='flex items-center gap-2'>
                                             <Link to={`/profile/${data._id}`}>
                                                 <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/images/profiles/${data.profilePicture.filename}`} alt="avatar" />
