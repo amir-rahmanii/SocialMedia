@@ -29,7 +29,7 @@ function SearchBox() {
                     onChange={changeInputHandler}
                     className="bg-transparent text-sm border-none outline-none flex-1 pr-3"
                     type="search"
-                    placeholder="Search"
+                    placeholder="Search Title"
                 />
             </form>
         </ClickAwayListener>

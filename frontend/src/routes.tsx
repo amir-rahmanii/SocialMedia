@@ -1,6 +1,7 @@
 import PrivateRoutes from "./Components/PrivateRoutes/PrivateRoutes";
 import ForgetPassword from "./Page/ForgetPassword/ForgetPassword";
 import Home from "./Page/Home/Home";
+import Inbox from "./Page/Inbox/Inbox";
 import Login from "./Page/Login/Login";
 import Profile from "./Page/Profile/Profile";
 import Register from "./Page/Register/Register";
@@ -14,6 +15,7 @@ const routes = [
     { path: "/", element: <PrivateRoutes><Home /></PrivateRoutes> },
     { path: "/profile/:userid", element: <PrivateRoutes><Profile /></PrivateRoutes> },
     { path: "/search/:title", element: <PrivateRoutes><SearchPosts /></PrivateRoutes> },
+    { path: "/direct/inbox", element: <PrivateRoutes><Inbox /></PrivateRoutes> },
 
     { path: "/login", element: <Login /> },
     { path: "/register", element: <Register /> },

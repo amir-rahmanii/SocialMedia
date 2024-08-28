@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { AuthContext } from '../../Context/AuthContext'
+import React, { useEffect, useState } from 'react'
 import MetaData from '../../Components/MetaData/MetaData'
 import { Link, useParams } from 'react-router-dom'
-import { changeProfilePicture, metaballsMenu, postsIconFill, postsIconOutline, postUploadOutline, reelsIcon, savedIconFill, savedIconOutline, settingsIcon, taggedIcon } from '../../Components/SvgIcon/SvgIcon'
+import { changeProfilePicture, postsIconFill, postsIconOutline, postUploadOutline, reelsIcon, savedIconFill, savedIconOutline, settingsIcon, taggedIcon } from '../../Components/SvgIcon/SvgIcon'
 import Header from '../../Parts/Header/Header'
 import { useGetMySavedPost } from '../../hooks/post/usePost'
 import PostContainerUser from '../../Components/User/PostContainerUser/PostContainerUser'
@@ -12,6 +11,7 @@ import { useGetUserData, useGetUserInformation, usePostFollowToggle } from '../.
 import toast from 'react-hot-toast'
 import ChangeProfile from '../../Components/User/ChangeProfile/ChangeProfile'
 import ShowWhoFollow from '../../Components/Profile/ShowWhoFollow/ShowWhoFollow'
+import { Backdrop, Dialog } from '@mui/material'
 
 
 
@@ -22,33 +22,41 @@ function Profile() {
   const [savedTab, setSavedTab] = useState(false);
   const [newPost, setNewPost] = useState(false);
   const [isShowChangeProfile, setIsShowChangeProfile] = useState(false);
+  const [isShowProfile, setIsShowProfile] = useState(false);
 
-  // const navigate = useNavigate()
 
 
-  const authContext = useContext(AuthContext);
-  const param = useParams();
-  const { userid } = param;
 
+
+  const { userid } = useParams();
   const { data: mySavedPost, isLoading: isLoadingMySavedPost } = useGetMySavedPost();
   const { mutate: followToggle, isSuccess: isSuccessFollowToggle, isError: isErrorFollowToggle, error: errorFollow, data: dataFollow } = usePostFollowToggle();
-
-  const Myuserid = localStorage.getItem("userId")
-  //this is for my user
-  const { data: informationMyUser, isSuccess: isSuccessInformationUser} = useGetUserInformation(Myuserid as string);
-
   //this is for all users data
-  const { data: informationUserData, isLoading: isLoadingUserData , isSuccess : isSucessGetUserData} = useGetUserData(userid as string);
+  const { data: informationUserData, isLoading: isLoadingUserData, isSuccess: isSucessGetUserData, refetch: refetchGerUserData } = useGetUserData(userid as string);
+  const { data: myInformationData, isLoading: isLoadingMyInformationData, isSuccess: isSuccessMyInformationData, refetch: refetchMyInformationData } = useGetUserInformation();
+
 
 
   useEffect(() => {
-    if(isSucessGetUserData){
-      const userid = localStorage.getItem("userId");
-      let isFollowed = informationUserData?.user.followers.some(user => user.userId === userid);
-      setFollowed(isFollowed)
+    setSavedTab(false)
+    setIsShowFollowers(false)
+    setIsShowFollowing(false)
+    refetchGerUserData()
+    refetchMyInformationData()
+  }, [userid])
+
+
+  useEffect(() => {
+    if (isSucessGetUserData && isSuccessMyInformationData) {
+      let isFollowed = myInformationData.response.user.following.some(user => user.userId === informationUserData?.user._id)
+      if (isFollowed) {
+        setFollowed(isFollowed)
+      } else {
+        setFollowed(false)
+      }
     }
-  }, [isSucessGetUserData])
-  
+  }, [isSucessGetUserData, isSuccessMyInformationData])
+
 
 
 
@@ -68,18 +76,10 @@ function Profile() {
 
 
 
-
-
   useEffect(() => {
     localStorage.setItem("tab", savedTab ? "mySavedPosts" : "myPosts")
   }, [savedTab])
 
-  
-  useEffect(() => {
-    if (isSuccessInformationUser && informationMyUser) {
-      authContext?.setUser(informationMyUser?.response.user)
-    }
-  }, [isSuccessInformationUser, informationMyUser])
 
 
   useEffect(() => {
@@ -123,7 +123,7 @@ function Profile() {
     <>
       <MetaData title={`Profile • Instagram photos and videos`} />
       <Header />
-      {isLoadingUserData ? (
+      {isLoadingUserData && isLoadingMyInformationData ? (
         <SpinLoader />
       ) : (
         <div className="mt-16 xl:w-2/3 mx-auto p-3">
@@ -132,11 +132,11 @@ function Profile() {
           <div className="sm:flex w-full sm:py-8 bg-white rounded-t">
 
             {/* profile picture */}
-            <div className="sm:w-1/3 flex justify-center mx-auto sm:mx-0">
+            <div onClick={() => setIsShowProfile(true)} className="sm:w-1/3 flex justify-center mx-auto sm:mx-0">
               <img draggable="false" className="w-40 h-40 border-2 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${informationUserData?.user.profilePicture.filename}`} alt="profile" />
 
 
-              {authContext?.user?._id === informationUserData?.user._id && (
+              {myInformationData?.response.user._id === informationUserData?.user._id && (
                 <>
                   <button onClick={() => setIsShowChangeProfile(true)} className=' flex flex-col items-center group self-end cursor-pointer'>
                     <div className='flex flex-col items-center'>
@@ -151,31 +151,29 @@ function Profile() {
                   )}
                 </>
               )}
-
-
-
             </div>
+
+            {/* is showing profile picture */}
+            <Dialog open={isShowProfile} onClose={() => setIsShowProfile(false)} maxWidth='xl'>
+              <div className="bg-gradient-to-r p-2 from-[#833ab4] via-[#fd1d1d] to-[#fcb045]">
+                <img draggable="false" className="w-60 h-60 border-none rounded-full border-2 object-cover" src={`http://localhost:4002/images/profiles/${informationUserData?.user.profilePicture.filename}`} alt="profile" />
+              </div>
+            </Dialog>
+
 
             {/* profile details */}
             <div className="flex flex-col gap-6 p-4 sm:w-2/3 sm:p-1">
-              <div className="flex items-center gap-8 sm:justify-start justify-between">
+              <div className="flex items-end gap-8 sm:justify-start justify-between">
 
                 <h2 className="text-2xl sm:text-3xl font-thin">{informationUserData?.user.username}</h2>
 
-                <div className="flex gap-3 items-center">
-                  <Link to="/accounts/edit" className="border font-medium hover:bg-gray-50 text-sm rounded px-2 py-1">Edit Profile</Link>
-                  <Link to="/accounts/edit">{settingsIcon}</Link>
-                </div>
-
-                {informationUserData?.user._id !== authContext?.user?._id && (
-                  <div className="flex gap-3 items-center">
-
-                      <button onClick={() => {
-                        setFollowed(prev => !prev);
-                        followToggle(informationUserData?.user._id as string)
-                      }} className="font-medium transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow rounded px-6 py-1.5">{followed ? "UnFollow" : "Follow"}</button>
+                {myInformationData?.response.user._id === informationUserData?.user._id && (
+                  <div>
+                    <Link to="/accounts/edit" className="border flex gap-2 items-center font-medium hover:bg-gray-50 text-sm rounded px-2 py-1">Edit Profile {settingsIcon}</Link>
                   </div>
                 )}
+
+
 
               </div>
 
@@ -201,10 +199,17 @@ function Profile() {
               <div className="max-w-full">
                 <p className="font-medium">{informationUserData?.user.name}</p>
                 <p className="whitespace-pre-line">Lorem ipsum</p>
-                {/* {user?.website &&
-                          <a href={user.website} target="_blank" className="text-blue-900 font-medium">{new URL(user.website).hostname}</a>
-                      } */}
+
+                <a href={"https://chatgpt.com/c/b972c579-d4f1-4075-8a2c-c5a11bbbc486"} target="_blank" className="text-blue-900 font-medium">{new URL("https://chatgpt.com/c/b972c579-d4f1-4075-8a2c-c5a11bbbc486").hostname}</a>
+
               </div>
+
+              {informationUserData?.user._id !== myInformationData?.response.user._id && (
+                <button onClick={() => {
+                  setFollowed(prev => !prev);
+                  followToggle(informationUserData?.user._id as string)
+                }} className=" sm:max-w-[21.5rem] font-medium transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow rounded py-1.5">{followed ? "UnFollow" : "Follow"}</button>
+              )}
             </div>
 
           </div>
@@ -223,7 +228,7 @@ function Profile() {
               <span onClick={() => setSavedTab(false)} className={`${savedTab ? 'text-gray-400' : 'border-t border-black'} py-3 cursor-pointer flex items-center text-[13px] uppercase gap-3 tracking-[1px] font-medium`}>
                 {savedTab ? postsIconOutline : postsIconFill} posts</span>
 
-              {authContext?.user?._id === informationUserData?.user._id && (
+              {myInformationData?.response.user._id === informationUserData?.user._id && (
                 <span onClick={() => setSavedTab(true)} className={`${savedTab ? 'border-t border-black' : 'text-gray-400'} py-3 cursor-pointer flex items-center text-[13px] uppercase gap-3 tracking-[1px] font-medium`}>
                   {savedTab ? savedIconFill : savedIconOutline} saved</span>
               )}
@@ -241,7 +246,7 @@ function Profile() {
               <>
                 {isLoadingMySavedPost ? <SpinLoader /> : (
                   (mySavedPost && mySavedPost.response && mySavedPost.response.myPosts.length > 0) ? (
-                    <PostContainerUser posts={mySavedPost.response.myPosts} />
+                    <PostContainerUser showCol={true} posts={mySavedPost.response.myPosts} />
                   ) : (
                     <div className='bg-white text-center mt-2 p-4 text-xl rounded'>
                       Sorry, no posts have been Saved yet😩
@@ -256,11 +261,11 @@ function Profile() {
               <>
                 {isLoadingMySavedPost ? <SpinLoader /> : (
                   (informationUserData && informationUserData.posts && informationUserData.posts.length > 0) ? (
-                    <PostContainerUser posts={informationUserData?.posts} />
+                    <PostContainerUser showCol={true} posts={informationUserData?.posts} />
                   ) : (
                     <div className='bg-white text-center mt-2 p-4 text-xl rounded'>
                       Sorry, no posts have been registered yet😩
-                      {authContext?.user?._id === informationUserData?.user._id && (
+                      {myInformationData?.response.user._id === informationUserData?.user._id && (
                         <>
                           <div className='flex items-center justify-center gap-3 mt-2'>
                             <span> You be the first</span>

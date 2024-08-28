@@ -20,8 +20,9 @@ router.route("/reset-password").post(controller.resetPassword);
 router.route("/refresh-token").post(controller.refreshToken);
 router.route("/followToggle/:userId").post(auth, controller.followToggle);
 // * GET
-router.route("/user-information/:userid").get(auth, controller.userInformation);
+router.route("/user-information").get(auth, controller.userInformation);
 router.route("/user-allData/:userid").get(auth, controller.userAllData);
+router.route("/all-users").get(auth, controller.getAllUsersInformation);
 
 // * PUT
 router

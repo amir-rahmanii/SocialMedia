@@ -13,11 +13,26 @@ type userInfo = {
     name: string,
     role: "ADMIN" | "USER",
     updatedAt: Date,
-    profilePicture : { path: string, filename: string },
+    profilePicture: { path: string, filename: string },
     username: string,
     __v: number,
-    _id: string
+    _id: string,
+
+    followers: {
+        profilePicture: { path: string },
+        userId: string,
+        username: string,
+        _id: string
+    }[],
+    following: {
+        profilePicture: { path: string },
+        userId: string,
+        username: string,
+        _id: string
+    }[]
 }
+
+
 
 type AuthContextType = {
     user: userInfo | null,

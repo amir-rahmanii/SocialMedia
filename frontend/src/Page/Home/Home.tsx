@@ -10,14 +10,13 @@ import { AuthContext } from '../../Context/AuthContext'
 function Home() {
 
     const authContext = useContext(AuthContext);
-
-    const userid = localStorage.getItem("userId")
-    const { data: informationUser, isLoading , isSuccess } = useGetUserInformation(userid as string);
+    const { data: informationUser, isLoading , isSuccess } = useGetUserInformation();
+  
 
   
     useEffect(() => {
         if(isSuccess && informationUser){
-            authContext?.setUser(informationUser?.response?.user)  
+            authContext?.setUser(informationUser.response.user)  
         }
     }, [isSuccess , informationUser])
     

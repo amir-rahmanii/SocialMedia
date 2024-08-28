@@ -35,33 +35,50 @@ export type updatePassword = {
 
 export type profile =
     {
-        user: {
-            profilePicture: {
-                path: string,
-                filename: string
-            },
-            _id: string,
-            name: string,
-            username: string,
-            following: {
-                profilePicture: { path: string },
-                userId: string,
-                username: string,
-                _id: string,
-            }[],
-            followers: {
-                profilePicture: { path: string },
-                userId: string,
-                username: string,
-                _id: string,
-            }[],
-            email: string,
-            isVerified: boolean,
-            role: "ADMIN" | "USER",
-            isban: boolean,
-            createdAt: Date,
-            updatedAt: Date,
-            __v: 0
-        },
+        user: userInformation,
         posts: PostItemProps[],
     }
+
+
+export type userInformation = {
+    profilePicture: {
+        path: string,
+        filename: string
+    },
+    _id: string,
+    name: string,
+    username: string,
+    following: {
+        profilePicture: { path: string },
+        userId: string,
+        username: string,
+        _id: string,
+    }[],
+    followers: {
+        profilePicture: { path: string },
+        userId: string,
+        username: string,
+        _id: string,
+    }[],
+    email: string,
+    isVerified: boolean,
+    role: "ADMIN" | "USER",
+    isban: boolean,
+    createdAt: Date,
+    updatedAt: Date,
+    __v: 0
+}
+
+
+export type userInformationAll = {
+    response : {
+        users: userInformation[]
+    }
+}
+
+export type user = {
+    response: {
+        message: string,
+        user : userInformation
+    }
+}

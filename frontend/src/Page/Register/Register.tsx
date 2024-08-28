@@ -13,7 +13,7 @@ import toast from 'react-hot-toast';
 function Register() {
 
     const navigate = useNavigate();
-    const { mutate: registerUser, isLoading, data , isError, error, isSuccess } = usePostUserRegister();
+    const { mutate: registerUser, isLoading , isError, error, isSuccess } = usePostUserRegister();
 
     useEffect(() => {
         if (isError) {
@@ -56,12 +56,6 @@ function Register() {
         resolver: yupResolver(registerSchema)
     });
 
-    // const inputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     if (e.target.files) {
-    //         setProfileState(e.target.files[0])
-    //         console.log(e.target.files[0]);
-    //     }
-    // }
 
     return (
         <Auth>
@@ -136,28 +130,6 @@ function Register() {
                     </div>
 
 
-                    {/* <div className="flex w-full justify-between gap-3 items-center">
-                        <Avatar
-                            alt="Avatar Preview"
-                            sx={{ width: 48, height: 48 }}
-                        />
-                        <label>
-                            <input
-                                {...register('confirmPassword')}
-                                type="file"
-                                accept="image/*"
-                                name="avatar"
-                                onChange={inputHandler}
-
-                                className="block w-full text-sm text-gray-400
-                                   file:mr-3 file:py-2 file:px-6
-                                   file:rounded-full file:border-0
-                                   file:text-sm file:cursor-pointer file:font-semibold
-                                   file:bg-blue-100 file:text-blue-700
-                                   hover:file:bg-blue-200
-                        "/>
-                        </label>
-                    </div> */}
 
                     <button onClick={handleSubmit((data) => {
                         registerUser(data)

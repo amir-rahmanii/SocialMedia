@@ -313,18 +313,20 @@ exports.userBanToggle = async (req, res) => {
 
 exports.userInformation = async (req, res) => {
   try {
-    // دریافت userid از params
-    req.body.userid = req.params.userid;
+    // Assume that the user ID is available in req.user (decoded from JWT)
+    const userId = req.user._id;
 
-    // فراخوانی ولیدیتور با استفاده از req
+    // Attach the userId to req.body for validation if necessary
+    req.body.userid = userId;
+
+    // Call the validator with the request
     const user = await userValidator.userInformation(req);
 
     successResponse(res, 200, { message: "User information retrieved successfully", user });
   } catch (error) {
-    errorResponse(res, error.statusCode, { message: error.message });
+    errorResponse(res, error.statusCode || 500, { message: error.message });
   }
 };
-
 
 
 
@@ -420,8 +422,6 @@ exports.updateUserProfile = async (req, res) => {
     res.status(error.statusCode || 500).json({ message: error.message });
   }
 };
-
-
 
 
 exports.userAllData = async (req, res) => {
@@ -530,6 +530,18 @@ exports.followToggle = async (req, res) => {
   } catch (err) {
     console.error("Error in followToggle:", err);
     res.status(500).json({ message: "An error occurred.", error: err.message });
+  }
+};
+
+
+exports.getAllUsersInformation = async (req, res) => {
+  try {
+    // Retrieve all users' information from the database
+    const users = await userModel.find({}, '-password'); // Exclude the password field
+
+    successResponse(res, 200, { message: "All users' information retrieved successfully", users });
+  } catch (error) {
+    errorResponse(res, error.statusCode || 500, { message: error.message });
   }
 };
 

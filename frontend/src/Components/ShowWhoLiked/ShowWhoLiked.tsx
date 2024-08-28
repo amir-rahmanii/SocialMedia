@@ -25,8 +25,9 @@ type ShowWhoLikedProps = {
 function ShowWhoLiked({ userLiked, isOpenShowLiked, setIsOpenShowLiked }: ShowWhoLikedProps) {
 
     const { mutate: followToggle, isSuccess: isSuccessFollowToggle, isError: isErrorFollowToggle, error: errorFollow, data: dataFollow } = usePostFollowToggle();
-    const [followed, setFollowed] = useState(false)
+    const [followed, setFollowed] = useState<string[]>([])
     const authContext = useContext(AuthContext)
+
 
     useEffect(() => {
         if (isErrorFollowToggle) {
@@ -59,15 +60,18 @@ function ShowWhoLiked({ userLiked, isOpenShowLiked, setIsOpenShowLiked }: ShowWh
     }, [isErrorFollowToggle, isSuccessFollowToggle])
 
 
+    // Check if the user is followed
     useEffect(() => {
-        const userid = localStorage.getItem("userId");
-        let isFollowed = userLiked.some(data => data.userid === userid);
-        setFollowed(isFollowed)
-    }, [])
+        if (authContext?.user?.following) {
+            const followedUserIds = authContext.user.following.map(follow => follow.userId);
+            setFollowed(followedUserIds);
+        }
+    }, [authContext?.user?.following]);
+
 
     return (
         <Dialog open={isOpenShowLiked} onClose={() => setIsOpenShowLiked(false)} maxWidth='xl'>
-            <div className="flex flex-col xl:w-screen max-w-xl bg-white">
+            <div className="flex flex-col h-56 overflow-y-auto xl:w-screen max-w-xl bg-white">
                 <div className="bg-white py-3 border-b px-4 flex justify-between w-full">
                     <span className="font-medium">List Users Liked</span>
                     <button className='w-5 h-5' onClick={() => setIsOpenShowLiked(false)}>
@@ -80,19 +84,23 @@ function ShowWhoLiked({ userLiked, isOpenShowLiked, setIsOpenShowLiked }: ShowWh
                             <div key={index} className='flex items-center justify-between border-b p-2'>
                                 <div className='flex items-center gap-2'>
                                     <Link to={`/profile/${data.userid}`}>
-                                        <img draggable="false" className="h-8 w-8 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/images/profiles/${data.userPicture.filename}`} alt="avatar" />
+                                        <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/images/profiles/${data.userPicture.filename}`} alt="avatar" />
                                     </Link>
                                     <div className='flex flex-col'>
                                         <Link to={`/profile/${data.userid}`} className="text-sm font-semibold hover:underline">{data.username}</Link>
                                         <p className='text-xs text-gray-500"'><DateConverter date={data.createdAt} /></p>
                                     </div>
                                 </div>
-                                <div>
-                                    {authContext?.user?._id !== data.userid && (
-                                        <button onClick={() => {
-                                            setFollowed(prev => !prev);
-                                            followToggle(data.userid)
-                                        }} className="font-medium transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow rounded px-6 py-1.5">{followed ? "UnFollow" : "Follow"}</button>
+                                <div className='ml-5'>
+                                {authContext?.user?._id !== data.userid && (
+                                        <button
+                                            onClick={() => {
+                                                followToggle(data.userid);
+                                            }}
+                                            className="font-medium transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow rounded px-6 py-1.5"
+                                        >
+                                            {followed.includes(data.userid) ? "UnFollow" : "Follow"}
+                                        </button>
                                     )}
                                 </div>
                             </div>

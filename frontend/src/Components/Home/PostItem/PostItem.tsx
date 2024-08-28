@@ -62,9 +62,8 @@ function PostItem(props: PostItemProps) {
 
     //for show liked
     useEffect(() => {
-        const userid = localStorage.getItem("userId");
-        let isLiked = props.likes.some(id => userid === id.userid);
-        let isPosted = props.saved.some(id => userid === id);
+        let isLiked = props.likes.some(id => authContext?.user?._id === id.userid);
+        let isPosted = props.saved.some(id => authContext?.user?._id === id);
         setLiked(isLiked);
         setSaved(isPosted);
     }, [])

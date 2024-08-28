@@ -72,22 +72,8 @@ function ChangeProfile({ isShowChangeProfile, setIsShowChangeProfile }: ChangePr
             setPostImage(null)
             setPostPreview(null)
             setIsShowChangeProfile(false)
-            // const userid = localStorage.getItem("userId");
-            // if (userid) {
-            //     informationUser({ userid })
-            // }
-
         }
     }, [isError, isSuccess])
-
-
-    // useEffect(() => {
-    //     if (isSuccessUserInformation && data) {
-    //         authContext?.setUser(data?.data.response.user)
-    //     }
-    // }, [isSuccessUserInformation, data])
-
-
 
 
     return (

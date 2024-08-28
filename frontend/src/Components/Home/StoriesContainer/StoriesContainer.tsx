@@ -29,7 +29,7 @@ const StoriesContainer = () => {
             {
                 breakpoint: 500,
                 settings: {
-                    slidesToShow: 5,
+                    slidesToShow: 4.5,
                     slidesToScroll: 2
                 }
             }

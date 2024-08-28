@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import apiRequest from "../../Services/axios"
-import { forgetPassword, profile, resetPassword, updatePassword, userId, userRegister } from "./user.types";
+import { forgetPassword, profile, resetPassword, updatePassword, user, userId, userInformationAll, userRegister } from "./user.types";
 import { userLogin } from "./user.types";
 // import Cookies from "js-cookie";
 
@@ -8,11 +8,6 @@ function usePostUserRegister() {
     return useMutation(async (user: userRegister) => {
         return apiRequest.post(`users/register`, user)
     },
-        {
-            onSuccess(res) {
-                localStorage.setItem("userId", res.data.response.user._id)
-            },
-        }
     )
 }
 
@@ -21,11 +16,6 @@ function usePostUserLogin() {
     return useMutation(async (user: userLogin) => {
         return apiRequest.post(`users/login`, user)
     },
-        {
-            onSuccess(res) {
-                localStorage.setItem("userId", res.data.response.data._id)
-            },
-        }
     )
 }
 
@@ -51,10 +41,10 @@ function usePostUserResetPassword() {
     )
 }
 
-function useGetUserInformation(userId: string) {
-    return useQuery(['getUserInformation'],
+function useGetUserInformation() {
+    return useQuery<user>(['getUserInformation'],
         async () => {
-            const response = await apiRequest.get(`users/user-information/${userId}`);
+            const response = await apiRequest.get(`users/user-information`);
             return response.data
         },
     )
@@ -66,10 +56,18 @@ function useGetUserData(userId: string) {
             const response = await apiRequest.get(`users/user-allData/${userId}`);
             return response.data
         },
-        {
-            onSuccess: (res) => {
-                console.log(res);
+    )
+}
 
+function useGetAllUsersInformation() {
+    return useQuery<userInformationAll>(['getAllUserData'],
+        async () => {
+            const response = await apiRequest.get(`users/all-users`);
+            return response.data
+        },
+        {
+            onSuccess : (res) => {
+                console.log(res);
             }
         }
     )
@@ -130,6 +128,7 @@ function usePostFollowToggle() {
 
 
 export {
+    useGetAllUsersInformation,
     useGetUserData,
     useGetUserInformation,
     useUpdateUserProfile,

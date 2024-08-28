@@ -8,22 +8,20 @@ import { AuthContext } from '../../Context/AuthContext';
 import { useGetUserInformation } from '../../hooks/user/useUser';
 
 
+
 export default function Header() {
 
-    const userid = localStorage.getItem("userId")
-    // const { data: informationUser, isSuccess: isSuccessInformationUser } = useGetUserInformation(userid as string);
 
     const [profileToggle, setProfileToggle] = useState(false)
     const [newPost, setNewPost] = useState(false);
     const authContext = useContext(AuthContext);
+    const { data: informationUser, isSuccess: isSuccessUserInformation } = useGetUserInformation();
 
-
-    // useEffect(() => {
-    //     if (isSuccessInformationUser && informationUser) {
-    //         authContext?.setUser(informationUser?.response.user)
-    //     }
-    // }, [isSuccessInformationUser, informationUser])
-
+    useEffect(() => {
+        if (isSuccessUserInformation && informationUser) {
+          authContext?.setUser(informationUser.response.user)
+        }
+      }, [isSuccessUserInformation, informationUser])
 
 
     return (
