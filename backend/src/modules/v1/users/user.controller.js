@@ -6,6 +6,7 @@ const postModel = require("../../../models/v1/post");
 const likeToggleModel = require("../../../models/v1/likeToggle");
 const commentModel = require("../../../models/v1/comment");
 const followToggleModel = require("../../../models/v1/followToggle");
+const storyModel = require("../../../models/v1/story");
 const path = require('path');
 const RefreshTokenModel = require("../../../models/v1/refreshToken");
 const {
@@ -396,7 +397,7 @@ exports.updateUserProfile = async (req, res) => {
       { "followers.userId": userId },
       {
         $set: {
-          "followers.$[elem].profilePicture": {path : filePath},
+          "followers.$[elem].profilePicture": { path: filePath },
         },
       },
       {
@@ -409,11 +410,22 @@ exports.updateUserProfile = async (req, res) => {
       { "following.userId": userId },
       {
         $set: {
-          "following.$[elem].profilePicture": {path : filePath},
+          "following.$[elem].profilePicture": { path: filePath },
         },
       },
       {
         arrayFilters: [{ "elem.userId": userId }],
+      }
+    );
+
+    // Update profile picture in all stories by the user
+    await storyModel.updateMany(
+      { "user.id": userId },
+      {
+        $set: {
+          "user.userPicture.path": filePath,
+          "user.userPicture.filename": file.filename,
+        },
       }
     );
 
@@ -422,6 +434,7 @@ exports.updateUserProfile = async (req, res) => {
     res.status(error.statusCode || 500).json({ message: error.message });
   }
 };
+
 
 
 exports.userAllData = async (req, res) => {

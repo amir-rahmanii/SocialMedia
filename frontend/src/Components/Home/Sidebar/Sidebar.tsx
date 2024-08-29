@@ -118,11 +118,11 @@ function Sidebar() {
                 {isLoading ? (
                     Array(5).fill("").map((el, i) => (<SkeletonUserItem key={i} />))
                 ) : (
-                    <div className='flex flex-col gap-6'>
+                    <div className='flex flex-col gap-1'>
                         {informationAllUser?.response?.users?.map((data) => (
-                            <>
+                            <div key={data._id}>
                             {authContext?.user?._id !== data._id && (
-                                    <div className='flex items-center justify-between border-b'>
+                                    <div className='flex items-center justify-between border-b pb-2'>
                                         <div className='flex items-center gap-2'>
                                             <Link to={`/profile/${data._id}`}>
                                                 <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/images/profiles/${data.profilePicture.filename}`} alt="avatar" />
@@ -146,7 +146,7 @@ function Sidebar() {
                                         </div>
                                     </div>
                                 )}
-                            </>
+                            </div>
                         ))}
                     </div>
                 )}

@@ -15,7 +15,6 @@ const StoriesContainer = () => {
     const authContext = useContext(AuthContext);
     const [showAddStory, setShowAddStory] = useState(false);
     const [isShowStoryContent, setIsShowStoryContent] = useState(false);
-    const [storyId, setStoryId] = useState('');
 
     const settings = {
         dots: false,
@@ -24,20 +23,23 @@ const StoriesContainer = () => {
         slidesToScroll: 3,
         variableWidth: true,
     };
+
+
+
     const navigate = useNavigate(); // Initialize useHistory
 
     // Function to handle story click and update URL with storyid as a query parameter
-    const handleStoryClick = (storyId : string) => {
+    const handleStoryClick = (storyId: string) => {
         const searchParams = new URLSearchParams(window.location.search);
         searchParams.set('storyid', storyId);
         navigate({ search: searchParams.toString() });
     };
 
 
+
     return (
         <>
-            <Slider {...settings} className="w-full overflow-x-auto bg-white pt-2.5 pb-1 px-2.5 flex border rounded">
-
+            <Slider {...settings} className="w-full overflow-x-auto bg-white pt-2.5 pb-1 px-2.5 border rounded">
                 <div onClick={() => {
                     setShowAddStory(true)
                 }} className="flex flex-col text-center justify-center items-center p-2 cursor-pointer">
@@ -55,33 +57,31 @@ const StoriesContainer = () => {
                     </div>
                     <span className="text-xs mt-2">{authContext?.user?.username}</span>
                 </div>
-
-                {isSuccess && allStories?.stories?.length > 0 && (
-                    <>
-                        {allStories?.stories?.map((s) => (
-                            <div onClick={() => {
-                                setIsShowStoryContent(true)
-                                handleStoryClick(s._id)
-                                setStoryId(s._id)
-                            }} key={s._id} className="flex flex-col text-center justify-center items-center p-2 cursor-pointer">
-                                <div className="w-16 h-16 rounded-full border-2 border-red-500">
-                                    <img
-                                        loading="lazy"
-                                        className="rounded-full h-full w-full object-cover"
-                                        src={`http://localhost:4002/images/profiles/${s.user.userPicture.filename}`}
-                                        draggable="false"
-                                        alt="story"
-                                    />
-                                </div>
-                                <span className="text-xs mt-2">{s.user.username}</span>
+                {allStories?.stories?.map((s) => (
+                    <div key={s._id}> {/* Ensure each story is in a separate div */}
+                        <div onClick={() => {
+                            setIsShowStoryContent(true)
+                            handleStoryClick(s._id)
+                        }} className="flex flex-col text-center justify-center items-center p-2 cursor-pointer">
+                            <div className="w-16 h-16 rounded-full border-2 border-red-500">
+                                <img
+                                    loading="lazy"
+                                    className="rounded-full h-full w-full object-cover"
+                                    src={`http://localhost:4002/images/profiles/${s.user.userPicture.filename}`}
+                                    draggable="false"
+                                    alt="story"
+                                />
                             </div>
-                        ))}
-                    </>
-                )}
+                            <span className="text-xs mt-2">{s.user.username}</span>
+                        </div>
+                    </div>
+                ))}
+
             </Slider>
 
+
             {(isShowStoryContent && isSuccess) && (
-                <StoryContent allStories={allStories} />
+                <StoryContent setIsShowStoryContent={setIsShowStoryContent} isShowStoryContent={isShowStoryContent} allStories={allStories} />
             )}
 
 

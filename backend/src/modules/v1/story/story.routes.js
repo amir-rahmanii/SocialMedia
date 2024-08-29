@@ -18,6 +18,6 @@ router
 
 // * GET
 router.route("/get-all-stories").get(auth, controller.getStories);
-router.route("/get-story/:storyId").get(auth, controller.getStoryById);
+// router.route("/get-story/:storyId").get(auth, controller.getStoryById);
 
 module.exports = router;

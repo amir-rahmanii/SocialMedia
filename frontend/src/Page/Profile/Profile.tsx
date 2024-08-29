@@ -12,6 +12,7 @@ import toast from 'react-hot-toast'
 import ChangeProfile from '../../Components/User/ChangeProfile/ChangeProfile'
 import ShowWhoFollow from '../../Components/Profile/ShowWhoFollow/ShowWhoFollow'
 import { Backdrop, Dialog } from '@mui/material'
+import TableLogin from '../../Components/User/TableLogin/TableLogin'
 
 
 
@@ -132,8 +133,8 @@ function Profile() {
           <div className="sm:flex w-full sm:py-8 bg-white rounded-t">
 
             {/* profile picture */}
-            <div onClick={() => setIsShowProfile(true)} className="sm:w-1/3 flex justify-center mx-auto sm:mx-0">
-              <img draggable="false" className="w-40 h-40 border-2 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${informationUserData?.user.profilePicture.filename}`} alt="profile" />
+            <div className="sm:w-1/3 flex justify-center mx-auto sm:mx-0">
+              <img onClick={() => setIsShowProfile(true)} draggable="false" className="w-40 h-40 border-2 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${informationUserData?.user.profilePicture.filename}`} alt="profile" />
 
 
               {myInformationData?.response.user._id === informationUserData?.user._id && (
@@ -215,11 +216,6 @@ function Profile() {
           </div>
 
 
-          {/* {followersModal ?
-              <UsersDialog title="Followers" open={viewModal} onClose={closeModal} usersList={user?.followers} />
-              :
-              <UsersDialog title="Following" open={viewModal} onClose={closeModal} usersList={user?.following} />
-          } */}
 
           <div className="border-t  bg-white rounded-b">
 
@@ -281,7 +277,13 @@ function Profile() {
             )}
 
           </div>
-          <div className="bg-white mt-2 mb-10 drop-shadow-sm rounded flex sm:flex-row flex-col sm:gap-0 gap-5 sm:p-0 p-4 items-center justify-between">
+          {/* login info user */}
+          {myInformationData?.response.user._id === informationUserData?.user._id && (
+              <TableLogin />
+          )}
+
+          {/* footer */}
+          <div className="bg-white mt-4 mb-10 drop-shadow-sm rounded flex sm:flex-row flex-col sm:gap-0 gap-5 sm:p-0 p-4 items-center justify-between">
             <img draggable="false" className="w-2/5 rounded-l" src="https://www.instagram.com/static/images/mediaUpsell.jpg/6efc710a1d5a.jpg" alt="" />
             <div className="mx-auto flex flex-col items-center">
               <h4 className="font-medium text-lg sm:text-xl">Start capturing and sharing your moments.</h4>

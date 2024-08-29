@@ -13,11 +13,11 @@ function usePostCreateStory() {
             }
         })
     },
-    {
-        onSuccess : () => {
-            queryClient.invalidateQueries(["getAllStories"])
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries(["getAllStories"])
+            }
         }
-    }
     )
 }
 
@@ -31,25 +31,23 @@ function useGetAllStories() {
 }
 
 
-function useGetStoryById(storyId : string){
-    return useQuery(['getOneStory'],
-        async () => {
-            const response = await apiRequest.get(`story//get-story/${storyId}`);
-            return response.data
-        },
-        {
-            onSuccess: (res) => {
-                console.log(res);
-            },
-        }
-    )
-}
+// function useGetStoryById(storyId : string){
+//     return useQuery(['getOneStory'],
+//         async () => {
+//             const response = await apiRequest.get(`story//get-story/${storyId}`);
+//             return response.data
+//         },
+//         {
+//             onSuccess: (res) => {
+//                 console.log(res);
+//             },
+//         }
+//     )
+// }
 
 
 
 export {
     usePostCreateStory,
     useGetAllStories,
-    useGetStoryById
-
 }

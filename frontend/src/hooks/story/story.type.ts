@@ -8,8 +8,14 @@ export type allStories = {
 
 
 export type story = {
-    createdA: Date,
-    media: { path: string, filename: string }[],
+    createdAt: Date,
+    media: {
+        path: string,
+        filename: string,
+        __v: number,
+        createdAt: Date,
+        _id: number
+    }[],
     updatedAt: Date,
     user: {
         userPicture: { path: string, filename: string },

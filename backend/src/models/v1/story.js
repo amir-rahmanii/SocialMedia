@@ -2,12 +2,7 @@ const mongoose = require("mongoose");
 
 const schema = new mongoose.Schema(
   {
-    media: [
-      {
-        path: { type: String, required: true },
-        filename: { type: String, required: true },
-      }
-    ],
+    media: [{ type: mongoose.Schema.Types.ObjectId, ref: "mediaStory" }],
     user: {
       id: {
         type: mongoose.Schema.Types.ObjectId,
@@ -26,8 +21,7 @@ const schema = new mongoose.Schema(
     },
   },
   {
-    timestamps: true,
-    expires: '24h', // خودکار حذف شدن بعد از ۲۴ ساعت
+    timestamps: true, // افزودن createdAt و updatedAt به story
   }
 );
 

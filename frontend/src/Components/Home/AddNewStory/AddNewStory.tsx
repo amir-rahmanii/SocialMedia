@@ -102,7 +102,7 @@ function AddNewStory({ showAddStory, setShowAddStory }: AddNewStoryProps) {
 
 
                     {isCameraActive && (
-                        <div className="relative bg-white h-96 w-full flex flex-col gap-2 items-center justify-center mx-16">
+                        <div className="relative bg-white h-[500px]  md:max-h-[600px] w-full flex flex-col gap-2 items-center justify-center mx-16">
                             <video ref={videoRef} autoPlay className="w-full h-full object-cover"></video>
                             <button onClick={handleCapturePhoto} className="absolute bottom-2 bg-primary-blue hover:bg-primaryLoading-blue transition-all duration-300 text-white  py-2 px-4 rounded-full">
                                 <div className='w-7 h-7'>
