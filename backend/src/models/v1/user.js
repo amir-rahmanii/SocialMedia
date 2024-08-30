@@ -36,15 +36,15 @@ const userSchema = new mongoose.Schema({
     type: String,
   },
   profilePicture: {
-    path: { 
-      type: String, 
-      required: true, 
-      default: "images/profiles/default.jpg" 
+    path: {
+      type: String,
+      required: true,
+      default: "images/profiles/default.jpg",
     },
-    filename: { 
-      type: String, 
-      required: true, 
-      default: "default.jpg" 
+    filename: {
+      type: String,
+      required: true,
+      default: "default.jpg",
     },
   },
   isVerified: {
@@ -83,6 +83,16 @@ const userSchema = new mongoose.Schema({
     profilePicture: {
       path: String,
     },
+  }],
+  systemInfos: [{
+    os: String,
+    browser: String,
+    country: String,
+    ip: String,
+    date: {
+      type: Date,
+      default: Date.now
+    }
   }],
 }, {
   timestamps: true,

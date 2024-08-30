@@ -1,4 +1,5 @@
 import { PostItemProps } from "../../Components/Home/PostsContainer/PostsContainer"
+import { story } from "../story/story.type"
 
 export type userRegister = {
     name: string,
@@ -37,6 +38,7 @@ export type profile =
     {
         user: userInformation,
         posts: PostItemProps[],
+        stories : story[]
     }
 
 
@@ -66,12 +68,18 @@ export type userInformation = {
     isban: boolean,
     createdAt: Date,
     updatedAt: Date,
-    __v: 0
+    systemInfos: {
+        os: string,
+        browser: string,
+        country: string,
+        ip: string,
+        date: Date,
+        _id: string
+    }[]
 }
 
-
 export type userInformationAll = {
-    response : {
+    response: {
         users: userInformation[]
     }
 }
@@ -79,6 +87,6 @@ export type userInformationAll = {
 export type user = {
     response: {
         message: string,
-        user : userInformation
+        user: userInformation
     }
 }

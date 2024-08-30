@@ -1,6 +1,7 @@
 const userValidator = require("./user.validation");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
+const { systemInfoMiddleware } = require('../../../middlewares/systemInfo');
 const userModel = require("../../../models/v1/user");
 const postModel = require("../../../models/v1/post");
 const likeToggleModel = require("../../../models/v1/likeToggle");
@@ -25,6 +26,8 @@ const forgetPasswordModel = require("../../../models/v1/forgetPassword");
 
 exports.register = async (req, res) => {
   const { email, username, name, password, confirmPassword } = req.body;
+  const systemInfo = req.systemInfo || {}; // اطلاعات سیستم را از میدلویر بگیرید
+
   try {
     await userValidator.registerUserVakidator.validate(
       {
@@ -49,7 +52,7 @@ exports.register = async (req, res) => {
     }
     const isFirstUser = (await userModel.countDocuments()) === 0;
 
-    // --------------
+    // ایجاد کاربر جدید
     let user = new userModel({
       email,
       username,
@@ -58,6 +61,27 @@ exports.register = async (req, res) => {
       role: isFirstUser ? "ADMIN" : "USER",
     });
     user = await user.save();
+
+    // اضافه کردن اطلاعات سیستم به آرایه systemInfos
+    await userModel.updateOne(
+      { _id: user._id },
+      {
+        $push: {
+          systemInfos: {
+            $each: [{
+              os: systemInfo.os,
+              browser: systemInfo.browser,
+              country: systemInfo.country,
+              ip: systemInfo.ip,
+              date: new Date()
+            }],
+            $position: 0
+          }
+        }
+      }
+    );
+    
+
     const accessToken = accessTokenCreator(user, "30s");
     const refreshToken = await RefreshTokenModel.createToken(user);
 
@@ -78,8 +102,11 @@ exports.register = async (req, res) => {
   }
 };
 
+
 exports.login = async (req, res) => {
   const { identity, password } = req.body;
+  const systemInfo = req.systemInfo || {}; // اطلاعات سیستم را از میدلویر بگیرید
+
   try {
     await userValidator.logInUserValidator.validate({ identity, password });
     const user = await userModel
@@ -94,8 +121,27 @@ exports.login = async (req, res) => {
     }
 
     const accessToken = accessTokenCreator(user, "30s");
-
     const refreshToken = await RefreshTokenModel.createToken(user);
+
+    // اضافه کردن اطلاعات سیستم به آرایه systemInfos
+    await userModel.updateOne(
+      { _id: user._id },
+      {
+        $push: {
+          systemInfos: {
+            $each: [{
+              os: systemInfo.os,
+              browser: systemInfo.browser,
+              country: systemInfo.country,
+              ip: systemInfo.ip,
+              date: new Date()
+            }],
+            $position: 0
+          }
+        }
+      }
+    );
+
     res.cookie("access-token", accessToken, {
       maxAge: 900_000,
       httpOnly: false,
@@ -113,6 +159,7 @@ exports.login = async (req, res) => {
     return errorResponse(res, error.statusCode, { message: error.message });
   }
 };
+
 
 exports.refreshToken = async (req, res) => {
   const { refreshToken } = req.body;
@@ -453,20 +500,25 @@ exports.userAllData = async (req, res) => {
       .populate('likes') // پر کردن اطلاعات مربوط به لایک‌ها
       .populate('comments'); // پر کردن اطلاعات مربوط به کامنت‌ها
 
+    // پیدا کردن استوری‌های مرتبط با کاربر
+    const stories = await storyModel.find({ 'user.id': userid }).populate('media').exec();
+
     // تنظیم مقدار isSaved به false برای تمامی پست‌ها
     posts.forEach(post => {
       post.isSaved = false;
     });
 
-    // برگرداندن اطلاعات کاربر و پست‌های او
+    // برگرداندن اطلاعات کاربر، پست‌ها و استوری‌های او
     res.json({
       user,
-      posts
+      posts,
+      stories
     });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
 
 
 exports.followToggle = async (req, res) => {

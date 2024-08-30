@@ -8,6 +8,7 @@ const postRouter = require("./modules/v1/posts/post.routes");
 const storyRouter = require("./modules/v1/story/story.routes");
 const errorHandler = require("./middlewares/errorHandler ");
 const convertToTrim = require("./middlewares/convertToTrim");
+const  systemInfoMiddleware  = require('./middlewares/systemInfo');
 const apiDocRoutes = require("./modules/v1/apiDoc/swagger.routes");
 const cors = require('cors')
 const app = express();
@@ -26,6 +27,10 @@ app.use(cors({
   credentials: true
 })) // Use this after the variable declaration
 app.use(setHeaders);
+
+// add system info middleware
+app.use(systemInfoMiddleware); // اضافه کردن middleware
+
 
 //static folders
 app.use(express.static(path.join(__dirname, "..", "public")));

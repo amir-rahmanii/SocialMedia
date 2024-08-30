@@ -84,7 +84,7 @@ function StoryContent({ allStories, setIsShowStoryContent, isShowStoryContent }:
             updateStoryData(currentStoryIndex - 1);
         } else {
             // If it's the first story of the first user, do nothing or handle it as needed
-            setIsShowStoryContent(false)
+            // setIsShowStoryContent(false)
         }
     };
 

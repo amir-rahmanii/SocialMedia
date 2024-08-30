@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import MetaData from '../../Components/MetaData/MetaData'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { changeProfilePicture, postsIconFill, postsIconOutline, postUploadOutline, reelsIcon, savedIconFill, savedIconOutline, settingsIcon, taggedIcon } from '../../Components/SvgIcon/SvgIcon'
 import Header from '../../Parts/Header/Header'
 import { useGetMySavedPost } from '../../hooks/post/usePost'
@@ -13,6 +13,7 @@ import ChangeProfile from '../../Components/User/ChangeProfile/ChangeProfile'
 import ShowWhoFollow from '../../Components/Profile/ShowWhoFollow/ShowWhoFollow'
 import { Backdrop, Dialog } from '@mui/material'
 import TableLogin from '../../Components/User/TableLogin/TableLogin'
+import StoryContent from '../../Components/Home/StoriesContainer/StoryContent'
 
 
 
@@ -24,6 +25,7 @@ function Profile() {
   const [newPost, setNewPost] = useState(false);
   const [isShowChangeProfile, setIsShowChangeProfile] = useState(false);
   const [isShowProfile, setIsShowProfile] = useState(false);
+  const [isShowStoryContent, setIsShowStoryContent] = useState(false);
 
 
 
@@ -36,6 +38,14 @@ function Profile() {
   const { data: informationUserData, isLoading: isLoadingUserData, isSuccess: isSucessGetUserData, refetch: refetchGerUserData } = useGetUserData(userid as string);
   const { data: myInformationData, isLoading: isLoadingMyInformationData, isSuccess: isSuccessMyInformationData, refetch: refetchMyInformationData } = useGetUserInformation();
 
+  const navigate = useNavigate(); // Initialize useHistory
+
+  // Function to handle story click and update URL with storyid as a query parameter
+  const handleStoryClick = (storyId: string) => {
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.set('storyid', storyId);
+    navigate({ search: searchParams.toString() });
+  };
 
 
   useEffect(() => {
@@ -133,8 +143,21 @@ function Profile() {
           <div className="sm:flex w-full sm:py-8 bg-white rounded-t">
 
             {/* profile picture */}
-            <div className="sm:w-1/3 flex justify-center mx-auto sm:mx-0">
-              <img onClick={() => setIsShowProfile(true)} draggable="false" className="w-40 h-40 border-2 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${informationUserData?.user.profilePicture.filename}`} alt="profile" />
+            <div className="sm:w-1/3 pt-3 md:pt-0 flex justify-center mx-auto sm:mx-0">
+              <img
+                onClick={() => {
+                  if (informationUserData && informationUserData?.stories.length > 0) {
+                    setIsShowStoryContent(true);
+                    handleStoryClick(informationUserData?.stories[0]._id);
+                  } else {
+                    setIsShowProfile(true);
+                  }
+                }}
+                draggable="false"
+                className={`${(informationUserData && informationUserData?.stories.length > 0)  ? "border-red-500" : ""} w-40 h-40 border-2 rounded-full object-cover`}
+                src={`http://localhost:4002/images/profiles/${informationUserData?.user.profilePicture.filename}`}
+                alt="profile"
+              />
 
 
               {myInformationData?.response.user._id === informationUserData?.user._id && (
@@ -153,6 +176,14 @@ function Profile() {
                 </>
               )}
             </div>
+
+            {(isShowStoryContent && isSucessGetUserData) && (
+              <StoryContent
+                setIsShowStoryContent={setIsShowStoryContent}
+                isShowStoryContent={isShowStoryContent}
+                allStories={{ stories: informationUserData?.stories || [] }}
+              />
+            )}
 
             {/* is showing profile picture */}
             <Dialog open={isShowProfile} onClose={() => setIsShowProfile(false)} maxWidth='xl'>
@@ -278,9 +309,11 @@ function Profile() {
 
           </div>
           {/* login info user */}
-          {myInformationData?.response.user._id === informationUserData?.user._id && (
-              <TableLogin />
-          )}
+          <div className='mt-4'>
+            {myInformationData?.response.user._id === informationUserData?.user._id && (
+              <TableLogin loginInformation={myInformationData?.response?.user.systemInfos} />
+            )}
+          </div>
 
           {/* footer */}
           <div className="bg-white mt-4 mb-10 drop-shadow-sm rounded flex sm:flex-row flex-col sm:gap-0 gap-5 sm:p-0 p-4 items-center justify-between">
