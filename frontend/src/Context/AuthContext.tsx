@@ -15,7 +15,6 @@ type userInfo = {
     updatedAt: Date,
     profilePicture: { path: string, filename: string },
     username: string,
-    __v: number,
     _id: string,
 
     followers: {

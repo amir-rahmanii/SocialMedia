@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import apiRequest from "../../Services/axios";
-import { allStories } from "./story.type";
+import { allStories } from "./story.types";
 
 
 

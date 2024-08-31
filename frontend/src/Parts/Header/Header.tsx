@@ -47,8 +47,7 @@ export default function Header() {
 
                     <div onClick={() => setNewPost(true)} className="cursor-pointer">{postUploadOutline}</div>
 
-                    <span className="hidden sm:block">{exploreOutline}</span>
-                    <span className="hidden sm:block">{likeOutline}</span>
+                    <Link to={`/direct`} className="block">{likeOutline}</Link>
 
                     <div onClick={() => setProfileToggle(!profileToggle)} className={`${profileToggle && 'border-black border' && 'border-black border'} rounded-full cursor-pointer h-7 w-7 p-[0.5px]`}><img draggable="false" loading="lazy" className="w-full h-full rounded-full object-cover" src={`http://localhost:4002/images/profiles/${authContext?.user?.profilePicture.filename}`} alt="profile" /></div>
                 </div>

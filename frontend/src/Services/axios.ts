@@ -28,7 +28,8 @@ apiRequest.interceptors.response.use(
     },
     async (error) => {
         const originalRequest = error.config;
-
+        console.log(error.response.status);
+        
         if (error.response.status === 409 && !originalRequest._retry) {
             originalRequest._retry = true;
             const refreshToken = Cookies.get("refresh-token");
@@ -42,12 +43,12 @@ apiRequest.interceptors.response.use(
                     return apiRequest(originalRequest); // Retry the original request with the new token
                 } catch (error) {
                     // If the refresh token fails, log the user out and redirect to the login page
-                    Cookies.remove("access-token");
-                    Cookies.remove("refresh-token");
-                    toast.error("Session expired. Please log in again.");
+                    // Cookies.remove("access-token");
+                    // Cookies.remove("refresh-token");
+                    toast.error("Session expired. Please refresh again.");
 
                     // Redirect to login page
-                    window.location.href = "/login"; // Ensure this is the correct route to your login page
+                    // window.location.href = "/login"; // Ensure this is the correct route to your login page
                 }
             }
         }

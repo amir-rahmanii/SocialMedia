@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { allStories } from "../../../hooks/story/story.type";
+import { allStories } from "../../../hooks/story/story.types";
 import Stories from 'react-insta-stories';
 import DateConverterStory from '../../../utils/DateConverterStory';
 

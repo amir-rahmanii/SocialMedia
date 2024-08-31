@@ -55,18 +55,14 @@ exports.getStories = async (req, res) => {
     // Fetch stories from the database
     const stories = await storyModel.find().populate('media'); // Populate media references
 
-    // If no stories are found, return a 404 status
-    if (!stories.length) {
-      return res.status(404).json({ message: "No stories found" });
-    }
-
-    // Return the stories
-    res.status(200).json({ stories });
+    // Return stories (even if the array is empty)
+    res.status(200).json({ stories: stories || [] });
   } catch (error) {
     // Handle any errors that occur
     res.status(500).json({ message: error.message });
   }
 };
+
 
 
 // exports.getStoryById = async (req , res) => {

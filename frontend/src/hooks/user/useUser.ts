@@ -57,6 +57,7 @@ function useGetUserData(userId: string) {
             return response.data
         },
         {
+            enabled: !!userId, 
             onSuccess : (res) => {
                 console.log(res);
                 

@@ -1,5 +1,5 @@
 import { PostItemProps } from "../../Components/Home/PostsContainer/PostsContainer"
-import { story } from "../story/story.type"
+import { story } from "../story/story.types"
 
 export type userRegister = {
     name: string,
