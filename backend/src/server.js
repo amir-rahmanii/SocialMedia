@@ -38,10 +38,16 @@ function startServer() {
     }
   });
 
+  const onlineUsers = new Set(); // برای ذخیره کاربران آنلاین
+  const typingUsers = {}; // برای ردیابی کاربران در حال تایپ
 
   io.on("connection", async (socket) => {
     console.log("A user connected");
-  
+
+    // اضافه کردن کاربر به لیست آنلاین
+    onlineUsers.add(socket.id);
+    io.emit("online users", onlineUsers.size); // ارسال تعداد کاربران آنلاین به تمام کاربران
+
     try {
       // یافتن و ارسال تمام پیام‌های موجود در دیتابیس به کاربر متصل شده
       const messages = await Message.find().populate("sender", "username profilePicture");
@@ -49,47 +55,132 @@ function startServer() {
     } catch (err) {
       console.error("Error fetching messages from database:", err);
     }
-  
+
     // گوش دادن به پیام جدید
     socket.on("chat message", async (msg) => {
       try {
         // یافتن کاربر برای دریافت نام کاربری و عکس پروفایل
         const user = await User.findById(msg.senderId);
-  
+
         if (!user) {
           return socket.emit("error", "User not found");
         }
-  
+
         // ذخیره پیام در دیتابیس
         const newMessage = new Message({
           sender: {
             _id: user._id,
             username: user.username,
-            profilePicture: user.profilePicture, // فرض می‌کنیم user.profilePicture شامل path است
+            profilePicture: user.profilePicture,
           },
           content: msg.content,
           timestamp: new Date(),
+          seenBy: [], // اضافه کردن فیلد seenBy به پیام
         });
         await newMessage.save();
-  
+
         // ارسال پیام به تمام کاربران متصل
         io.emit("chat message", newMessage);
       } catch (err) {
         console.error(err);
       }
     });
+
+    // گوش دادن به رویداد "typing"
+    socket.on("typing", (data) => {
+      const { userId, username, isTyping } = data;
+      if (isTyping) {
+        typingUsers[userId] = { socketId: socket.id, username: username };
+      } else {
+        delete typingUsers[userId];
+      }
+
+      // ارسال لیست کاربران در حال تایپ به همه
+      io.emit("typing users", Object.values(typingUsers).map(user => user.username));
+    });
+
+    // گوش دادن به رویداد "like message"
+    socket.on("like message", async ({ msgId, userId }) => {
+      try {
+        // یافتن پیام با استفاده از ID
+        const message = await Message.findById(msgId);
+        if (!message) return;
+
+        // یافتن اطلاعات کاربر با استفاده از ID
+        const user = await User.findById(userId, '_id username profilePicture');
+        if (!user) return;
+
+        // بررسی اینکه آیا کاربر قبلاً پیام را لایک کرده است یا نه
+        const userIndex = message.likedBy.findIndex(likedUser => likedUser._id.toString() === userId);
+
+        if (userIndex > -1) {
+          // اگر کاربر قبلاً پیام را لایک کرده باشد، لایک او را حذف کنید
+          message.likedBy.splice(userIndex, 1);
+        } else {
+          // اگر کاربر هنوز پیام را لایک نکرده باشد، لایک او را اضافه کنید
+          message.likedBy.push({
+            _id: user._id,
+            username: user.username,
+            profilePicture: user.profilePicture
+          });
+        }
+
+        // ذخیره پیام به‌روزرسانی شده
+        await message.save();
+
+        // ارسال به‌روزرسانی به همه کاربران متصل
+        // ارسال به‌روزرسانی به همه کاربران متصل همراه با اطلاعات کاربر
+        io.emit("message liked", {
+          msgId,
+          userId: user._id,
+          username: user.username,
+          profilePicture: user.profilePicture
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+    socket.on("delete message", async (msgId) => {
+      try {
+          const message = await Message.findById(msgId);
+          if (!message) return;
   
+          await Message.deleteOne({ _id: msgId });
+  
+          // ارسال به‌روزرسانی به همه کاربران
+          io.emit("message deleted", msgId);
+      } catch (err) {
+          console.error(err);
+      }
+  });
+
+
     // رویداد قطع اتصال
     socket.on("disconnect", () => {
       console.log("User disconnected");
+      onlineUsers.delete(socket.id); // حذف کاربر از لیست آنلاین
+      io.emit("online users", onlineUsers.size); // ارسال تعداد کاربران آنلاین به تمام کاربران
+
+      // حذف کاربر از لیست تایپ کنندگان در صورت قطع اتصال
+      for (const [userId, user] of Object.entries(typingUsers)) {
+        if (user.socketId === socket.id) {
+          delete typingUsers[userId];
+        }
+      }
+
+      // ارسال به‌روزرسانی لیست کاربران تایپ کننده
+      io.emit("typing users", Object.values(typingUsers).map(user => user.username));
     });
   });
-  
+
+
+
+
 
   server.listen(port, () => {
     console.log(
-      `Server running in ${
-        productionMode ? "production" : "development"
+      `Server running in ${productionMode ? "production" : "development"
       } on port ${port}`
     );
   });

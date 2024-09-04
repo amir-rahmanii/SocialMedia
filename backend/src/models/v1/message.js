@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { boolean } = require("yup");
 
 const messageSchema = new mongoose.Schema({
   sender: {
@@ -17,6 +18,16 @@ const messageSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  likedBy: [
+    {
+      _id: mongoose.Schema.Types.ObjectId,
+      username: String,
+      profilePicture: {
+        path: String,
+        filename: String,
+      },
+    }
+  ]
 });
 
 module.exports = mongoose.model("message", messageSchema);

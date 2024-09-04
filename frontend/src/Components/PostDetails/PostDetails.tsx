@@ -1,4 +1,4 @@
-import { ClickAwayListener } from '@mui/material'
+
 import React, { useContext, useEffect, useState } from 'react'
 import { banIcon, deleteIcon, editPostIcon } from '../SvgIcon/SvgIcon';
 import { useDeletePost } from '../../hooks/post/usePost';
@@ -10,13 +10,12 @@ import { PostItemProps } from '../Home/PostsContainer/PostsContainer';
 
 type PostDetailsProps = {
     postInfo: PostItemProps,
-    setPostDetailsToggle: (value: boolean) => void,
     postId: string,
     userID: string,
     isBan: boolean,
 }
 
-function PostDetails({ postInfo, setPostDetailsToggle, postId, userID, isBan }: PostDetailsProps) {
+function PostDetails({ postInfo, postId, userID, isBan }: PostDetailsProps) {
 
 
     const { mutate: deletePost, isSuccess: isSuccessDeletePost, isError: isErrorDeletePost, error: errorDeletePost } = useDeletePost();

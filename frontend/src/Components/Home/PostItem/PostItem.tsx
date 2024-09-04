@@ -165,11 +165,11 @@ function PostItem(props: PostItemProps) {
                     <Link to={`/profile/${props.user.id}`}><img draggable="false" className="w-10 h-10 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${props.user.userPicture.filename}`} alt="avatar" /></Link>
                     <Link to={`/profile/${props.user.id}`} className="text-black text-sm font-semibold">{props.user.username}</Link>
                 </div>
-                <button onClick={() => setPostDetailsToggle(prev => !prev)} className="cursor-pointer">{moreIcons}</button>
+                <button onClick={() => setPostDetailsToggle(prev => !prev)} className="cursor-pointer text-[#262626]">{moreIcons}</button>
             </div>
 
             {postDatailsToggle && (
-                <PostDetails postInfo={props} isBan={props.user.isban} postId={props._id} userID={props.user.id} setPostDetailsToggle={setPostDetailsToggle} />
+                <PostDetails postInfo={props} isBan={props.user.isban} postId={props._id} userID={props.user.id} />
             )}
 
             {/* post image container */}
