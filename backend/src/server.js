@@ -155,6 +155,27 @@ function startServer() {
       }
   });
 
+    // گوش دادن به رویداد "edit message"
+    socket.on("edit message", async ({ msgId, newContent }) => {
+      try {
+        // یافتن پیام با استفاده از ID
+        const message = await Message.findById(msgId);
+        if (!message) return;
+  
+        // به‌روزرسانی محتوای پیام و تنظیم فیلد isEdited به true
+        message.content = newContent;
+        message.isEdited = true;
+  
+        // ذخیره پیام به‌روزرسانی شده
+        await message.save();
+  
+        // ارسال پیام به‌روزرسانی شده به همه کاربران متصل
+        io.emit("message edited", message);
+      } catch (err) {
+        console.error("Error editing message:", err);
+      }
+    });
+
 
     // رویداد قطع اتصال
     socket.on("disconnect", () => {

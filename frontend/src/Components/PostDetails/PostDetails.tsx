@@ -117,7 +117,7 @@ function PostDetails({ postInfo, postId, userID, isBan }: PostDetailsProps) {
                             {authContext?.user?._id === userID && (
                                 <button onClick={() => setUpdatePost(true)} className="flex items-center justify-between p-2.5 text-sm pl-4 cursor-pointer hover:bg-gray-50 duration-300 transition-all">
                                     Edit
-                                    <div className='w-4 h-4'>
+                                    <div className='w-4 h-4 text-black'>
                                         {editPostIcon}
                                     </div>
                                 </button>

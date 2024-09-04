@@ -22,6 +22,7 @@ export interface IMessage {
             filename: string
         };
     };
+    isEdited: boolean;
     content: string;
     timestamp: string;
     likedBy: {
@@ -94,6 +95,22 @@ function Inbox() {
                 setAllMessages(prevMessages => prevMessages.filter(msg => msg._id !== msgId));
             });
 
+            socket.on("message edited", (updatedMessage: IMessage) => {
+
+                setAllMessages(prevMessages =>
+                    prevMessages.map(msg =>
+                        (msg._id === updatedMessage._id && msg.content !== updatedMessage.content)
+                            ? {
+                                ...msg,
+                                isEdited: true,
+                                content: updatedMessage.content
+                            }
+                            : msg
+                    )
+                );
+
+            });
+
         });
 
         // مدیریت قطع اتصال و حذف شنوندگان
@@ -105,6 +122,7 @@ function Inbox() {
             socket.off("online users");
             socket.off("message liked");
             socket.off("message deleted");
+            socket.off("message edited");
         };
     }, []);
 
@@ -163,17 +181,21 @@ function Inbox() {
 
     const handleDeleteMessage = (msgId: string) => {
         console.log(msgId);
-        
+
         socket.emit("delete message", msgId);
         toast.success("Msg Deleted Successfuly 😁")
     };
+
+    const handleEditMessage = (msgId: string, newContent: string) => {
+        socket.emit("edit message", { msgId, newContent });
+    }
 
 
     return (
         <>
             <MetaData title="Instagram • Direct" />
 
-            <div className="mt-14 sm:mt-[4.7rem] pb-4 rounded h-[90vh] xl:w-2/3 mx-auto sm:pr-14 sm:pl-8">
+            <div className="mt-14 sm:mt-[4.7rem] pb-4 rounded h-[90vh] xl:w-2/3 mx-auto">
                 <div className="flex border h-full rounded w-full bg-white">
                     {/* <div className="flex flex-col w-full sm:w-4/6 gap-2 border-2">
                         {isLoadingInformationAllUser ? (
@@ -235,7 +257,7 @@ function Inbox() {
                                 allMessages?.map((m) => (
                                     <React.Fragment key={m._id}>
 
-                                        <Message handleDeleteMessage={handleDeleteMessage} handleLikeMessage={handleLikeMessage} ownMsg={m.sender._id === myInformationData?.response.user._id} message={m} />
+                                        <Message handleEditMessage={handleEditMessage} handleDeleteMessage={handleDeleteMessage} handleLikeMessage={handleLikeMessage} ownMsg={m.sender._id === myInformationData?.response.user._id} message={m} />
                                         <div ref={scrollRef}></div>
                                     </React.Fragment>
                                 ))

@@ -18,6 +18,10 @@ const messageSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  isEdited: {
+    type: Boolean,
+    default: false
+  },
   likedBy: [
     {
       _id: mongoose.Schema.Types.ObjectId,

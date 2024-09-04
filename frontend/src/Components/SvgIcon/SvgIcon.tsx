@@ -62,7 +62,7 @@ export const editPostIcon = <svg
   <g>
     <g
       fill="none"
-      stroke="#000"
+      stroke="currentColor"
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth="2"
