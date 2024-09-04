@@ -5,6 +5,9 @@ const dotenv = require("dotenv");
 const http = require("http");
 const socketIo = require("socket.io");
 const Message = require("./models/v1/message"); // اطمینان از درست بودن مسیر
+const User = require("./models/v1/user"); // اطمینان از درست بودن مسیر
+const cors = require('cors');
+
 
 // load env
 const productionMode = process.env.NODE_ENV === "production";
@@ -23,65 +26,65 @@ async function connectToDb() {
   }
 }
 
-// Define onlineUsers object
-let onlineUsers = {};
-
 // Running the server and setting up WebSocket
 function startServer() {
   const port = process.env.PORT || 4002;
   const server = http.createServer(app);
+
   const io = socketIo(server, {
     cors: {
-      origin: "http://localhost:5173",
-      credentials: true,
-    },
+      origin: "http://localhost:5173", // آدرس فرانت‌اند
+      methods: ["GET", "POST"]
+    }
   });
 
-  // WebSocket logic
-  io.on("connection", (socket) => {
+
+  io.on("connection", async (socket) => {
     console.log("A user connected");
-
-    // Handle user joining and tracking online status
-    socket.on("userOnline", (userId) => {
-      onlineUsers[userId] = socket.id;
-      io.emit("onlineUsers", onlineUsers); // Send updated online users to all clients
-    });
-
-    // Handle user disconnecting and removing their online status
-    socket.on("disconnect", () => {
-      for (let userId in onlineUsers) {
-        if (onlineUsers[userId] === socket.id) {
-          delete onlineUsers[userId];
-          io.emit("onlineUsers", onlineUsers); // Send updated online users to all clients
-          break;
-        }
-      }
-      console.log("A user disconnected");
-    });
-
-    // Join a room based on user ID
-    socket.on("joinRoom", (userId) => {
-      socket.join(userId);
-    });
-
-    // Handle message sending
-    socket.on("sendMessage", async ({ fromUserId, toUserId, message }) => {
+  
+    try {
+      // یافتن و ارسال تمام پیام‌های موجود در دیتابیس به کاربر متصل شده
+      const messages = await Message.find().populate("sender", "username profilePicture");
+      socket.emit("initial messages", messages);
+    } catch (err) {
+      console.error("Error fetching messages from database:", err);
+    }
+  
+    // گوش دادن به پیام جدید
+    socket.on("chat message", async (msg) => {
       try {
+        // یافتن کاربر برای دریافت نام کاربری و عکس پروفایل
+        const user = await User.findById(msg.senderId);
+  
+        if (!user) {
+          return socket.emit("error", "User not found");
+        }
+  
+        // ذخیره پیام در دیتابیس
         const newMessage = new Message({
-          fromUserId,
-          toUserId,
-          message,
+          sender: {
+            _id: user._id,
+            username: user.username,
+            profilePicture: user.profilePicture, // فرض می‌کنیم user.profilePicture شامل path است
+          },
+          content: msg.content,
+          timestamp: new Date(),
         });
-
         await newMessage.save();
-
-        // Send message to the recipient's room
-        io.to(toUserId).emit("receiveMessage", newMessage);
-      } catch (error) {
-        console.error(`Error sending message: ${error}`);
+  
+        // ارسال پیام به تمام کاربران متصل
+        io.emit("chat message", newMessage);
+      } catch (err) {
+        console.error(err);
       }
+    });
+  
+    // رویداد قطع اتصال
+    socket.on("disconnect", () => {
+      console.log("User disconnected");
     });
   });
+  
 
   server.listen(port, () => {
     console.log(

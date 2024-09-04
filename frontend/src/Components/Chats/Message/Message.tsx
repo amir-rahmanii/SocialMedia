@@ -1,29 +1,43 @@
 import React from "react"
-import { message } from "../../../hooks/message/message.types"
+import { IMessage } from "../../../Page/Inbox/Inbox"
+import { formatTime } from "../../../utils/formatTime";
 
-type MessageProps ={message : message , ownMsg: boolean}
+
+
+type MessageProps = { message: IMessage, ownMsg: boolean }
 
 
 
 const Message = (props: MessageProps) => {
 
+    console.log(props);
+
 
     return (
         props.ownMsg ?
-            props.message.message === '❤️' ?
-                <span className="self-end text-4xl">{props.message.message}</span>
+            props.message.content === '❤️' ?
+                <span className="self-end text-4xl">{props.message.content}</span>
                 :
-                <span className="self-end text-sm text-white bg-violet-600 px-4 py-3 rounded-3xl max-w-xs">{props.message.message}</span>
+                <div className="self-end flex flex-col gap-1.5 text-sm text-white bg-violet-600 px-4 py-3 rounded-3xl max-w-xs">
+                    <span >{props.message.content}</span>
+                    <span className="text-xs self-end">{formatTime(props.message.timestamp)}</span>
+                </div>
             :
-            props.message.message === '❤️' ?
+            props.message.content === '❤️' ?
                 <div className="flex items-end gap-2 max-w-xs">
-                    <img draggable="false" className="w-7 h-7 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${props.message.toUserId.profilePicture.filename}`} alt="profile" />
-                    <span className="items-end text-4xl">{props.message.message}</span>
+                    <img draggable="false" className="w-7 h-7 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${props.message?.sender?.profilePicture?.filename}`} alt="p" />
+                    <span className="items-end text-4xl">{props.message.content}</span>
                 </div>
                 :
                 <div className="flex items-end gap-2 max-w-xs">
-                    <img draggable="false" className="w-7 h-7 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${props.message.fromUserId.profilePicture.filename}`} alt="profile" />
-                    <span className="px-4 py-3 text-sm bg-gray-200 rounded-3xl max-w-xs overflow-hidden">{props.message.message}</span>
+                    <img draggable="false" className="w-7 h-7 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${props.message?.sender?.profilePicture?.filename}`} alt="p" />
+                    <div className="flex flex-col ">
+                        <span className="text-xs text-gray-500 px-3 py-1">{props.message.sender.username}</span>
+                        <div className="px-4 flex flex-col gap-1.5 py-3 text-sm bg-gray-200 rounded-3xl max-w-xs overflow-hidden">
+                            <span className="">{props.message.content}</span>
+                            <span className="text-xs text-gray-500">{formatTime(props.message.timestamp)}</span>
+                        </div>
+                    </div>
                 </div>
     )
 }

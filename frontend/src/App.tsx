@@ -4,7 +4,6 @@ import routes from './routes'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import Toast from './Components/Toast/Toast'
 import AuthContextProvider from './Context/AuthContext'
-import { SocketProvider } from './Context/SocketContext'
 
 function App() {
 
@@ -27,7 +26,6 @@ function App() {
 
 
   return (
-    <SocketProvider>
       <QueryClientProvider client={client}>
         <AuthContextProvider>
           {route}
@@ -35,7 +33,6 @@ function App() {
           <Toast />
         </AuthContextProvider>
       </QueryClientProvider>
-    </SocketProvider>
   )
 }
 

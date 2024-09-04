@@ -3,11 +3,11 @@ import React from 'react';
 import { format, isToday, isYesterday } from 'date-fns';
 
 type DateConverterProps = {
-  date: Date;
+  date: Date | string;
 }
 
 const DateConverter: React.FC<DateConverterProps> = ({ date }) => {
-  const formatDate = (date: Date): string => {
+  const formatDate = (date: Date | string): string => {
     if (isToday(date)) {
       return "Today " + format(date, 'hh:mm a');
     } else if (isYesterday(date)) {
