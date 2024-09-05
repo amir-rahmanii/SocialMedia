@@ -6,6 +6,7 @@ const userModel = require("../../../models/v1/user");
 const postModel = require("../../../models/v1/post");
 const likeToggleModel = require("../../../models/v1/likeToggle");
 const commentModel = require("../../../models/v1/comment");
+const messageModel = require("../../../models/v1/message");
 const followToggleModel = require("../../../models/v1/followToggle");
 const storyModel = require("../../../models/v1/story");
 const path = require('path');
@@ -80,7 +81,7 @@ exports.register = async (req, res) => {
         }
       }
     );
-    
+
 
     const accessToken = accessTokenCreator(user, "30s");
     const refreshToken = await RefreshTokenModel.createToken(user);
@@ -473,6 +474,30 @@ exports.updateUserProfile = async (req, res) => {
           "user.userPicture.path": filePath,
           "user.userPicture.filename": file.filename,
         },
+      }
+    );
+    // Update profile picture in all messages sent by the user
+    await messageModel.updateMany(
+      { "sender._id": userId },
+      {
+        $set: {
+          "sender.profilePicture.path": filePath,
+          "sender.profilePicture.filename": file.filename,
+        },
+      }
+    );
+
+    // Update profile picture in the likedBy array within messages
+    await messageModel.updateMany(
+      { "likedBy._id": userId },
+      {
+        $set: {
+          "likedBy.$[elem].profilePicture.path": filePath,
+          "likedBy.$[elem].profilePicture.filename": file.filename,
+        },
+      },
+      {
+        arrayFilters: [{ "elem._id": userId }],
       }
     );
 

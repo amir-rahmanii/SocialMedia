@@ -154,7 +154,7 @@ function Profile() {
                   }
                 }}
                 draggable="false"
-                className={`${(informationUserData && informationUserData?.stories.length > 0)  ? "border-red-500" : ""} w-40 h-40 border-2 rounded-full object-cover`}
+                className={`${(informationUserData && informationUserData?.stories.length > 0) ? "border-red-500" : ""} w-40 h-40 border-2 rounded-full object-cover`}
                 src={`http://localhost:4002/images/profiles/${informationUserData?.user.profilePicture.filename}`}
                 alt="profile"
               />

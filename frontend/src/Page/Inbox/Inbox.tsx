@@ -48,6 +48,9 @@ function Inbox() {
     const scrollRef = useRef<HTMLDivElement>(null);
     const [typingUsers, setTypingUsers] = useState<string[]>([]);
     const [countUsersOnline, setCountUsersOnline] = useState(0)
+    const [backgroundColorChat, setBackgroundColorChat] = useState(
+        localStorage.getItem("chatBg") || "#FFFFFF"
+    )
 
     const [showEmojis, setShowEmojis] = useState(false);
     const { data: myInformationData, isSuccess: isSuccessInformationData } = useGetUserInformation();
@@ -195,8 +198,8 @@ function Inbox() {
         <>
             <MetaData title="Instagram • Direct" />
 
-            <div className="mt-14 sm:mt-[4.7rem] pb-4 rounded h-[90vh] xl:w-2/3 mx-auto">
-                <div className="flex border h-full rounded w-full bg-white">
+            <div className="mt-14 sm:mt-[4.7rem] pb-4 rounded h-[90vh] xl:w-2/3 mx-auto bg-white">
+                <div className={`flex border h-full rounded w-full`}>
                     {/* <div className="flex flex-col w-full sm:w-4/6 gap-2 border-2">
                         {isLoadingInformationAllUser ? (
                             Array(5).fill("").map((el, i) => (<SkeletonUserItem key={i} />))
@@ -247,11 +250,17 @@ function Inbox() {
 
                                 </div>
                             </div>
-                            <svg className="cursor-pointer" aria-label="View Thread Details" color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24"><circle cx="12.001" cy="12.005" fill="none" r="10.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"></circle><circle cx="11.819" cy="7.709" r="1.25"></circle><line fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" x1="10.569" x2="13.432" y1="16.777" y2="16.777"></line><polyline fill="none" points="10.569 11.05 12 11.05 12 16.777" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"></polyline></svg>
+                            <div className='flex items-center gap-1'>
+                                <input className='rounded' onChange={(e) => {
+                                    setBackgroundColorChat(e.target.value)
+                                    localStorage.setItem("chatBg", e.target.value)
+                                }} type="color" id="head" name="head" value={backgroundColorChat} />
+                                <label className='hidden sm:block font-medium cursor-pointer' htmlFor='head'>Change BackGround</label>
+                            </div>
                         </div>
 
                         {/* messages */}
-                        <div className="w-full flex-1 flex flex-col gap-1.5 overflow-y-auto overflow-x-hidden p-4">
+                        <div className="w-full flex-1 flex flex-col gap-1.5 overflow-y-auto overflow-x-hidden p-4" style={{ backgroundColor: backgroundColorChat }}>
 
                             {allMessages.length > 0 ? (
                                 allMessages?.map((m) => (

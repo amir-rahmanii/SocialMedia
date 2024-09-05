@@ -3,12 +3,12 @@
 @tailwind utilities;
 
 
-body {
+/* body {
   background: #2c5364;
   background: linear-gradient(to right,
       #0f2027, #203a43, #2c5364);
   font-family: "Segoe UI", sans-serif;
-}
+} */
 
 .slick-arrow {
   margin: 0 2.3rem;

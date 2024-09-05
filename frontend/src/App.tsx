@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useRoutes } from 'react-router-dom'
 import routes from './routes'
 import { QueryClient, QueryClientProvider } from 'react-query'
@@ -24,15 +24,27 @@ function App() {
     }
   });
 
+  //change theme
+  useEffect(() => {
+    const theme = localStorage.getItem("theme");
+    if (theme === "dark") {
+      document.documentElement.classList.remove("light");
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      document.documentElement.classList.add("light");
+    }
+  }, [])
+
 
   return (
-      <QueryClientProvider client={client}>
-        <AuthContextProvider>
-          {route}
-          {/* show toast */}
-          <Toast />
-        </AuthContextProvider>
-      </QueryClientProvider>
+    <QueryClientProvider client={client}>
+      <AuthContextProvider>
+        {route}
+        {/* show toast */}
+        <Toast />
+      </AuthContextProvider>
+    </QueryClientProvider>
   )
 }
 

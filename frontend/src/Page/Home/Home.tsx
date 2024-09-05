@@ -6,6 +6,7 @@ import Header from '../../Parts/Header/Header'
 import { useGetUserInformation } from '../../hooks/user/useUser'
 import SpinLoader from '../../Components/SpinLoader/SpinLoader'
 import { AuthContext } from '../../Context/AuthContext'
+import SideBarLeft from '../../Parts/SideBarLeft/SideBarLeft'
 
 function Home() {
 
@@ -30,7 +31,8 @@ function Home() {
             ) : (
                 <>
                     <MetaData title="Instagram" />
-                    <Header />
+                    {/* <Header /> */}
+                    <SideBarLeft/>
                     <div className="flex gap-2 h-full lg:w-4/6 mt-14 mx-auto p-3 sm:p-0">
                         <PostsContainer />
                         <Sidebar  />
