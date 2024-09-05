@@ -92,17 +92,17 @@ function AddNewStory({ showAddStory, setShowAddStory }: AddNewStoryProps) {
 
     return (
         <Dialog open={showAddStory} onClose={() => setShowAddStory(false)} maxWidth='xl'>
-            <div className="flex flex-col max-w-4xl">
-                <div className="bg-white py-3 border-b px-4 flex justify-between w-full">
-                    <span className="font-medium">Create new Story</span>
-                    <button onClick={() => setShowAddStory(false)} className="font-medium ml-5 w-5 h-5">{closeIcon}</button>
+            <div className="flex flex-col max-w-4xl border">
+                <div className="bg-white dark:bg-black py-3 border-b px-4 flex justify-between w-full">
+                    <span className="font-medium text-black dark:text-white ">Create new Story</span>
+                    <button onClick={() => setShowAddStory(false)} className="text-black dark:text-white  font-medium ml-5 w-5 h-5">{closeIcon}</button>
                 </div>
 
-                <div className="flex items-center flex-col w-full">
+                <div className="flex items-center bg-white dark:bg-black flex-col w-full">
 
 
                     {isCameraActive && (
-                        <div className="relative bg-white h-[500px]  md:max-h-[600px] w-full flex flex-col gap-2 items-center justify-center mx-16">
+                        <div className="relative bg-white dark:bg-black h-[500px]  md:max-h-[600px] w-full flex flex-col gap-2 items-center justify-center mx-16">
                             <video ref={videoRef} autoPlay className="w-full h-full object-cover"></video>
                             <button onClick={handleCapturePhoto} className="absolute bottom-2 bg-primary-blue hover:bg-primaryLoading-blue transition-all duration-300 text-white  py-2 px-4 rounded-full">
                                 <div className='w-7 h-7'>

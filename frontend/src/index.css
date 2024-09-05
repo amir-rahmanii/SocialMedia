@@ -37,3 +37,13 @@
     transform: scale(0.4);
   }
 }
+
+
+.slick-prev, .slick-next {
+  color: white; /* رنگ دلخواه */
+}
+
+.slick-prev::before, .slick-next::before {
+  color: rgb(110, 101, 101); /* رنگ آیکون قبل از تغییر */
+  font-size: 25px; /* اندازه دلخواه آیکون */
+}

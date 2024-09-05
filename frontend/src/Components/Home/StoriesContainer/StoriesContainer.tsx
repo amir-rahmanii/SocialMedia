@@ -39,11 +39,11 @@ const StoriesContainer = () => {
 
     return (
         <>
-            <Slider {...settings} className="w-full overflow-x-auto bg-white pt-2.5 pb-1 px-2.5 border rounded">
+            <Slider {...settings} className="w-full overflow-x-auto  pt-2.5 pb-1 px-2.5 rounded">
                 <div onClick={() => {
                     setShowAddStory(true)
                 }} className="flex flex-col text-center justify-center items-center p-2 cursor-pointer">
-                    <div className="w-16 h-16 rounded-full border-2 border-red-500 relative">
+                    <div className="w-[90px] h-[90px] rounded-full border-2 border-red-500 relative">
                         <img
                             loading="lazy"
                             className="rounded-full h-full w-full object-cover"
@@ -55,7 +55,7 @@ const StoriesContainer = () => {
                             {plusIcon}
                         </button>
                     </div>
-                    <span className="text-xs mt-2">{authContext?.user?.username}</span>
+                    <span className="text-xs mt-2 text-black dark:text-white">{authContext?.user?.username}</span>
                 </div>
                 {allStories?.stories?.map((s) => (
                     <div key={s._id}> {/* Ensure each story is in a separate div */}
@@ -63,7 +63,7 @@ const StoriesContainer = () => {
                             setIsShowStoryContent(true)
                             handleStoryClick(s._id)
                         }} className="flex flex-col text-center justify-center items-center p-2 cursor-pointer">
-                            <div className="w-16 h-16 rounded-full border-2 border-red-500">
+                            <div className="w-[90px] h-[90px] rounded-full border-2 border-red-500">
                                 <img
                                     loading="lazy"
                                     className="rounded-full h-full w-full object-cover"
@@ -72,7 +72,7 @@ const StoriesContainer = () => {
                                     alt="story"
                                 />
                             </div>
-                            <span className="text-xs mt-2">{s.user.username}</span>
+                            <span className="text-xs mt-2 text-black dark:text-white">{s.user.username}</span>
                         </div>
                     </div>
                 ))}

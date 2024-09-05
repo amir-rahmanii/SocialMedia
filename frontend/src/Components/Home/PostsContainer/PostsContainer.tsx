@@ -72,11 +72,11 @@ function PostsContainer() {
                                 ))}
                             </div>
                         ) : (
-                            <div className='bg-white text-center mt-2 p-4 text-xl rounded'>
+                            <div className='text-black dark:text-white text-center mt-2 p-4 text-xl rounded'>
                                 Sorry, no posts have been registered yet😩
                                 <div className='flex items-center justify-center gap-3 mt-2'>
                                     <span> You be the first</span>
-                                    <div onClick={() => setNewPost(true)} className="cursor-pointer">{postUploadOutline}</div>
+                                    <div onClick={() => setNewPost(true)} className="cursor-pointer w-6 h-6">{postUploadOutline}</div>
                                 </div>
                                 <NewPost newPost={newPost} setNewPost={setNewPost} />
                             </div>
