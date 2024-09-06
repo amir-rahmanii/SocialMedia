@@ -158,14 +158,14 @@ function PostItem(props: PostItemProps) {
 
 
     return (
-        <div className="flex flex-col border rounded bg-white relative mt-3">
+        <div className="flex flex-col rounded bg-white dark:bg-black relative mt-3">
 
-            <div className="flex justify-between px-3 py-2.5 border-b items-center">
+            <div className="flex justify-between px-3 py-2.5 border-b dark:border-gray-300/20 border-gray-300  items-center">
                 <div className="flex space-x-3 items-center">
                     <Link to={`/profile/${props.user.id}`}><img draggable="false" className="w-10 h-10 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${props.user.userPicture.filename}`} alt="avatar" /></Link>
-                    <Link to={`/profile/${props.user.id}`} className="text-black text-sm font-semibold">{props.user.username}</Link>
+                    <Link to={`/profile/${props.user.id}`} className="text-black dark:text-white text-sm font-semibold">{props.user.username}</Link>
                 </div>
-                <button onClick={() => setPostDetailsToggle(prev => !prev)} className="cursor-pointer text-[#262626]">{moreIcons}</button>
+                <button onClick={() => setPostDetailsToggle(prev => !prev)} className="cursor-pointer text-black dark:text-white">{moreIcons}</button>
             </div>
 
             {postDatailsToggle && (
@@ -174,7 +174,7 @@ function PostItem(props: PostItemProps) {
 
             {/* post image container */}
 
-            <Slider {...settings} className='w-full'>
+            <Slider {...settings} className='w-full h-full'>
                 {props.media.map((data) => (
                     <div key={data._id} className='relative w-full h-full'>
                         <div onDoubleClick={() => setLike(props._id)} className='flex justify-center items-center w-full h-full'>
@@ -207,28 +207,30 @@ function PostItem(props: PostItemProps) {
                 {/* comment input container */}
                 <div className="mt-auto">
                     {/* like comment container */}
-                    <div className="flex flex-col px-4 space-y-1 border-b pb-2 mt-2">
+                    <div className="flex flex-col px-4 space-y-1 dark:border-gray-300/20 border-gray-300  border-b pb-2 mt-2">
 
                         {/* icons container */}
                         <div className="flex items-center justify-between py-2">
                             <div className="flex space-x-4">
-                                <button onClick={() => handleLike(props._id)}>{liked ? likeFill : likeIconOutline}</button>
-                                <button onClick={() => commentInput.current?.focus()}>{commentIcon}</button>
-                                {shareIcon}
+                                <button className='w-6 h-6 text-black dark:text-white' onClick={() => handleLike(props._id)}>{liked ? likeFill : likeIconOutline}</button>
+                                <button className='w-6 h-6 text-black dark:text-white' onClick={() => commentInput.current?.focus()}>{commentIcon}</button>
+                                <button className='w-6 h-6 text-black dark:text-white'>
+                                    {shareIcon}
+                                </button>
                             </div>
-                            <button onClick={() => handleSave(props._id)}>{(props.isSaved || saved) ? saveIconFill : saveIconOutline}</button>
+                            <button className='w-6 h-6 text-black dark:text-white' onClick={() => handleSave(props._id)}>{(props.isSaved || saved) ? saveIconFill : saveIconOutline}</button>
                         </div>
 
                         {/* likes  */}
-                        <button onClick={() => setIsOpenShowLiked(true)} className="font-semibold text-sm cursor-pointer text-left">{props.likes.length} likes</button>
+                        <button onClick={() => setIsOpenShowLiked(true)} className="font-semibold text-sm cursor-pointer text-left text-black dark:text-white">{props.likes.length} likes</button>
 
                         {/* comment */}
-                        <div className="flex flex-auto items-center space-x-1">
+                        <div className="flex flex-auto items-center space-x-1 text-black dark:text-white">
                             <Link to={`/profile/${props.user.id}`} className="text-sm font-semibold hover:underline">{props.user.username}</Link>
                             <span className="text-sm truncate line-clamp-1">{props.title}</span>
                         </div>
 
-                        <div className={` ${showMoreDesc ? "flex" : "hidden"} gap-[2px] flex-col`}>
+                        <div className={` ${showMoreDesc ? "flex" : "hidden"} gap-[2px] flex-col text-black dark:text-white`}>
                             <span className="text-sm truncate">{props.description}</span>
                             <span className="text-sm truncate text-primary-blue">{props.hashtags}</span>
                         </div>
@@ -250,12 +252,12 @@ function PostItem(props: PostItemProps) {
                         {viewComment &&
                             <div className="w-full h-52 overflow-y-auto py-1">
                                 {props.comments.map((c) => (
-                                    <div className="flex items-start mb-2 border-b space-x-3" key={c._id}>
+                                    <div className="flex items-start mb-2 border-b dark:border-gray-300/20 border-gray-300  space-x-3" key={c._id}>
                                         <Link to={`/profile/${c.userid}`} className='mt-2'>
                                             <img draggable="false" className="h-7 w-7 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/images/profiles/${c.userPicture.filename}`} alt="avatar" />
                                         </Link>
                                         <div className='flex justify-between w-full p-1'>
-                                            <div className='flex flex-col items-start mb-2 space-y-1'>
+                                            <div className='flex flex-col items-start mb-2 space-y-1 text-black dark:text-white'>
                                                 <Link to={`/profile/${c.userid}`} className="text-sm font-semibold hover:underline">{c.username}</Link>
                                                 <p className="text-sm line-clamp-3">{c.content}</p>
                                                 <span className="text-xs text-gray-500">{<DateConverter date={c.createdAt} />}</span>
@@ -267,7 +269,7 @@ function PostItem(props: PostItemProps) {
                                                     }
                                                     deleteComment(objDeleteComment)
                                                 }}>
-                                                    <div className='w-4 h-4'>
+                                                    <div className='w-4 h-4 text-black dark:text-white'>
                                                         {deleteIcon}
                                                     </div>
                                                 </button>
@@ -284,7 +286,7 @@ function PostItem(props: PostItemProps) {
 
 
                     <form onSubmit={e => e.preventDefault()} className="flex items-center justify-between p-3 w-full space-x-3">
-                        <span onClick={() => setShowEmojis(!showEmojis)} className="cursor-pointer">
+                        <span onClick={() => setShowEmojis(!showEmojis)} className="cursor-pointer w-6 h-6 text-black dark:text-white">
                             {emojiIcon}
                         </span>
 
@@ -299,7 +301,7 @@ function PostItem(props: PostItemProps) {
                         )}
 
                         <input
-                            className="flex-auto text-sm outline-none border-none bg-transparent"
+                            className="flex-auto text-sm text-black dark:text-white outline-none border-none bg-transparent"
                             type="text"
                             value={comment}
                             ref={commentInput}

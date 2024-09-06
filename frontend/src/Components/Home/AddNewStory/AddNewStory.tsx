@@ -92,8 +92,8 @@ function AddNewStory({ showAddStory, setShowAddStory }: AddNewStoryProps) {
 
     return (
         <Dialog open={showAddStory} onClose={() => setShowAddStory(false)} maxWidth='xl'>
-            <div className="flex flex-col max-w-4xl border">
-                <div className="bg-white dark:bg-black py-3 border-b px-4 flex justify-between w-full">
+            <div className="flex flex-col max-w-4xl border dark:border-gray-300/20 border-gray-300 ">
+                <div className="bg-white dark:bg-black py-3 border-b dark:border-gray-300/20 border-gray-300  px-4 flex justify-between w-full">
                     <span className="font-medium text-black dark:text-white ">Create new Story</span>
                     <button onClick={() => setShowAddStory(false)} className="text-black dark:text-white  font-medium ml-5 w-5 h-5">{closeIcon}</button>
                 </div>

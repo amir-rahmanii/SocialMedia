@@ -14,6 +14,7 @@ import ShowWhoFollow from '../../Components/Profile/ShowWhoFollow/ShowWhoFollow'
 import { Backdrop, Dialog } from '@mui/material'
 import TableLogin from '../../Components/User/TableLogin/TableLogin'
 import StoryContent from '../../Components/Home/StoriesContainer/StoryContent'
+import SideBarLeft from '../../Parts/SideBarLeft/SideBarLeft'
 
 
 
@@ -132,15 +133,15 @@ function Profile() {
 
   return (
     <>
-      <MetaData title={`Profile • Instagram photos and videos`} />
-      <Header />
+      <SideBarLeft />
       {isLoadingUserData && isLoadingMyInformationData ? (
         <SpinLoader />
       ) : (
-        <div className="mt-16 xl:w-2/3 mx-auto p-3">
+        <div className="xl:w-2/3 mr-32 mx-auto p-3">
+          <MetaData title={`@${myInformationData?.response.user.username} • Instagram photos and videos`} />
 
 
-          <div className="sm:flex w-full sm:py-8 bg-white rounded-t">
+          <div className="sm:flex w-full sm:py-8 rounded-t">
 
             {/* profile picture */}
             <div className="sm:w-1/3 pt-3 md:pt-0 flex justify-center mx-auto sm:mx-0">
@@ -164,7 +165,7 @@ function Profile() {
                 <>
                   <button onClick={() => setIsShowChangeProfile(true)} className=' flex flex-col items-center group self-end cursor-pointer'>
                     <div className='flex flex-col items-center'>
-                      <div className='w-10 h-10 text-black hover:w-12 hover-h-12 transition-all duration-300'>
+                      <div className='w-10 h-10 text-black dark:text-white hover:w-12 hover-h-12 transition-all duration-300'>
                         {changeProfilePicture}
                       </div>
                     </div>
@@ -197,11 +198,11 @@ function Profile() {
             <div className="flex flex-col gap-6 p-4 sm:w-2/3 sm:p-1">
               <div className="flex items-end gap-8 sm:justify-start justify-between">
 
-                <h2 className="text-2xl sm:text-3xl font-thin">{informationUserData?.user.username}</h2>
+                <h2 className="text-2xl sm:text-3xl font-thin text-black dark:text-white">{informationUserData?.user.username}</h2>
 
                 {myInformationData?.response.user._id === informationUserData?.user._id && (
                   <div>
-                    <Link to="/accounts/edit" className="border flex gap-2 items-center font-medium hover:bg-gray-50 text-sm rounded px-2 py-1">Edit Profile {settingsIcon}</Link>
+                    <Link to="/accounts/edit" className="text-black dark:text-white border flex gap-2 items-center font-medium hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 text-sm rounded px-2 py-1">Edit Profile {settingsIcon}</Link>
                   </div>
                 )}
 
@@ -209,8 +210,8 @@ function Profile() {
 
               </div>
 
-              <div className="flex justify-between items-center max-w-[21.5rem]">
-                <div className="cursor-pointer"><span className="font-semibold">
+              <div className="flex justify-between items-center max-w-[21.5rem] text-black dark:text-white">
+                <div className="cursor-pointer"><span className="font-semibold ">
 
                   {informationUserData?.posts.length}
                 </span> posts</div>
@@ -228,7 +229,7 @@ function Profile() {
               </div>
 
               {/* bio */}
-              <div className="max-w-full">
+              <div className="max-w-full text-black dark:text-white">
                 <p className="font-medium">{informationUserData?.user.name}</p>
                 <p className="whitespace-pre-line">Lorem ipsum</p>
 
@@ -248,20 +249,23 @@ function Profile() {
 
 
 
-          <div className="border-t  bg-white rounded-b">
+          <div className="border-t dark:border-gray-300/20 border-gray-300  rounded-b">
 
             {/* tabs */}
-            <div className="flex gap-12 justify-center">
-              <span onClick={() => setSavedTab(false)} className={`${savedTab ? 'text-gray-400' : 'border-t border-black'} py-3 cursor-pointer flex items-center text-[13px] uppercase gap-3 tracking-[1px] font-medium`}>
+            <div className="flex gap-12 justify-center text-black dark:text-white">
+              <span onClick={() => setSavedTab(false)} className={`${savedTab ? 'text-gray-400' : 'border-t border-black dark:border-white'} py-3 cursor-pointer  flex items-center text-[13px] uppercase gap-3 tracking-[1px] font-medium`}>
                 {savedTab ? postsIconOutline : postsIconFill} posts</span>
 
               {myInformationData?.response.user._id === informationUserData?.user._id && (
-                <span onClick={() => setSavedTab(true)} className={`${savedTab ? 'border-t border-black' : 'text-gray-400'} py-3 cursor-pointer flex items-center text-[13px] uppercase gap-3 tracking-[1px] font-medium`}>
+                <span onClick={() => setSavedTab(true)} className={`${savedTab ? 'border-t border-black dark:border-white' : 'text-gray-400'} py-3 cursor-pointer flex items-center text-[13px] uppercase gap-3 tracking-[1px] font-medium`}>
                   {savedTab ? savedIconFill : savedIconOutline} saved</span>
               )}
 
               <span className="py-3 flex items-center text-gray-400 text-[13px] uppercase gap-3 tracking-[1px] font-medium">
-                {reelsIcon} reels</span>
+                <div className='w-4 h-4 text-gray-400'>
+                  {reelsIcon}
+                </div>
+                reels</span>
               <span className="py-3 hidden sm:flex items-center text-gray-400 text-[13px] uppercase gap-3 tracking-[1px] font-medium">
                 {taggedIcon} tagged</span>
             </div>
@@ -275,7 +279,7 @@ function Profile() {
                   (mySavedPost && mySavedPost.response && mySavedPost.response.myPosts.length > 0) ? (
                     <PostContainerUser showCol={true} posts={mySavedPost.response.myPosts} />
                   ) : (
-                    <div className='bg-white text-center mt-2 p-4 text-xl rounded'>
+                    <div className='text-black dark:text-white text-center mt-2 p-4 text-xl rounded'>
                       Sorry, no posts have been Saved yet😩
                       <div className='flex items-center justify-center gap-3 mt-2'>
                         <span> You be the first Save Post</span>
@@ -290,13 +294,13 @@ function Profile() {
                   (informationUserData && informationUserData.posts && informationUserData.posts.length > 0) ? (
                     <PostContainerUser showCol={true} posts={informationUserData?.posts} />
                   ) : (
-                    <div className='bg-white text-center mt-2 p-4 text-xl rounded'>
+                    <div className='text-black dark:text-white text-center mt-2 p-4 text-xl rounded'>
                       Sorry, no posts have been registered yet😩
                       {myInformationData?.response.user._id === informationUserData?.user._id && (
                         <>
                           <div className='flex items-center justify-center gap-3 mt-2'>
                             <span> You be the first</span>
-                            <div onClick={() => setNewPost(true)} className="cursor-pointer">{postUploadOutline}</div>
+                            <div onClick={() => setNewPost(true)} className="cursor-pointer w-6 h-6 text-black dark:text-white">{postUploadOutline}</div>
                           </div>
                           <NewPost newPost={newPost} setNewPost={setNewPost} />
                         </>
@@ -309,15 +313,20 @@ function Profile() {
 
           </div>
           {/* login info user */}
-          <div className='mt-4'>
+          {/* <div className='mt-4'>
             {myInformationData?.response.user._id === informationUserData?.user._id && (
               <TableLogin loginInformation={myInformationData?.response?.user.systemInfos} />
             )}
-          </div>
+          </div> */}
 
           {/* footer */}
-          <div className="bg-white mt-4 mb-10 drop-shadow-sm rounded flex sm:flex-row flex-col sm:gap-0 gap-5 sm:p-0 p-4 items-center justify-between">
-            <img draggable="false" className="w-2/5 rounded-l" src="https://www.instagram.com/static/images/mediaUpsell.jpg/6efc710a1d5a.jpg" alt="" />
+          <div className="text-black dark:text-white mt-10 mb-10 drop-shadow-sm rounded flex sm:flex-row flex-col sm:gap-0 gap-5 sm:p-0 p-4 items-center justify-between">
+            <div className='grid grid-cols-3 gap-2'>
+            {Array(9).fill(0).map((_ , index) => (
+            <img key={index + 1} loading='lazy' draggable="false" className="rounded w-28 h-28" src="/src/assets/images/4.jpg" alt="1" />
+            ))}
+
+            </div>
             <div className="mx-auto flex flex-col items-center">
               <h4 className="font-medium text-lg sm:text-xl">Start capturing and sharing your moments.</h4>
               <p>Get the app to share your first photo or video.</p>

@@ -32,7 +32,7 @@ function Home() {
                     <MetaData title="Instagram" />
                     {/* <Header /> */}
                     <SideBarLeft/>
-                    <div className="flex gap-2 h-full lg:w-4/6 mx-auto p-3 sm:p-0">
+                    <div className="flex gap-2 h-full lg:w-full xl:w-5/6 mx-auto p-3 sm:p-0">
                         <PostsContainer />
                         <Sidebar  />
                     </div>

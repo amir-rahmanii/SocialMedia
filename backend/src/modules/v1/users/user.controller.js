@@ -87,11 +87,11 @@ exports.register = async (req, res) => {
     const refreshToken = await RefreshTokenModel.createToken(user);
 
     res.cookie("access-token", accessToken, {
-      maxAge: 900_000,
+      maxAge: 3_600_000, // 1 ساعت
       httpOnly: false,
     });
     res.cookie("refresh-token", refreshToken, {
-      maxAge: 900_000,
+      maxAge: 604_800_000, // 1 هفته
       httpOnly: false,
     });
     return successResponse(res, 201, {
@@ -144,11 +144,11 @@ exports.login = async (req, res) => {
     );
 
     res.cookie("access-token", accessToken, {
-      maxAge: 900_000,
+      maxAge: 3_600_000, // 1 ساعت
       httpOnly: false,
     });
     res.cookie("refresh-token", refreshToken, {
-      maxAge: 900_000,
+      maxAge: 604_800_000, // 1 هفته
       httpOnly: false,
     });
 
@@ -181,11 +181,11 @@ exports.refreshToken = async (req, res) => {
     const newRefreshToken = await RefreshTokenModel.createToken(user);
 
     res.cookie("access-token", accessToken, {
-      maxAge: 900_000, // 15 minutes
+      maxAge: 3_600_000, // 1 ساعت
       httpOnly: false,
     });
     res.cookie("refresh-token", newRefreshToken, {
-      maxAge: 900_000, // 15 minutes
+      maxAge: 604_800_000, // 1 هفته
       httpOnly: false,
     });
 

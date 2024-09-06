@@ -80,7 +80,7 @@ function ChangeProfile({ isShowChangeProfile, setIsShowChangeProfile }: ChangePr
         <Dialog open={isShowChangeProfile} onClose={() => setIsShowChangeProfile(false)} maxWidth='xl'>
             <div className="flex flex-col max-w-4xl xl:w-screen">
                 <div className="bg-white py-3 border-b px-4 flex justify-between w-full">
-                    <span className="font-medium">Create new post</span>
+                    <span className="font-medium">Change Profile</span>
                     <button onClick={() => setIsShowChangeProfile(false)} className="font-medium w-5 h-5">{closeIcon}</button>
                 </div>
                 {/* <LinearProgress /> */}

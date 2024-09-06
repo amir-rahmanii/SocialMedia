@@ -69,25 +69,25 @@ function ShowWhoFollow({ title, dataFollow, isOpenShowWhoFollow, setIsOpenShowWh
 
   return (
     <Dialog open={isOpenShowWhoFollow} onClose={() => setIsOpenShowWhoFollow(false)} maxWidth='xl'>
-      <div className="flex flex-col h-56 overflow-y-auto xl:w-screen max-w-xl bg-white">
-        <div className="bg-white py-3 border-b px-4 flex justify-between w-full">
-          <span className="font-medium">List Users {title}</span>
-          <button className='w-5 h-5' onClick={() => setIsOpenShowWhoFollow(false)}>
+      <div className="flex flex-col h-56 overflow-y-auto xl:w-screen max-w-xl bg-white dark:bg-black">
+        <div className="bg-white dark:bg-black py-3 border-b dark:border-gray-300/20 border-gray-300  px-4 flex justify-between w-full">
+          <span className="font-medium text-black dark:text-white">List Users {title}</span>
+          <button className='w-6 h-6 text-black dark:text-white' onClick={() => setIsOpenShowWhoFollow(false)}>
             {closeIcon}
           </button>
         </div>
         {dataFollow && (
           <>
             {dataFollow.length > 0 ? (
-              <div className='py-3 px-4 flex flex-col'>
+              <div className='py-3 px-4 flex flex-col '>
                 {dataFollow?.map((data, index) => (
                   <div className='flex justify-between items-center'>
-                    <div key={index} className='flex items-center gap-2  border-b p-2'>
+                    <div key={index} className='flex items-center gap-2 p-2'>
                       <Link to={`/profile/${data.userId}`}>
                         <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/${data.profilePicture.path}`} alt="avatar" />
                       </Link>
                       <div className='flex flex-col'>
-                        <Link to={`/profile/${data.userId}`} className="text-sm font-semibold hover:underline">{data.username}</Link>
+                        <Link to={`/profile/${data.userId}`} className="text-black dark:text-white text-sm font-semibold hover:underline">{data.username}</Link>
                         {/* <p className='text-xs text-gray-500"'><DateConverter date={data.createdAt} /></p> */}
                       </div>
                     </div>
@@ -107,7 +107,7 @@ function ShowWhoFollow({ title, dataFollow, isOpenShowWhoFollow, setIsOpenShowWh
                 ))}
               </div>
             ) : (
-              <div className='py-3 px-4 text-xl'>
+              <div className='py-3 text-black dark:text-white px-4 text-xl'>
                 No user found 😩
               </div>
             )}

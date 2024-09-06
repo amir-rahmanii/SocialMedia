@@ -71,24 +71,24 @@ function ShowWhoLiked({ userLiked, isOpenShowLiked, setIsOpenShowLiked }: ShowWh
 
     return (
         <Dialog open={isOpenShowLiked} onClose={() => setIsOpenShowLiked(false)} maxWidth='xl'>
-            <div className="flex flex-col h-56 overflow-y-auto xl:w-screen max-w-xl bg-white">
-                <div className="bg-white py-3 border-b px-4 flex justify-between w-full">
-                    <span className="font-medium">List Users Liked</span>
-                    <button className='w-5 h-5' onClick={() => setIsOpenShowLiked(false)}>
+            <div className="flex flex-col h-56 overflow-y-auto xl:w-screen max-w-xl bg-white dark:bg-black">
+                <div className="bg-white dark:bg-black py-3 border-b dark:border-gray-300/20 border-gray-300  px-4 flex justify-between w-full">
+                    <span className="font-medium text-black dark:text-white">List Users Liked</span>
+                    <button className='w-6 h-6 text-black dark:text-white' onClick={() => setIsOpenShowLiked(false)}>
                         {closeIcon}
                     </button>
                 </div>
                 {userLiked.length > 0 ? (
                     <div className='py-3 px-4 flex flex-col'>
                         {userLiked.map((data, index) => (
-                            <div key={index} className='flex items-center justify-between border-b p-2'>
+                            <div key={index} className='flex items-center justify-between border-b dark:border-gray-300/20 border-gray-300 p-2'>
                                 <div className='flex items-center gap-2'>
                                     <Link to={`/profile/${data.userid}`}>
                                         <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/images/profiles/${data.userPicture.filename}`} alt="avatar" />
                                     </Link>
                                     <div className='flex flex-col'>
-                                        <Link to={`/profile/${data.userid}`} className="text-sm font-semibold hover:underline">{data.username}</Link>
-                                        <p className='text-xs text-gray-500"'><DateConverter date={data.createdAt} /></p>
+                                        <Link to={`/profile/${data.userid}`} className="text-sm text-black dark:text-white font-semibold hover:underline">{data.username}</Link>
+                                        <p className='text-xs text-gray-500'><DateConverter date={data.createdAt} /></p>
                                     </div>
                                 </div>
                                 <div className='ml-5'>

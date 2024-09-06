@@ -127,8 +127,8 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
 
     return (
         <Dialog open={newPost} onClose={() => setNewPost(false)} maxWidth='xl'>
-            <div className="flex flex-col xl:w-screen max-w-4xl border">
-                <div className="bg-white dark:bg-black py-3 border-b px-4 flex justify-between w-full">
+            <div className="flex flex-col xl:w-screen max-w-4xl border dark:border-gray-300/20 border-gray-300 ">
+                <div className="bg-white dark:bg-black py-3 border-b dark:border-gray-300/20 border-gray-300 px-4 flex justify-between w-full">
                     <span className="font-medium text-black dark:text-white">Create new post</span>
                     <button onClick={() => setNewPost(false)} className="font-medium w-5 h-5 text-black dark:text-white">{closeIcon}</button>
                 </div>
@@ -158,7 +158,7 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
                         </div>
                     }
 
-                    <div className="flex flex-col border-l sm:h-[80vh] w-full bg-white dark:bg-black">
+                    <div className="flex flex-col border-l dark:border-gray-300/20 border-gray-300 sm:h-[80vh] w-full bg-white dark:bg-black">
 
                         <div className="flex gap-3 px-3 py-2 items-center">
                             <img draggable="false" className="w-11 h-11 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${authContext?.user?.profilePicture.filename}`} alt="avatar" />
@@ -166,7 +166,7 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
                         </div>
 
 
-                        <div className="p-3 w-full border-b relative">
+                        <div className="p-3 w-full border-b dark:border-gray-300/20 border-gray-300 relative">
                             <div className='flex items-center'>
                                 <input
                                     type="file"
