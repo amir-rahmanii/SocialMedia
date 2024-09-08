@@ -7,6 +7,10 @@ import { useGetUserInformation } from '../../hooks/user/useUser';
 import io from 'socket.io-client';
 import { useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import Header from '../../Parts/Header/Header';
+import SideBarLeft from '../../Parts/SideBarLeft/SideBarLeft';
+import SideBarBottom from '../../Parts/SideBarBottom/SideBarBottom';
+import { emojiIcon } from '../../Components/SvgIcon/SvgIcon';
 
 
 const socket = io('http://localhost:4002');
@@ -197,9 +201,10 @@ function Inbox() {
     return (
         <>
             <MetaData title="Instagram • Direct" />
-
-            <div className="mt-14 sm:mt-[4.7rem] pb-4 rounded h-[90vh] xl:w-2/3 mx-auto bg-white">
-                <div className={`flex border h-full rounded w-full`}>
+            <Header />
+            <SideBarLeft />
+            <div className="mt-14 xl:mr-32 pb-4 rounded h-[90vh] md:w-4/6 mx-auto bg-white dark:bg-black">
+                <div className={`flex border dark:border-gray-300/20 border-gray-300 h-full rounded w-full`}>
                     {/* <div className="flex flex-col w-full sm:w-4/6 gap-2 border-2">
                         {isLoadingInformationAllUser ? (
                             Array(5).fill("").map((el, i) => (<SkeletonUserItem key={i} />))
@@ -229,7 +234,7 @@ function Inbox() {
                     <div className="flex flex-col justify-between w-full">
 
                         {/* header */}
-                        <div className="flex py-3 px-6 border-b items-center justify-between">
+                        <div className="flex py-3 px-6 border-b dark:border-gray-300/20 border-gray-300 items-center justify-between">
                             <div className="flex gap-2 items-center">
                                 <div className="w-8 h-8 relative">
                                     <img draggable="false" className="w-7 h-7 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${myInformationData?.response.user.profilePicture.filename}`} alt="profile" />
@@ -239,7 +244,7 @@ function Inbox() {
                                         )} */}
                                 </div>
                                 <div className='flex flex-col'>
-                                    <span className="font-medium cursor-pointer">Group Instagram</span>
+                                    <span className="font-medium cursor-pointer text-black dark:text-white">Group Instagram</span>
                                     {isSuccessInformationData && (
                                         (typingUsers.length > 0 && !typingUsers.includes(myInformationData?.response.user.username)) ? (
                                             <span className="font-medium cursor-pointer text-xs text-gray-500">{typingUsers.join(', ')} is Typing...</span>
@@ -255,7 +260,7 @@ function Inbox() {
                                     setBackgroundColorChat(e.target.value)
                                     localStorage.setItem("chatBg", e.target.value)
                                 }} type="color" id="head" name="head" value={backgroundColorChat} />
-                                <label className='hidden sm:block font-medium cursor-pointer' htmlFor='head'>Change BackGround</label>
+                                <label className='hidden text-black dark:text-white sm:block font-medium cursor-pointer' htmlFor='head'>Change BackGround</label>
                             </div>
                         </div>
 
@@ -286,8 +291,8 @@ function Inbox() {
 
                         {/* message input */}
                         <form onSubmit={e => e.preventDefault()} className="flex items-center gap-3 justify-between border rounded-full py-2.5 px-4 m-5 relative">
-                            <span onClick={() => setShowEmojis(!showEmojis)} className="cursor-pointer hover:opacity-60">
-                                <svg aria-label="Emoji" color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M15.83 10.997a1.167 1.167 0 101.167 1.167 1.167 1.167 0 00-1.167-1.167zm-6.5 1.167a1.167 1.167 0 10-1.166 1.167 1.167 1.167 0 001.166-1.167zm5.163 3.24a3.406 3.406 0 01-4.982.007 1 1 0 10-1.557 1.256 5.397 5.397 0 008.09 0 1 1 0 00-1.55-1.263zM12 .503a11.5 11.5 0 1011.5 11.5A11.513 11.513 0 0012 .503zm0 21a9.5 9.5 0 119.5-9.5 9.51 9.51 0 01-9.5 9.5z"></path></svg>
+                            <span onClick={() => setShowEmojis(!showEmojis)} className="cursor-pointer text-black dark:text-white  w-6 h-6 hover:opacity-60">
+                                {emojiIcon}
                             </span>
 
                             {showEmojis && (
@@ -301,7 +306,7 @@ function Inbox() {
                             )}
 
                             <input
-                                className="flex-1 outline-none text-sm"
+                                className="flex-1 outline-none text-sm bg-white dark:bg-black text-black dark:text-white"
                                 type="text"
                                 placeholder="Message..."
                                 value={message}
@@ -312,10 +317,10 @@ function Inbox() {
                             {message.trim().length > 0 ?
                                 <button onClick={sendMessageHandler} className="text-primary-blue font-medium text-sm">Send</button>
                                 :
-                                <>
-                                    <svg className="cursor-pointer" aria-label="Add Photo or Video" color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M6.549 5.013A1.557 1.557 0 108.106 6.57a1.557 1.557 0 00-1.557-1.557z" fillRule="evenodd"></path><path d="M2 18.605l3.901-3.9a.908.908 0 011.284 0l2.807 2.806a.908.908 0 001.283 0l5.534-5.534a.908.908 0 011.283 0l3.905 3.905" fill="none" stroke="currentColor" strokeLinejoin="round" strokeWidth="2"></path><path d="M18.44 2.004A3.56 3.56 0 0122 5.564h0v12.873a3.56 3.56 0 01-3.56 3.56H5.568a3.56 3.56 0 01-3.56-3.56V5.563a3.56 3.56 0 013.56-3.56z" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"></path></svg>
-                                    <svg onClick={(e) => handleSubmitSendHeart(e, '❤️')} className="hover:opacity-70 cursor-pointer" aria-label="Like" color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M16.792 3.904A4.989 4.989 0 0121.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 014.708-5.218 4.21 4.21 0 013.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 013.679-1.938m0-2a6.04 6.04 0 00-4.797 2.127 6.052 6.052 0 00-4.787-2.127A6.985 6.985 0 00.5 9.122c0 3.61 2.55 5.827 5.015 7.97.283.246.569.494.853.747l1.027.918a44.998 44.998 0 003.518 3.018 2 2 0 002.174 0 45.263 45.263 0 003.626-3.115l.922-.824c.293-.26.59-.519.885-.774 2.334-2.025 4.98-4.32 4.98-7.94a6.985 6.985 0 00-6.708-7.218z"></path></svg>
-                                </>
+                                <div className='text-black dark:text-white flex gap-2'>
+                                    <svg className="cursor-pointer" aria-label="Add Photo or Video" color="currentColor" fill="currentColor" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M6.549 5.013A1.557 1.557 0 108.106 6.57a1.557 1.557 0 00-1.557-1.557z" fillRule="evenodd"></path><path d="M2 18.605l3.901-3.9a.908.908 0 011.284 0l2.807 2.806a.908.908 0 001.283 0l5.534-5.534a.908.908 0 011.283 0l3.905 3.905" fill="none" stroke="currentColor" strokeLinejoin="round" strokeWidth="2"></path><path d="M18.44 2.004A3.56 3.56 0 0122 5.564h0v12.873a3.56 3.56 0 01-3.56 3.56H5.568a3.56 3.56 0 01-3.56-3.56V5.563a3.56 3.56 0 013.56-3.56z" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"></path></svg>
+                                    <svg onClick={(e) => handleSubmitSendHeart(e, '❤️')} className="hover:opacity-70 cursor-pointer" aria-label="Like" color="currentColor" fill="currentColor" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M16.792 3.904A4.989 4.989 0 0121.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 014.708-5.218 4.21 4.21 0 013.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 013.679-1.938m0-2a6.04 6.04 0 00-4.797 2.127 6.052 6.052 0 00-4.787-2.127A6.985 6.985 0 00.5 9.122c0 3.61 2.55 5.827 5.015 7.97.283.246.569.494.853.747l1.027.918a44.998 44.998 0 003.518 3.018 2 2 0 002.174 0 45.263 45.263 0 003.626-3.115l.922-.824c.293-.26.59-.519.885-.774 2.334-2.025 4.98-4.32 4.98-7.94a6.985 6.985 0 00-6.708-7.218z"></path></svg>
+                                </div>
                             }
                         </form>
 
