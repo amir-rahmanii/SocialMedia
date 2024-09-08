@@ -7,6 +7,8 @@ import { useGetAllSearchPosts } from '../../hooks/post/usePost'
 import PostContainerUser from '../../Components/User/PostContainerUser/PostContainerUser'
 import { AuthContext } from '../../Context/AuthContext'
 import { useGetUserInformation } from '../../hooks/user/useUser'
+import SideBarLeft from '../../Parts/SideBarLeft/SideBarLeft'
+import SideBarBottom from '../../Parts/SideBarBottom/SideBarBottom'
 
 function SearchPosts() {
   const { title } = useParams()
@@ -35,12 +37,13 @@ function SearchPosts() {
     <>
       <MetaData title="Instagram" />
       <Header />
-      <div className="flex gap-2 h-full w-full md:w-4/6 mt-14 mx-auto p-3 md:p-0">
+      <SideBarLeft />
+      <div className="flex gap-2 h-full w-full md:w-5/6 mt-14 md:mt-0 mx-auto p-3 md:p-0">
         {isLoadingSearchPost ? <SpinLoader /> : (
           (mySearchPosts && mySearchPosts.response && mySearchPosts.response.resultSearch.length > 0) ? (
             <PostContainerUser showCol = {false} posts={mySearchPosts.response.resultSearch} />
           ) : (
-            <div className='bg-white w-full text-center mt-2 p-4 text-xl rounded'>
+            <div className='text-black dark:text-white w-full text-center mt-2 p-4 text-xl rounded'>
               Sorry, No posts were found with your search😩
               <div className='flex items-center justify-center gap-3 mt-2'>
                 <span> You be the first search valid title</span>
@@ -48,6 +51,7 @@ function SearchPosts() {
             </div>
           )
         )}
+        <SideBarBottom/>
       </div>
     </>
 

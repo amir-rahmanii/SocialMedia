@@ -4,12 +4,15 @@ import { exploreOutline, homeFill, likeIconOutline, logOutIcon, messageOutline, 
 import { useGetUserInformation } from '../../hooks/user/useUser';
 import { AuthContext } from '../../Context/AuthContext';
 import NewPost from '../../Components/Header/NewPost/NewPost';
-import { FormControlLabel, styled, Switch } from '@mui/material';
+import { FormControlLabel } from '@mui/material';
+import { MaterialUISwitch } from '../../Components/MaterialUISwitch/MaterialUISwitch';
+import ShowSearchInput from '../../Components/ShowSearchInput/ShowSearchInput';
 
 function SideBarLeft() {
     const authContext = useContext(AuthContext);
     const { data: informationUser, isSuccess: isSuccessUserInformation } = useGetUserInformation();
     const [newPost, setNewPost] = useState(false);
+    const [isShowSearch, setIsShowSearch] = useState(false);
     const [theme, setTheme] = useState(
         localStorage.getItem("theme") === "dark" ? true : false
     );
@@ -20,64 +23,10 @@ function SideBarLeft() {
         }
     }, [isSuccessUserInformation, informationUser])
 
-    const MaterialUISwitch = styled(Switch)(({ theme }) => ({
-        width: 62,
-        height: 34,
-        padding: 7,
-        '& .MuiSwitch-switchBase': {
-            margin: 1,
-            padding: 0,
-            transform: 'translateX(6px)',
-            '&.Mui-checked': {
-                color: '#fff',
-                transform: 'translateX(22px)',
-                '& .MuiSwitch-thumb:before': {
-                    backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
-                        '#fff',
-                    )}" d="M4.2 2.5l-.7 1.8-1.8.7 1.8.7.7 1.8.6-1.8L6.7 5l-1.9-.7-.6-1.8zm15 8.3a6.7 6.7 0 11-6.6-6.6 5.8 5.8 0 006.6 6.6z"/></svg>')`,
-                },
-                '& + .MuiSwitch-track': {
-                    opacity: 1,
-                    backgroundColor: '#aab4be',
-                    ...theme.applyStyles('dark', {
-                        backgroundColor: '#8796A5',
-                    }),
-                },
-            },
-        },
-        '& .MuiSwitch-thumb': {
-            backgroundColor: '#001e3c',
-            width: 32,
-            height: 32,
-            '&::before': {
-                content: "''",
-                position: 'absolute',
-                width: '100%',
-                height: '100%',
-                left: 0,
-                top: 0,
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'center',
-                backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
-                    '#fff',
-                )}" d="M9.305 1.667V3.75h1.389V1.667h-1.39zm-4.707 1.95l-.982.982L5.09 6.072l.982-.982-1.473-1.473zm10.802 0L13.927 5.09l.982.982 1.473-1.473-.982-.982zM10 5.139a4.872 4.872 0 00-4.862 4.86A4.872 4.872 0 0010 14.862 4.872 4.872 0 0014.86 10 4.872 4.872 0 0010 5.139zm0 1.389A3.462 3.462 0 0113.471 10a3.462 3.462 0 01-3.473 3.472A3.462 3.462 0 016.527 10 3.462 3.462 0 0110 6.528zM1.665 9.305v1.39h2.083v-1.39H1.666zm14.583 0v1.39h2.084v-1.39h-2.084zM5.09 13.928L3.616 15.4l.982.982 1.473-1.473-.982-.982zm9.82 0l-.982.982 1.473 1.473.982-.982-1.473-1.473zM9.305 16.25v2.083h1.389V16.25h-1.39z"/></svg>')`,
-            },
-            ...theme.applyStyles('dark', {
-                backgroundColor: '#003892',
-            }),
-        },
-        '& .MuiSwitch-track': {
-            opacity: 1,
-            backgroundColor: '#aab4be',
-            borderRadius: 20 / 2,
-            ...theme.applyStyles('dark', {
-                backgroundColor: '#8796A5',
-            }),
-        },
-    }));
+   
 
     return (
-        <div className='fixed flex flex-col justify-between overflow-y-auto pt-2 px-3 pb-3 w-[100px] xl:w-[244px] left-0 top-0 bottom-0 bg-white dark:bg-black border-r dark:border-gray-300/20 border-gray-300'>
+        <div className='fixed hidden md:flex flex-col justify-between overflow-y-auto pt-2 px-3 pb-3 w-[80px] lg:w-[100px] xl:w-[244px] left-0 top-0 bottom-0 bg-white dark:bg-black border-r dark:border-gray-300/20 border-gray-300'>
             <div className='flex flex-col'>
                 {/* insta image */}
                 <div className='mb-[19px] pt-[25px] px-3 pb-4 flex justify-center xl:justify-start'>
@@ -100,20 +49,20 @@ function SideBarLeft() {
 
                         </Link>
                     </li>
-                    <li className='p-3 rounded-md hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 group'>
-                        <Link className='text-base/5 flex items-center justify-center xl:justify-start gap-3 font-bold text-black dark:text-white' to='/search'>
+                    <li onClick={() => setIsShowSearch(true)} className='p-3 rounded-md hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 group'>
+                        <div className='text-base/5 flex items-center justify-center xl:justify-start gap-3 font-bold text-black dark:text-white'>
                             <div className='w-6 h-6 group-hover:scale-110 transition-all duration-300'>
                                 {searchIcon}
                             </div>
                             <span className='hidden xl:block'>Search</span>
-                        </Link>
+                        </div>
                     </li>
                     <li className='p-3 rounded-md hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 group'>
-                        <Link className='text-base/5 flex items-center justify-center xl:justify-start gap-3 font-bold text-black dark:text-white' to='/'>
+                        <Link className='text-base/5 flex items-center justify-center xl:justify-start gap-3 font-bold text-black dark:text-white' to='/login-info'>
                             <div className='w-6 h-6 group-hover:scale-110 transition-all duration-300'>
                                 {exploreOutline}
                             </div>
-                            <span className='hidden xl:block'>Explore</span>
+                            <span className='hidden xl:block'>Login info</span>
                         </Link>
                     </li>
                     <li className='p-3 rounded-md hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 group'>
@@ -162,7 +111,7 @@ function SideBarLeft() {
             {/* log out and switch dark mode */}
             <ul className='flex flex-col gap-3'>
                 <li className='p-3'>
-                    <div className='flex justify-start items-center pl-2'>
+                    <div className='flex justify-start items-center lg:pl-2'>
                         <FormControlLabel
                             onChange={(e) => {
                                 const isChecked = (e.target as HTMLInputElement).checked;
@@ -198,6 +147,8 @@ function SideBarLeft() {
 
             {/* new post show */}
             <NewPost newPost={newPost} setNewPost={setNewPost} />
+
+            <ShowSearchInput isShowSearch={isShowSearch} setIsShowSearch={setIsShowSearch} />
         </div>
     )
 }

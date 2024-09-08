@@ -15,6 +15,7 @@ import { Backdrop, Dialog } from '@mui/material'
 import TableLogin from '../../Components/User/TableLogin/TableLogin'
 import StoryContent from '../../Components/Home/StoriesContainer/StoryContent'
 import SideBarLeft from '../../Parts/SideBarLeft/SideBarLeft'
+import SideBarBottom from '../../Parts/SideBarBottom/SideBarBottom'
 
 
 
@@ -127,17 +128,14 @@ function Profile() {
 
 
 
-
-
-
-
   return (
     <>
       <SideBarLeft />
+      <Header />
       {isLoadingUserData && isLoadingMyInformationData ? (
         <SpinLoader />
       ) : (
-        <div className="xl:w-2/3 mr-32 mx-auto p-3">
+        <div className="md:w-2/3 md:mr-32 mt-14 md:mt-0 mx-auto p-3">
           <MetaData title={`@${myInformationData?.response.user.username} • Instagram photos and videos`} />
 
 
@@ -155,7 +153,7 @@ function Profile() {
                   }
                 }}
                 draggable="false"
-                className={`${(informationUserData && informationUserData?.stories.length > 0) ? "border-red-500" : ""} w-40 h-40 border-2 rounded-full object-cover`}
+                className={`${(informationUserData && informationUserData?.stories.length > 0) ? "border-red-500" : ""} w-32 h-32 lg:w-40 lg:h-40 border-2 rounded-full object-cover`}
                 src={`http://localhost:4002/images/profiles/${informationUserData?.user.profilePicture.filename}`}
                 alt="profile"
               />
@@ -202,7 +200,7 @@ function Profile() {
 
                 {myInformationData?.response.user._id === informationUserData?.user._id && (
                   <div>
-                    <Link to="/accounts/edit" className="text-black dark:text-white border flex gap-2 items-center font-medium hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 text-sm rounded px-2 py-1">Edit Profile {settingsIcon}</Link>
+                    <Link to="/update-password" className="text-black dark:text-white border flex gap-2 items-center font-medium hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 text-sm rounded px-2 py-1">Change Password {settingsIcon}</Link>
                   </div>
                 )}
 
@@ -233,7 +231,7 @@ function Profile() {
                 <p className="font-medium">{informationUserData?.user.name}</p>
                 <p className="whitespace-pre-line">Lorem ipsum</p>
 
-                <a href={"https://chatgpt.com/c/b972c579-d4f1-4075-8a2c-c5a11bbbc486"} target="_blank" className="text-blue-900 font-medium">{new URL("https://chatgpt.com/c/b972c579-d4f1-4075-8a2c-c5a11bbbc486").hostname}</a>
+                <a href={"https://chatgpt.com/"} target="_blank" className="text-blue-900 font-medium">{new URL("https://chatgpt.com/c/b972c579-d4f1-4075-8a2c-c5a11bbbc486").hostname}</a>
 
               </div>
 
@@ -322,9 +320,9 @@ function Profile() {
           {/* footer */}
           <div className="text-black dark:text-white mt-10 mb-10 drop-shadow-sm rounded flex sm:flex-row flex-col sm:gap-0 gap-5 sm:p-0 p-4 items-center justify-between">
             <div className='grid grid-cols-3 gap-2'>
-            {Array(9).fill(0).map((_ , index) => (
-            <img key={index + 1} loading='lazy' draggable="false" className="rounded w-28 h-28" src="/src/assets/images/4.jpg" alt="1" />
-            ))}
+              {Array(9).fill(0).map((_, index) => (
+                <img key={index + 1} loading='lazy' draggable="false" className="rounded w-28 h-28" src="/src/assets/images/4.jpg" alt="1" />
+              ))}
 
             </div>
             <div className="mx-auto flex flex-col items-center">
@@ -335,6 +333,8 @@ function Profile() {
           </div>
         </div>
       )}
+
+      <SideBarBottom />
 
     </>
   )

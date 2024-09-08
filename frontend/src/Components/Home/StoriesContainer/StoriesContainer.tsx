@@ -43,7 +43,7 @@ const StoriesContainer = () => {
                 <div onClick={() => {
                     setShowAddStory(true)
                 }} className="flex flex-col text-center justify-center items-center p-2 cursor-pointer">
-                    <div className="w-[90px] h-[90px] rounded-full border-2 border-red-500 relative">
+                    <div className="w-[60px] h-[60px] md:w-[90px] md:h-[90px] rounded-full border-2 border-red-500 relative">
                         <img
                             loading="lazy"
                             className="rounded-full h-full w-full object-cover"
@@ -63,7 +63,7 @@ const StoriesContainer = () => {
                             setIsShowStoryContent(true)
                             handleStoryClick(s._id)
                         }} className="flex flex-col text-center justify-center items-center p-2 cursor-pointer">
-                            <div className="w-[90px] h-[90px] rounded-full border-2 border-red-500">
+                            <div className="w-[60px] h-[60px] md:w-[90px] md:h-[90px] rounded-full border-2 border-red-500">
                                 <img
                                     loading="lazy"
                                     className="rounded-full h-full w-full object-cover"

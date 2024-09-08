@@ -60,7 +60,7 @@ function Sidebar() {
 
 
     return (
-        <div className="fixed lg:right-[0px] w-fit h-full hidden lg:flex flex-col flex-auto m-8 xl:pr-8 -z-1">
+        <div className="fixed lg:right-[0px] hidden w-fit h-full lg:flex flex-col flex-auto m-8 xl:pr-8 -z-1">
             <div className="xl:ml-10 mt-4 flex flex-col h-96 overflow-auto lg:p-1 xl:p-4 rounded">
                 {isLoading ? (
                     Array(5).fill("").map((el, i) => (<SkeletonUserItem key={i} />))

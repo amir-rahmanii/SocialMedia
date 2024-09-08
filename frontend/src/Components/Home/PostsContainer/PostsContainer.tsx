@@ -57,7 +57,7 @@ function PostsContainer() {
 
     return (
         <>
-            <div className='flex flex-col ml-32 items-center lg:w-3/6 xl:w-4/6 justify-center w-full sm:mt-6 sm:px-8 mb-8'>
+            <div className='flex flex-col md:ml-20 lg:ml-32 items-center md:w-5/6 lg:w-3/6 xl:w-4/6 justify-center w-full sm:mt-6 sm:px-8 mb-8'>
                 <StoriesContainer />
 
                 <div className="flex flex-col w-full xl:w-5/6 sm:mt-6 sm:px-8 mb-8">
