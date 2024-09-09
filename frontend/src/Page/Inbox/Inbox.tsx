@@ -5,7 +5,6 @@ import SpinLoader from '../../Components/SpinLoader/SpinLoader';
 import Message from '../../Components/Chats/Message/Message';
 import { useGetUserInformation } from '../../hooks/user/useUser';
 import io from 'socket.io-client';
-import { useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Header from '../../Parts/Header/Header';
 import SideBarLeft from '../../Parts/SideBarLeft/SideBarLeft';
@@ -13,7 +12,6 @@ import SideBarBottom from '../../Parts/SideBarBottom/SideBarBottom';
 import { emojiIcon } from '../../Components/SvgIcon/SvgIcon';
 
 
-const socket = io('http://localhost:4002');
 
 // تعریف تایپ‌ها برای داده‌های پیام
 export interface IMessage {
@@ -45,6 +43,7 @@ interface IUserMessage {
     content: string;
 }
 
+const socket = io('http://localhost:4002');
 
 function Inbox() {
     const [message, setMessage] = useState("");
@@ -56,82 +55,106 @@ function Inbox() {
         localStorage.getItem("chatBg") || "#FFFFFF"
     )
 
+
+
     const [showEmojis, setShowEmojis] = useState(false);
     const { data: myInformationData, isSuccess: isSuccessInformationData } = useGetUserInformation();
 
 
+
     useEffect(() => {
         // اطمینان از برقراری اتصال سوکت
-        socket.on("connect", () => {
-            console.log("Connected to the server");
+        
 
-            // دریافت پیام‌های اولیه از سرور
-            socket.on("initial messages", (initialMessages: IMessage[]) => {
-                setAllMessages(initialMessages);
+            socket.on("connect", () => {
+                console.log("Connected to the server");
+
+                // دریافت پیام‌های اولیه از سرور
+                socket.on("initial messages", (initialMessages: IMessage[]) => {
+                    console.log("Initial messages:", initialMessages);
+                    setAllMessages(initialMessages);
+                });
+
+                // گوش دادن به پیام‌های جدید
+                socket.on("chat message", (msg: IMessage) => {
+                    setAllMessages(prevMessages => [...prevMessages, msg]);
+                });
+
+                socket.on("online users", (count: number) => {
+                    setCountUsersOnline(count)
+                })
+
+                socket.on('typing users', (users: string[]) => {
+                    setTypingUsers(users);
+                });
+
+                socket.on("message liked", ({ msgId, userId, username, profilePicture }) => {
+                    setAllMessages(prevMessages =>
+                        prevMessages.map(msg =>
+                            msg._id === msgId
+                                ? {
+                                    ...msg,
+                                    likedBy: msg.likedBy.some(user => user._id === userId)
+                                        ? msg.likedBy.filter(user => user._id !== userId)
+                                        : [...msg.likedBy, { _id: userId, username, profilePicture }]
+                                }
+                                : msg
+                        )
+                    );
+                });
+
+                socket.on("message deleted", (msgId) => {
+                    setAllMessages(prevMessages => prevMessages.filter(msg => msg._id !== msgId));
+                });
+
+                socket.on("message edited", (updatedMessage: IMessage) => {
+
+                    setAllMessages(prevMessages =>
+                        prevMessages.map(msg =>
+                            (msg._id === updatedMessage._id && msg.content !== updatedMessage.content)
+                                ? {
+                                    ...msg,
+                                    isEdited: true,
+                                    content: updatedMessage.content
+                                }
+                                : msg
+                        )
+                    );
+
+                });
+
             });
 
-            // گوش دادن به پیام‌های جدید
-            socket.on("chat message", (msg: IMessage) => {
-                setAllMessages(prevMessages => [...prevMessages, msg]);
-            });
-
-            socket.on("online users", (count: number) => {
-                setCountUsersOnline(count)
-            })
-
-            socket.on('typing users', (users: string[]) => {
-                setTypingUsers(users);
-            });
-
-            socket.on("message liked", ({ msgId, userId, username, profilePicture }) => {
-                setAllMessages(prevMessages =>
-                    prevMessages.map(msg =>
-                        msg._id === msgId
-                            ? {
-                                ...msg,
-                                likedBy: msg.likedBy.some(user => user._id === userId)
-                                    ? msg.likedBy.filter(user => user._id !== userId)
-                                    : [...msg.likedBy, { _id: userId, username, profilePicture }]
-                            }
-                            : msg
-                    )
-                );
-            });
-
-            socket.on("message deleted", (msgId) => {
-                setAllMessages(prevMessages => prevMessages.filter(msg => msg._id !== msgId));
-            });
-
-            socket.on("message edited", (updatedMessage: IMessage) => {
-
-                setAllMessages(prevMessages =>
-                    prevMessages.map(msg =>
-                        (msg._id === updatedMessage._id && msg.content !== updatedMessage.content)
-                            ? {
-                                ...msg,
-                                isEdited: true,
-                                content: updatedMessage.content
-                            }
-                            : msg
-                    )
-                );
-
-            });
-
-        });
-
-        // مدیریت قطع اتصال و حذف شنوندگان
-        return () => {
-            socket.off("connect");
-            socket.off("initial messages");
-            socket.off("chat message");
-            socket.off('typing users');
-            socket.off("online users");
-            socket.off("message liked");
-            socket.off("message deleted");
-            socket.off("message edited");
-        };
+            // مدیریت قطع اتصال و حذف شنوندگان
+            return () => {
+                socket.disconnect();
+                socket.off("connect");
+                socket.off("initial messages");
+                socket.off("chat message");
+                socket.off('typing users');
+                socket.off("online users");
+                socket.off("message liked");
+                socket.off("message deleted");
+                socket.off("message edited");
+            };
     }, []);
+
+
+    useEffect(() => {
+        const typingTimeout = setTimeout(() => {
+            setTypingUsers([]);
+        }, 3000); // Adjust timeout as needed
+
+        return () => clearTimeout(typingTimeout);
+    }, [typingUsers]);
+
+
+
+
+
+    useEffect(() => {
+        scrollRef?.current?.scrollIntoView({ behavior: "smooth" });
+    }, [allMessages]);
 
 
 
@@ -196,6 +219,12 @@ function Inbox() {
     const handleEditMessage = (msgId: string, newContent: string) => {
         socket.emit("edit message", { msgId, newContent });
     }
+
+
+
+
+
+
 
 
     return (

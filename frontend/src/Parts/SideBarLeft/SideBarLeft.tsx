@@ -23,7 +23,7 @@ function SideBarLeft() {
         }
     }, [isSuccessUserInformation, informationUser])
 
-   
+
 
     return (
         <div className='fixed hidden md:flex flex-col justify-between overflow-y-auto pt-2 px-3 pb-3 w-[80px] lg:w-[100px] xl:w-[244px] left-0 top-0 bottom-0 bg-white dark:bg-black border-r dark:border-gray-300/20 border-gray-300'>
@@ -74,21 +74,14 @@ function SideBarLeft() {
                         </Link>
                     </li>
                     <li className='p-3 rounded-md hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 group'>
-                        <Link className='text-base/5 flex items-center justify-center xl:justify-start gap-3 font-bold text-black dark:text-white' to='/'>
+                        <Link className='text-base/5 flex items-center justify-center xl:justify-start gap-3 font-bold text-black dark:text-white' to='/tickets'>
                             <div className='w-6 h-6 group-hover:scale-110 transition-all duration-300'>
                                 {reelsIcon}
                             </div>
-                            <span className='hidden xl:block'>Reels</span>
+                            <span className='hidden xl:block'>Tickets</span>
                         </Link>
                     </li>
-                    <li className='p-3 rounded-md hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 group'>
-                        <Link className='text-base/5 flex items-center justify-center xl:justify-start gap-3 font-bold text-black dark:text-white' to='/'>
-                            <div className='w-6 h-6 group-hover:scale-110 transition-all duration-300'>
-                                {likeIconOutline}
-                            </div>
-                            <span className='hidden xl:block'>Notification</span>
-                        </Link>
-                    </li>
+
                     <li className='p-3 rounded-md hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 group'>
                         <Link className='text-base/5 flex items-center justify-center xl:justify-start gap-3 font-bold text-black dark:text-white' to={`/profile/${authContext?.user?._id}`}>
                             <div className='w-6 h-6 group-hover:scale-110 transition-all duration-300'>
@@ -104,6 +97,14 @@ function SideBarLeft() {
                             </div>
                             <span className='hidden xl:block'>Create</span>
                         </button>
+                    </li>
+                    <li className='p-3 rounded-md hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 group'>
+                        <Link className='text-base/5 flex items-center justify-center xl:justify-start gap-3 font-bold text-black dark:text-white' to='/'>
+                            <div className='w-6 h-6 group-hover:scale-110 transition-all duration-300'>
+                                {likeIconOutline}
+                            </div>
+                            <span className='hidden xl:block'>Dashboard</span>
+                        </Link>
                     </li>
                 </ul>
             </div>
