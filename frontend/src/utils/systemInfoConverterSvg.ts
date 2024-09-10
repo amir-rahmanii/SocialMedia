@@ -1,4 +1,4 @@
-import { iosIcon, linuxIcon, windowsIcon } from "../Components/SvgIcon/SvgIcon"
+import { androidIcon, iosIcon, linuxIcon, windowsIcon } from "../Components/SvgIcon/SvgIcon"
 
 const svgIconOs = (OsName: string) => {
     switch (OsName) {
@@ -8,8 +8,8 @@ const svgIconOs = (OsName: string) => {
             return iosIcon
         case "Linux":
             return linuxIcon
-        case "Mac OS":
-            return iosIcon
+        case "Android":
+            return androidIcon
         default:
             return 'Unknown'
     }

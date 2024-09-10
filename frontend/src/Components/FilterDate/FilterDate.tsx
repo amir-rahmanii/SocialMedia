@@ -1,7 +1,9 @@
-import { Dialog } from '@mui/material';
+import { Checkbox, Dialog, FormControlLabel, FormGroup } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { closeIcon } from '../SvgIcon/SvgIcon';
 import dayjs, { Dayjs } from 'dayjs';
+import { PropsWithChildren, useContext, useState } from 'react';
+import { AuthContext } from '../../Context/AuthContext';
 
 type FilterDateProps = {
     isShowOpenFilter: boolean;
@@ -10,17 +12,18 @@ type FilterDateProps = {
     setFromPicker: (value: string) => void;
     untilPicker: string;
     setUntilPicker: (value: string) => void;
-    filterDateHandler : () => void;
+    filterDateHandler: () => void;
 }
 
-const FilterDate: React.FC<FilterDateProps> = ({
+const FilterDate: React.FC<PropsWithChildren<FilterDateProps>> = ({
     isShowOpenFilter,
     setIsShowOpenFilter,
     fromPicker,
     setFromPicker,
     untilPicker,
     setUntilPicker,
-    filterDateHandler
+    filterDateHandler,
+    children
 }) => {
 
     const handleDateFromChange = (newValueDate: Dayjs | null) => {
@@ -45,6 +48,9 @@ const FilterDate: React.FC<FilterDateProps> = ({
         }
     };
 
+    const authContext = useContext(AuthContext);
+
+   
 
     return (
         <Dialog open={isShowOpenFilter} onClose={() => setIsShowOpenFilter(false)} maxWidth='xl'>
@@ -56,13 +62,14 @@ const FilterDate: React.FC<FilterDateProps> = ({
                     </button>
                 </div>
 
-                <div className='bg-white flex flex-col my-6 px-3 gap-4'>
-                    <div className='flex flex-col md:flex-row gap-6'>
+                <form onSubmit={e => e.preventDefault()} className='bg-white flex flex-col my-6 px-3 gap-4'>
+                    <div className='flex flex-col gap-4 md:gap-0 md:flex-row md:justify-between'>
                         <DatePicker
                             label="From this date picker"
                             value={dayjs(fromPicker)}
                             onChange={handleDateFromChange}
                             maxDate={dayjs()}
+                            minDate={dayjs(authContext?.user?.createdAt)}
                         />
                         <DatePicker
                             label="Until this date picker"
@@ -72,7 +79,8 @@ const FilterDate: React.FC<FilterDateProps> = ({
                             minDate={dayjs(fromPicker)} // Set the minDate to ensure it's not before fromDate
                         />
                     </div>
-
+                  
+                    {children}
                     <button
                         onClick={filterDateHandler}
                         type="submit"
@@ -80,7 +88,7 @@ const FilterDate: React.FC<FilterDateProps> = ({
                     >
                         Submit
                     </button>
-                </div>
+                </form>
             </div>
         </Dialog>
     );
