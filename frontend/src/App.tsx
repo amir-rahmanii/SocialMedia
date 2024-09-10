@@ -4,6 +4,9 @@ import routes from './routes'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import Toast from './Components/Toast/Toast'
 import AuthContextProvider from './Context/AuthContext'
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+
 
 function App() {
 
@@ -40,9 +43,11 @@ function App() {
   return (
     <QueryClientProvider client={client}>
       <AuthContextProvider>
-        {route}
-        {/* show toast */}
-        <Toast />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          {route}
+          {/* show toast */}
+          <Toast />
+        </LocalizationProvider>
       </AuthContextProvider>
     </QueryClientProvider>
   )

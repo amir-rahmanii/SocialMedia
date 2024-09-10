@@ -12,7 +12,6 @@ import SearchPosts from "./Page/SearchPosts/SearchPosts";
 import UpdatePassword from "./Page/UpdatePassword/UpdatePassword";
 import AdminPanel from "./Page/AdminPanel/AdminPanel";
 import Tickets from "./Page/Tickets/Tickets";
-import Stories from "./Page/Stories/Stories";
 
 
 const routes = [
@@ -22,7 +21,6 @@ const routes = [
     { path: "/direct", element: <PrivateRoutes><Inbox /></PrivateRoutes> },
     { path: "/login-info", element: <PrivateRoutes><LoginInfo /></PrivateRoutes> },
     { path: "/tickets", element: <PrivateRoutes><Tickets /></PrivateRoutes> },
-    { path: "/stories", element: <PrivateRoutes><Stories /></PrivateRoutes> },
 
 
     { path: "/dashboard", element: <PrivateRoutes><AdminPanel /></PrivateRoutes> },

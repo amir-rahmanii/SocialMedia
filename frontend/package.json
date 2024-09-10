@@ -15,6 +15,7 @@
     "@emotion/styled": "^11.13.0",
     "@hookform/resolvers": "^3.9.0",
     "@mui/material": "^5.16.7",
+    "@mui/x-date-pickers": "^7.16.0",
     "@types/js-cookie": "^3.0.6",
     "axios": "^1.7.4",
     "date-fns": "^3.6.0",
