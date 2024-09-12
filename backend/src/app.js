@@ -7,6 +7,7 @@ const userRouter = require("./modules/v1/users/user.routes");
 const postRouter = require("./modules/v1/posts/post.routes");
 const storyRouter = require("./modules/v1/story/story.routes");
 const messageRouter = require("./modules/v1/message/message.routes");
+const ticketRouter = require("./modules/v1/ticket/ticket.routes");
 const errorHandler = require("./middlewares/errorHandler");
 const convertToTrim = require("./middlewares/convertToTrim");
 const systemInfoMiddleware = require("./middlewares/systemInfo");
@@ -48,6 +49,7 @@ app.use("/users", userRouter);
 app.use("/posts", postRouter);
 app.use("/story", storyRouter);
 app.use("/message", messageRouter);
+app.use("/ticket", ticketRouter);
 
 // 404 err handler
 app.use((req, res) => {

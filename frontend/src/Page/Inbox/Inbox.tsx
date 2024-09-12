@@ -1,15 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import MetaData from '../../Components/MetaData/MetaData'
 import EmojiPicker from '@emoji-mart/react';
 import SpinLoader from '../../Components/SpinLoader/SpinLoader';
 import Message from '../../Components/Chats/Message/Message';
-import { useGetUserInformation } from '../../hooks/user/useUser';
-import io from 'socket.io-client';
+import io, { Socket } from 'socket.io-client';
 import toast from 'react-hot-toast';
 import Header from '../../Parts/Header/Header';
 import SideBarLeft from '../../Parts/SideBarLeft/SideBarLeft';
-import SideBarBottom from '../../Parts/SideBarBottom/SideBarBottom';
 import { emojiIcon } from '../../Components/SvgIcon/SvgIcon';
+import { AuthContext } from '../../Context/AuthContext';
 
 
 
@@ -43,9 +42,11 @@ interface IUserMessage {
     content: string;
 }
 
-const socket = io('http://localhost:4002');
+// url base socket
+const socketURL = 'http://localhost:4002';
 
 function Inbox() {
+    const [socket, setSocket] = useState<Socket | null>(null);
     const [message, setMessage] = useState("");
     const [allMessages, setAllMessages] = useState<IMessage[]>([]);
     const scrollRef = useRef<HTMLDivElement>(null);
@@ -54,89 +55,86 @@ function Inbox() {
     const [backgroundColorChat, setBackgroundColorChat] = useState(
         localStorage.getItem("chatBg") || "#FFFFFF"
     )
-
-
-
+    const authContext = useContext(AuthContext);
     const [showEmojis, setShowEmojis] = useState(false);
-    const { data: myInformationData, isSuccess: isSuccessInformationData } = useGetUserInformation();
+
 
 
 
     useEffect(() => {
+        const newSocket = io(socketURL);
+        setSocket(newSocket);
         // اطمینان از برقراری اتصال سوکت
-        
+        newSocket.on("connect", () => {
+            console.log("Connected to the server");
 
-            socket.on("connect", () => {
-                console.log("Connected to the server");
+            // دریافت پیام‌های اولیه از سرور
+            newSocket.on("initial messages", (initialMessages: IMessage[]) => {
+                setAllMessages(initialMessages);
+            });
 
-                // دریافت پیام‌های اولیه از سرور
-                socket.on("initial messages", (initialMessages: IMessage[]) => {
-                    console.log("Initial messages:", initialMessages);
-                    setAllMessages(initialMessages);
-                });
+            // گوش دادن به پیام‌های جدید
+            newSocket.on("chat message", (msg: IMessage) => {
+                setAllMessages(prevMessages => [...prevMessages, msg]);
+            });
 
-                // گوش دادن به پیام‌های جدید
-                socket.on("chat message", (msg: IMessage) => {
-                    setAllMessages(prevMessages => [...prevMessages, msg]);
-                });
+            newSocket.on("online users", (count: number) => {
+                setCountUsersOnline(count)
+            })
 
-                socket.on("online users", (count: number) => {
-                    setCountUsersOnline(count)
-                })
+            newSocket.on('typing users', (users: string[]) => {
+                setTypingUsers(users);
+            });
 
-                socket.on('typing users', (users: string[]) => {
-                    setTypingUsers(users);
-                });
+            newSocket.on("message liked", ({ msgId, userId, username, profilePicture }) => {
+                setAllMessages(prevMessages =>
+                    prevMessages.map(msg =>
+                        msg._id === msgId
+                            ? {
+                                ...msg,
+                                likedBy: msg.likedBy.some(user => user._id === userId)
+                                    ? msg.likedBy.filter(user => user._id !== userId)
+                                    : [...msg.likedBy, { _id: userId, username, profilePicture }]
+                            }
+                            : msg
+                    )
+                );
+            });
 
-                socket.on("message liked", ({ msgId, userId, username, profilePicture }) => {
-                    setAllMessages(prevMessages =>
-                        prevMessages.map(msg =>
-                            msg._id === msgId
-                                ? {
-                                    ...msg,
-                                    likedBy: msg.likedBy.some(user => user._id === userId)
-                                        ? msg.likedBy.filter(user => user._id !== userId)
-                                        : [...msg.likedBy, { _id: userId, username, profilePicture }]
-                                }
-                                : msg
-                        )
-                    );
-                });
+            newSocket.on("message deleted", (msgId) => {
+                setAllMessages(prevMessages => prevMessages.filter(msg => msg._id !== msgId));
+            });
 
-                socket.on("message deleted", (msgId) => {
-                    setAllMessages(prevMessages => prevMessages.filter(msg => msg._id !== msgId));
-                });
+            newSocket.on("message edited", (updatedMessage: IMessage) => {
 
-                socket.on("message edited", (updatedMessage: IMessage) => {
-
-                    setAllMessages(prevMessages =>
-                        prevMessages.map(msg =>
-                            (msg._id === updatedMessage._id && msg.content !== updatedMessage.content)
-                                ? {
-                                    ...msg,
-                                    isEdited: true,
-                                    content: updatedMessage.content
-                                }
-                                : msg
-                        )
-                    );
-
-                });
+                setAllMessages(prevMessages =>
+                    prevMessages.map(msg =>
+                        (msg._id === updatedMessage._id && msg.content !== updatedMessage.content)
+                            ? {
+                                ...msg,
+                                isEdited: true,
+                                content: updatedMessage.content
+                            }
+                            : msg
+                    )
+                );
 
             });
 
-            // مدیریت قطع اتصال و حذف شنوندگان
-            return () => {
-                socket.disconnect();
-                socket.off("connect");
-                socket.off("initial messages");
-                socket.off("chat message");
-                socket.off('typing users');
-                socket.off("online users");
-                socket.off("message liked");
-                socket.off("message deleted");
-                socket.off("message edited");
-            };
+        });
+
+        // مدیریت قطع اتصال و حذف شنوندگان
+        return () => {
+            newSocket.disconnect();
+            newSocket.off("connect");
+            newSocket.off("initial messages");
+            newSocket.off("chat message");
+            newSocket.off('typing users');
+            newSocket.off("online users");
+            newSocket.off("message liked");
+            newSocket.off("message deleted");
+            newSocket.off("message edited");
+        };
     }, []);
 
 
@@ -152,6 +150,7 @@ function Inbox() {
 
 
 
+    //when you joined the chat scroll bottom
     useEffect(() => {
         scrollRef?.current?.scrollIntoView({ behavior: "smooth" });
     }, [allMessages]);
@@ -165,13 +164,13 @@ function Inbox() {
 
 
     const sendMessageHandler = () => {
-        if (isSuccessInformationData) {
+        if (authContext?.user && socket) {
             const messageData: IUserMessage = {
-                senderId: myInformationData?.response.user._id,  // شناسه کاربر را جایگزین کنید
+                senderId: authContext?.user?._id,
                 content: message,
             };
-            socket.emit("chat message", messageData);
-            socket.emit('typing', { userId: myInformationData?.response.user._id, username: myInformationData?.response.user.username, isTyping: false });
+              socket.emit("chat message", messageData);
+              socket.emit('typing', { userId: authContext?.user?._id, username: authContext.user.username, isTyping: false });
 
         } else {
             toast.error("Sorry , try again later😩")
@@ -181,12 +180,14 @@ function Inbox() {
 
     const handleSubmitSendHeart = (e: React.MouseEvent<SVGSVGElement, MouseEvent>, msg: string) => {
         e.preventDefault();
-        if (isSuccessInformationData) {
+        if (authContext?.user && socket) {
             const messageData: IUserMessage = {
-                senderId: myInformationData?.response.user._id,  // شناسه کاربر را جایگزین کنید
+                senderId: authContext?.user?._id,
                 content: msg,
             };
-            socket.emit("chat message", messageData);
+             socket.emit("chat message", messageData);
+        } else {
+            toast.error("Sorry , try again later😩")
         }
     }
 
@@ -196,28 +197,36 @@ function Inbox() {
 
     const handleInputChanges = (e: React.ChangeEvent<HTMLInputElement>) => {
         setMessage(e.target.value)
-        if (isSuccessInformationData) {
-            socket.emit('typing', { userId: myInformationData?.response.user._id, username: myInformationData?.response.user.username, isTyping: e.target.value !== '' });
+        if (authContext?.user && socket) {
+             socket.emit('typing', { userId: authContext?.user?._id, username: authContext.user.username, isTyping: e.target.value !== '' });
+        } else {
+            toast.error("Sorry , try again later😩")
         }
     }
 
     const handleLikeMessage = (msgId: string) => {
-        if (isSuccessInformationData) {
-            socket.emit("like message", { msgId, userId: myInformationData?.response.user._id });
+        if (authContext?.user && socket) {
+             socket.emit("like message", { msgId, userId: authContext?.user?._id });
         } else {
             toast.error("Sorry , try again later😩")
         }
     };
 
     const handleDeleteMessage = (msgId: string) => {
-        console.log(msgId);
-
-        socket.emit("delete message", msgId);
-        toast.success("Msg Deleted Successfuly 😁")
+        if(socket){
+            socket.emit("delete message", msgId);
+           toast.success("Msg Deleted Successfuly 😁")
+        }else{
+            toast.error("Sorry , try again later😩")
+        }
     };
 
     const handleEditMessage = (msgId: string, newContent: string) => {
-        socket.emit("edit message", { msgId, newContent });
+        if(socket){
+            socket.emit("edit message", { msgId, newContent });
+        }else{
+            toast.error("Sorry , try again later😩")
+        }
     }
 
 
@@ -241,7 +250,7 @@ function Inbox() {
                             <div className='flex flex-col gap-1 p-2'>
                                 {informationAllUser?.response?.users?.map((data) => (
                                     <div key={data._id}>
-                                        {myInformationData?.response.user._id !== data._id && (
+                                        {authContext?.user?._id !== data._id && (
                                             <div onClick={() => toUserIdHandler(data._id)} className='flex items-center justify-between border-b pb-2.5'>
                                                 <div className='flex items-center gap-2'>
                                                     <Link to={`/profile/${data._id}`}>
@@ -266,7 +275,7 @@ function Inbox() {
                         <div className="flex py-3 px-6 border-b dark:border-gray-300/20 border-gray-300 items-center justify-between">
                             <div className="flex gap-2 items-center">
                                 <div className="w-8 h-8 relative">
-                                    <img draggable="false" className="w-7 h-7 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${myInformationData?.response.user.profilePicture.filename}`} alt="profile" />
+                                    <img draggable="false" className="w-7 h-7 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${authContext?.user?.profilePicture.filename}`} alt="profile" />
 
                                     {/* {onlineUsers[informationUserData.user._id] && (
                                             <div className="absolute -right-0.5 -bottom-0.5 h-3 w-3 bg-green-500 rounded-full"></div>
@@ -274,8 +283,8 @@ function Inbox() {
                                 </div>
                                 <div className='flex flex-col'>
                                     <span className="font-medium cursor-pointer text-black dark:text-white">Group Instagram</span>
-                                    {isSuccessInformationData && (
-                                        (typingUsers.length > 0 && !typingUsers.includes(myInformationData?.response.user.username)) ? (
+                                    {authContext?.user && (
+                                        (typingUsers.length > 0 && !typingUsers.includes(authContext.user.username)) ? (
                                             <span className="font-medium cursor-pointer text-xs text-gray-500">{typingUsers.join(', ')} is Typing...</span>
                                         ) : (
                                             <span className="font-medium cursor-pointer text-xs text-gray-500">{countUsersOnline} Users Online</span>
@@ -300,7 +309,7 @@ function Inbox() {
                                 allMessages?.map((m) => (
                                     <React.Fragment key={m._id}>
 
-                                        <Message handleEditMessage={handleEditMessage} handleDeleteMessage={handleDeleteMessage} handleLikeMessage={handleLikeMessage} ownMsg={m.sender._id === myInformationData?.response.user._id} message={m} />
+                                        <Message handleEditMessage={handleEditMessage} handleDeleteMessage={handleDeleteMessage} handleLikeMessage={handleLikeMessage} ownMsg={m.sender._id === authContext?.user?._id} message={m} />
                                         <div ref={scrollRef}></div>
                                     </React.Fragment>
                                 ))

@@ -1,28 +1,21 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { exploreOutline, homeFill, likeIconOutline, logOutIcon, messageOutline, postUploadOutline, reelsIcon, searchIcon } from '../../Components/SvgIcon/SvgIcon'
-import { useGetUserInformation } from '../../hooks/user/useUser';
 import { AuthContext } from '../../Context/AuthContext';
 import NewPost from '../../Components/Header/NewPost/NewPost';
 import { FormControlLabel } from '@mui/material';
 import { MaterialUISwitch } from '../../Components/MaterialUISwitch/MaterialUISwitch';
 import ShowSearchInput from '../../Components/ShowSearchInput/ShowSearchInput';
+import { useThemeContext } from '../../Context/ThemeContext';
 
 function SideBarLeft() {
     const authContext = useContext(AuthContext);
-    const { data: informationUser, isSuccess: isSuccessUserInformation } = useGetUserInformation();
     const [newPost, setNewPost] = useState(false);
     const [isShowSearch, setIsShowSearch] = useState(false);
     const [theme, setTheme] = useState(
         localStorage.getItem("theme") === "dark" ? true : false
     );
-
-    useEffect(() => {
-        if (isSuccessUserInformation && informationUser) {
-            authContext?.setUser(informationUser.response.user)
-        }
-    }, [isSuccessUserInformation, informationUser])
-
+    const { toggleTheme, themeMode } = useThemeContext();
 
 
     return (
@@ -127,6 +120,7 @@ function SideBarLeft() {
                                     document.documentElement.classList.remove("dark");
                                     document.documentElement.classList.add("light");
                                 }
+                                toggleTheme()
 
                             }}
                             checked={theme}

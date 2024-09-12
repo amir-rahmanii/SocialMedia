@@ -1,4 +1,4 @@
-import * as React from 'react';
+
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -10,6 +10,8 @@ import TableRow from '@mui/material/TableRow';
 import DateConverter from '../../../utils/DateConverter';
 import { svgIconBrowser, svgIconOs } from '../../../utils/systemInfoConverterSvg';
 import { createTheme, ThemeProvider } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { useThemeContext } from '../../../Context/ThemeContext';
 
 export type TableLoginProps = {
     loginInformation?: {
@@ -23,23 +25,10 @@ export type TableLoginProps = {
 }
 
 
-const darkTheme = createTheme({
-    palette: {
-        mode: 'dark',
-        background: {
-            paper: '#424242',
-            default: '#303030',
-        },
-        text: {
-            primary: '#ffffff',
-            secondary: '#bbbbbb',
-        },
-    },
-});
-
 export default function TableLogin({ loginInformation }: TableLoginProps) {
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    
 
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
@@ -50,10 +39,12 @@ export default function TableLogin({ loginInformation }: TableLoginProps) {
         setPage(0);
     };
 
+
     const hasData = loginInformation && loginInformation.length > 0;
 
+
+
     return (
-        <ThemeProvider theme={darkTheme}>
             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
                 {hasData ? (
                     <>
@@ -111,6 +102,5 @@ export default function TableLogin({ loginInformation }: TableLoginProps) {
                     <p className='font-medium text-lg text-center py-4'>No data found with this filter 😩</p>
                 )}
             </Paper>
-        </ThemeProvider>
     );
 }

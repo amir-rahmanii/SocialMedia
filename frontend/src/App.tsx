@@ -1,16 +1,19 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { useRoutes } from 'react-router-dom'
 import routes from './routes'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import Toast from './Components/Toast/Toast'
-import AuthContextProvider from './Context/AuthContext'
+import AuthContextProvider, { AuthContext } from './Context/AuthContext'
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { ThemeProviderContext } from './Context/ThemeContext'
+import apiRequest from './Services/axios'
 
 
 function App() {
 
-  const route = useRoutes(routes)
+  const route = useRoutes(routes);
+
 
 
   const client = new QueryClient({
@@ -29,6 +32,8 @@ function App() {
 
   //change theme
   useEffect(() => {
+    
+    // light and dark mode
     const theme = localStorage.getItem("theme");
     if (theme === "dark") {
       document.documentElement.classList.remove("light");
@@ -40,16 +45,19 @@ function App() {
   }, [])
 
 
+
   return (
-    <QueryClientProvider client={client}>
-      <AuthContextProvider>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          {route}
-          {/* show toast */}
-          <Toast />
-        </LocalizationProvider>
-      </AuthContextProvider>
-    </QueryClientProvider>
+    <AuthContextProvider>
+      <QueryClientProvider client={client}>
+        <ThemeProviderContext>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            {route}
+            {/* show toast */}
+            <Toast />
+          </LocalizationProvider>
+        </ThemeProviderContext>
+      </QueryClientProvider>
+    </AuthContextProvider>
   )
 }
 

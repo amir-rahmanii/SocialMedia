@@ -191,7 +191,7 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
                                     name='title'
                                     required
                                     size="small"
-                                    className='bg-white'
+                                    className=''
                                     fullWidth
                                 />
                                 {errors.title && <p className='text-error-red text-sm mt-1.5'> {errors.title.message}</p>}
@@ -204,22 +204,24 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
                                     name='hashtags'
                                     required
                                     size="small"
-                                    className='bg-white'
+                                    className=''
                                     fullWidth
                                 />
                                 {errors.hashtags && <p className='text-error-red text-sm mt-1.5'> {errors.hashtags.message}</p>}
                             </div>
 
-                            <textarea
-                                className="outline-none rounded p-2 w-full my-4 resize-none h-32 sm:h-auto"
+                            <TextField
+                                className=" my-4"
                                 placeholder="Write a discription..."
                                 required
                                 name="description"
                                 value={description}
+                                fullWidth
+                                size="medium"
                                 onChange={(e) => setdescription(e.target.value)}
                                 onClick={() => setShowEmojis(false)}
                             >
-                            </textarea>
+                            </TextField>
 
                             <div className='my-2'>
                                 <span onClick={() => setShowEmojis(!showEmojis)} className="cursor-pointer hidden sm:block w-6 h-6 text-black dark:text-white ">{emojiIcon}</span>

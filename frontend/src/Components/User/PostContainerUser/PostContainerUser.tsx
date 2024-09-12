@@ -22,7 +22,7 @@ function PostContainerUser({ showCol, posts }: PostContainerUserProps) {
         <>
             {showCol && (
                 <div className='p-3 w-32 hidden lg:block '>
-                    <FormControl fullWidth className='bg-white'>
+                    <FormControl fullWidth>
                         <InputLabel id="demo-simple-select-label">Column</InputLabel>
                         <Select
                             labelId="demo-simple-select-label"

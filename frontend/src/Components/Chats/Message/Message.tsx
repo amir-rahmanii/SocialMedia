@@ -74,7 +74,7 @@ const Message = (props: MessageProps) => {
                                 <span className="text-xs text-gray-500 px-3 py-1">{props.message.sender.username}</span>
                                 <div className="flex flex-col">
                                     <div onDoubleClick={() => props.handleLikeMessage(props.message._id)} className="px-4 cursor-pointer flex flex-col gap-1.5 py-3 text-sm bg-gray-200 rounded-3xl max-w-xs overflow-hidden">
-                                        <span className="">{props.message.content}</span>
+                                        <span className="text-black">{props.message.content}</span>
                                         <div className="flex justify-between items-center mt-1">
                                             <span className="text-xs text-gray-500">{formatTime(props.message.timestamp)}</span>
                                             {props.message.isEdited && (

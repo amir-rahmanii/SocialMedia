@@ -41,14 +41,7 @@ function usePostUserResetPassword() {
     )
 }
 
-function useGetUserInformation() {
-    return useQuery<user>(['getUserInformation'],
-        async () => {
-            const response = await apiRequest.get(`users/user-information`);
-            return response.data
-        },
-    )
-}
+
 
 function useGetUserData(userId: string) {
     return useQuery<profile>(['getUserData', userId],
@@ -102,7 +95,6 @@ function useUpdateUserProfile() {
                 queryClient.invalidateQueries(["getUserData"]);
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
                 queryClient.invalidateQueries(["mySavedPost"]);
-                queryClient.invalidateQueries(["getUserInformation"]);
                 queryClient.invalidateQueries(["searchPosts"]);
             },
         }
@@ -119,7 +111,6 @@ function usePostFollowToggle() {
                 queryClient.invalidateQueries(["getUserData"]);
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
                 queryClient.invalidateQueries(["mySavedPost"]);
-                queryClient.invalidateQueries(["getUserInformation"]);
                 queryClient.invalidateQueries(["searchPosts"]);
             },
         }
@@ -132,7 +123,6 @@ function usePostFollowToggle() {
 export {
     useGetAllUsersInformation,
     useGetUserData,
-    useGetUserInformation,
     useUpdateUserProfile,
     usePostFollowToggle,
     usePostUserRegister,

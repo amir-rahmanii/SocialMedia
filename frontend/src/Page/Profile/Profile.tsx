@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import MetaData from '../../Components/MetaData/MetaData'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { changeProfilePicture, postsIconFill, postsIconOutline, postUploadOutline, reelsIcon, savedIconFill, savedIconOutline, settingsIcon, taggedIcon } from '../../Components/SvgIcon/SvgIcon'
@@ -7,15 +7,15 @@ import { useGetMySavedPost } from '../../hooks/post/usePost'
 import PostContainerUser from '../../Components/User/PostContainerUser/PostContainerUser'
 import SpinLoader from '../../Components/SpinLoader/SpinLoader'
 import NewPost from '../../Components/Header/NewPost/NewPost'
-import { useGetUserData, useGetUserInformation, usePostFollowToggle } from '../../hooks/user/useUser'
+import { useGetUserData, usePostFollowToggle } from '../../hooks/user/useUser'
 import toast from 'react-hot-toast'
 import ChangeProfile from '../../Components/User/ChangeProfile/ChangeProfile'
 import ShowWhoFollow from '../../Components/Profile/ShowWhoFollow/ShowWhoFollow'
-import { Backdrop, Dialog } from '@mui/material'
-import TableLogin from '../../Components/User/TableLogin/TableLogin'
+import { Dialog } from '@mui/material'
 import StoryContent from '../../Components/Home/StoriesContainer/StoryContent'
 import SideBarLeft from '../../Parts/SideBarLeft/SideBarLeft'
 import SideBarBottom from '../../Parts/SideBarBottom/SideBarBottom'
+import { AuthContext } from '../../Context/AuthContext'
 
 
 
@@ -38,9 +38,9 @@ function Profile() {
   const { mutate: followToggle, isSuccess: isSuccessFollowToggle, isError: isErrorFollowToggle, error: errorFollow, data: dataFollow } = usePostFollowToggle();
   //this is for all users data
   const { data: informationUserData, isLoading: isLoadingUserData, isSuccess: isSucessGetUserData, refetch: refetchGerUserData } = useGetUserData(userid as string);
-  const { data: myInformationData, isLoading: isLoadingMyInformationData, isSuccess: isSuccessMyInformationData, refetch: refetchMyInformationData } = useGetUserInformation();
 
   const navigate = useNavigate(); // Initialize useHistory
+  const authContext = useContext(AuthContext)
 
   // Function to handle story click and update URL with storyid as a query parameter
   const handleStoryClick = (storyId: string) => {
@@ -55,20 +55,19 @@ function Profile() {
     setIsShowFollowers(false)
     setIsShowFollowing(false)
     refetchGerUserData()
-    refetchMyInformationData()
   }, [userid])
 
 
   useEffect(() => {
-    if (isSucessGetUserData && isSuccessMyInformationData) {
-      let isFollowed = myInformationData.response.user.following.some(user => user.userId === informationUserData?.user._id)
+    if (isSucessGetUserData) {
+      let isFollowed = authContext?.user?.following.some(user => user.userId === informationUserData?.user._id)
       if (isFollowed) {
         setFollowed(isFollowed)
       } else {
         setFollowed(false)
       }
     }
-  }, [isSucessGetUserData, isSuccessMyInformationData])
+  }, [isSucessGetUserData])
 
 
 
@@ -132,11 +131,11 @@ function Profile() {
     <>
       <SideBarLeft />
       <Header />
-      {isLoadingUserData && isLoadingMyInformationData ? (
+      {isLoadingUserData ? (
         <SpinLoader />
       ) : (
         <div className="md:w-2/3 md:mr-32 mt-14 md:mt-0 mx-auto p-3">
-          <MetaData title={`@${myInformationData?.response.user.username} • Instagram photos and videos`} />
+          <MetaData title={`@${authContext?.user?.username} • Instagram photos and videos`} />
 
 
           <div className="sm:flex w-full sm:py-8 rounded-t">
@@ -159,7 +158,7 @@ function Profile() {
               />
 
 
-              {myInformationData?.response.user._id === informationUserData?.user._id && (
+              {authContext?.user?._id === informationUserData?.user._id && (
                 <>
                   <button onClick={() => setIsShowChangeProfile(true)} className=' flex flex-col items-center group self-end cursor-pointer'>
                     <div className='flex flex-col items-center'>
@@ -198,7 +197,7 @@ function Profile() {
 
                 <h2 className="text-2xl sm:text-3xl font-thin text-black dark:text-white">{informationUserData?.user.username}</h2>
 
-                {myInformationData?.response.user._id === informationUserData?.user._id && (
+                {authContext?.user?._id === informationUserData?.user._id && (
                   <div>
                     <Link to="/update-password" className="text-black dark:text-white border flex gap-2 items-center font-medium hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 text-sm rounded px-2 py-1">Change Password {settingsIcon}</Link>
                   </div>
@@ -235,7 +234,7 @@ function Profile() {
 
               </div>
 
-              {informationUserData?.user._id !== myInformationData?.response.user._id && (
+              {informationUserData?.user._id !== authContext?.user?._id && (
                 <button onClick={() => {
                   setFollowed(prev => !prev);
                   followToggle(informationUserData?.user._id as string)
@@ -254,7 +253,7 @@ function Profile() {
               <span onClick={() => setSavedTab(false)} className={`${savedTab ? 'text-gray-400' : 'border-t border-black dark:border-white'} py-3 cursor-pointer  flex items-center text-[13px] uppercase gap-3 tracking-[1px] font-medium`}>
                 {savedTab ? postsIconOutline : postsIconFill} posts</span>
 
-              {myInformationData?.response.user._id === informationUserData?.user._id && (
+              {authContext?.user?._id === informationUserData?.user._id && (
                 <span onClick={() => setSavedTab(true)} className={`${savedTab ? 'border-t border-black dark:border-white' : 'text-gray-400'} py-3 cursor-pointer flex items-center text-[13px] uppercase gap-3 tracking-[1px] font-medium`}>
                   {savedTab ? savedIconFill : savedIconOutline} saved</span>
               )}
@@ -294,7 +293,7 @@ function Profile() {
                   ) : (
                     <div className='text-black dark:text-white text-center mt-2 p-4 text-xl rounded'>
                       Sorry, no posts have been registered yet😩
-                      {myInformationData?.response.user._id === informationUserData?.user._id && (
+                      {authContext?.user?._id === informationUserData?.user._id && (
                         <>
                           <div className='flex items-center justify-center gap-3 mt-2'>
                             <span> You be the first</span>

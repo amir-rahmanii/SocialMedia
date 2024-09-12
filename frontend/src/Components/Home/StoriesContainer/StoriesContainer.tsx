@@ -36,6 +36,10 @@ const StoriesContainer = () => {
     };
 
 
+    console.log(authContext?.user?.name);
+    
+
+
 
     return (
         <>
@@ -44,13 +48,15 @@ const StoriesContainer = () => {
                     setShowAddStory(true)
                 }} className="flex flex-col text-center justify-center items-center p-2 cursor-pointer">
                     <div className="w-[60px] h-[60px] md:w-[90px] md:h-[90px] rounded-full border-2 border-red-500 relative">
-                        <img
-                            loading="lazy"
-                            className="rounded-full h-full w-full object-cover"
-                            src={`http://localhost:4002/images/profiles/${authContext?.user?.profilePicture?.filename}`}
-                            draggable="false"
-                            alt="story"
-                        />
+                        {authContext?.user && (
+                            <img
+                                loading="lazy"
+                                className="rounded-full h-full w-full object-cover"
+                                src={`http://localhost:4002/images/profiles/${authContext.user?.profilePicture.filename}`}
+                                draggable="false"
+                                alt="story"
+                            />
+                        )}
                         <button className='absolute bottom-0 right-0 w-6 h-6 bg-black rounded-full flex items-center justify-center'>
                             {plusIcon}
                         </button>

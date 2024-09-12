@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom'
 import { postUploadOutline } from '../../Components/SvgIcon/SvgIcon';
 import NewPost from '../../Components/Header/NewPost/NewPost';
 import { AuthContext } from '../../Context/AuthContext';
-import { useGetUserInformation } from '../../hooks/user/useUser';
 import { FormControlLabel } from '@mui/material';
 import { MaterialUISwitch } from '../../Components/MaterialUISwitch/MaterialUISwitch';
+import { useThemeContext } from '../../Context/ThemeContext';
 
 
 
@@ -16,13 +16,9 @@ export default function Header() {
     );
     const [newPost, setNewPost] = useState(false);
     const authContext = useContext(AuthContext);
-    const { data: informationUser, isSuccess: isSuccessUserInformation } = useGetUserInformation();
+    const { toggleTheme, themeMode } = useThemeContext();
 
-    useEffect(() => {
-        if (isSuccessUserInformation && informationUser) {
-            authContext?.setUser(informationUser.response.user)
-        }
-    }, [isSuccessUserInformation, informationUser])
+
 
 
     return (
@@ -55,6 +51,7 @@ export default function Header() {
                                     document.documentElement.classList.remove("dark");
                                     document.documentElement.classList.add("light");
                                 }
+                                toggleTheme()
 
                             }}
                             checked={theme}

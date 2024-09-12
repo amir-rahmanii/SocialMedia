@@ -4,14 +4,14 @@ import Header from '../../Parts/Header/Header'
 import SideBarLeft from '../../Parts/SideBarLeft/SideBarLeft'
 import SideBarBottom from '../../Parts/SideBarBottom/SideBarBottom'
 import TableLogin from '../../Components/User/TableLogin/TableLogin'
-import { useGetUserInformation } from '../../hooks/user/useUser'
 import SpinLoader from '../../Components/SpinLoader/SpinLoader'
 import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Radio, RadioGroup } from '@mui/material'
 import FilterDate from '../../Components/FilterDate/FilterDate'
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import toast from 'react-hot-toast'
-import { androidIcon, iosIcon, linuxIcon, windowsIcon } from '../../Components/SvgIcon/SvgIcon'
+import { androidIcon, windowsIcon } from '../../Components/SvgIcon/SvgIcon'
+import { AuthContext } from '../../Context/AuthContext'
 
 // Enable the 'isBetween' plugin for dayjs
 dayjs.extend(isBetween);
@@ -27,24 +27,17 @@ type InfoSystem = {
 
 function LoginInfo() {
 
-    const { data: myInformationData, isLoading: isLoadingMyInformationData } = useGetUserInformation();
-
-    
-    
-    
-    
-    
-    
+    const authContext = useContext(AuthContext);
     const [isShowOpenFilter, setIsShowOpenFilter] = useState(false);
     // State to hold the filtered data
     const [filteredData, setFilteredData] = useState<InfoSystem | null>(null);
     const [allBrowser, setAllBrowser] = useState<string[]>(["Chrome", "Firefox", "Safari", "Opera", "Edge", "Other"])
-    const [allOs, setAllOs] = useState<string[]>(["Windows" , "Android", "Other"])
+    const [allOs, setAllOs] = useState<string[]>(["Windows", "Android", "Other"])
     const [fromPicker, setFromPicker] = useState('')
     const [untilPicker, setUntilPicker] = useState('')
     const [orderSystemInfo, setOrderSystemInfo] = useState<"NTO" | "OTN">("NTO")
     const mainBrowsers = ["Chrome", "Firefox", "Safari", "Opera", "Edge"];
-    const mainOs = ["Windows","Android"];
+    const mainOs = ["Windows", "Android"];
 
 
 
@@ -70,7 +63,7 @@ function LoginInfo() {
         const untilDate = dayjs(untilPicker).endOf('day');
 
         // فیلتر کردن systemInfos بر اساس بازه زمانی و مرورگر
-        const filteredSystemInfos = myInformationData?.response.user.systemInfos.filter(info => {
+        const filteredSystemInfos = authContext?.user?.systemInfos.filter(info => {
             const isMainOsIncluded = allOs.includes(info.os);
             const isOtherOs = allOs.includes("Other") && !mainOs.includes(info.os);
             const isMainBrowserIncluded = allBrowser.includes(info.browser); // چک کردن مرورگرهای اصلی
@@ -79,14 +72,14 @@ function LoginInfo() {
             const isDateInRange = infoDate.isBetween(fromDate, untilDate, null, '[]'); // چک کردن تاریخ
 
             // فیلتر مرورگر و تاریخ
-            return ((isMainOsIncluded || isOtherOs ) && (isMainBrowserIncluded || isOtherBrowser)) && isDateInRange;
+            return ((isMainOsIncluded || isOtherOs) && (isMainBrowserIncluded || isOtherBrowser)) && isDateInRange;
         });
 
         // ذخیره داده‌های فیلتر شده
         {
             orderSystemInfo === "OTN" ?
-             setFilteredData(filteredSystemInfos?.reverse() || [])
-            : setFilteredData(filteredSystemInfos || [])
+                setFilteredData(filteredSystemInfos?.reverse() || [])
+                : setFilteredData(filteredSystemInfos || [])
         }
 
         // بستن دیالوگ فیلتر
@@ -106,7 +99,7 @@ function LoginInfo() {
 
 
     const changeHandlerOs = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let newAllOs= [...allOs]
+        let newAllOs = [...allOs]
         if (newAllOs.includes(e.target.value)) {
             let newAllOsFilters = newAllOs.filter(os => os.toLowerCase() !== e.target.value.toLowerCase())
             setAllOs(newAllOsFilters)
@@ -122,17 +115,13 @@ function LoginInfo() {
             <MetaData title="login-info" />
             <Header />
             <div>
-                {isLoadingMyInformationData ? (
-                    <SpinLoader />
-                ) : (
-                    <div className='w-full md:w-4/6 md:ml-44 mt-14 lg:ml-60 xl:ml-72'>
-                        <h3 className='text-2xl text-center my-7 font-medium text-black dark:text-white'>User Login info</h3>
-                        <div className='mb-3 px-3'>
-                            <Button onClick={() => setIsShowOpenFilter(true)} variant="outlined">Filter</Button>
-                        </div>
-                        <TableLogin loginInformation={filteredData || myInformationData?.response.user.systemInfos} />
+                <div className='w-full md:w-4/6 md:ml-44 mt-14 lg:ml-60 xl:ml-72'>
+                    <h3 className='text-2xl text-center my-7 font-medium text-black dark:text-white'>User Login info</h3>
+                    <div className='mb-3 px-3'>
+                        <Button onClick={() => setIsShowOpenFilter(true)} variant="outlined">Filter</Button>
                     </div>
-                )}
+                    <TableLogin loginInformation={filteredData || authContext?.user?.systemInfos} />
+                </div>
             </div>
             <FilterDate
                 filterDateHandler={filterDateHandler}
@@ -228,7 +217,7 @@ function LoginInfo() {
                                     onChange={changeHandlerOs}
                                 />}
                             />
-                   
+
                         </div>
                     </FormGroup>
                 </div>

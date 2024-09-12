@@ -3,12 +3,6 @@
 @tailwind utilities;
 
 
-/* body {
-  background: #2c5364;
-  background: linear-gradient(to right,
-      #0f2027, #203a43, #2c5364);
-  font-family: "Segoe UI", sans-serif;
-} */
 
 .slick-arrow {
   margin: 0 2.3rem;
@@ -47,4 +41,27 @@
 .slick-prev::before, .slick-next::before {
   color: rgb(110, 101, 101); /* رنگ آیکون قبل از تغییر */
   font-size: 25px; /* اندازه دلخواه آیکون */
+}
+
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+  transition: all ease 0.3s;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
