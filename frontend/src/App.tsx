@@ -32,7 +32,7 @@ function App() {
 
   //change theme
   useEffect(() => {
-    
+
     // light and dark mode
     const theme = localStorage.getItem("theme");
     if (theme === "dark") {
@@ -47,8 +47,8 @@ function App() {
 
 
   return (
-    <AuthContextProvider>
-      <QueryClientProvider client={client}>
+    <QueryClientProvider client={client}>
+      <AuthContextProvider>
         <ThemeProviderContext>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             {route}
@@ -56,8 +56,8 @@ function App() {
             <Toast />
           </LocalizationProvider>
         </ThemeProviderContext>
-      </QueryClientProvider>
-    </AuthContextProvider>
+      </AuthContextProvider>
+    </QueryClientProvider>
   )
 }
 

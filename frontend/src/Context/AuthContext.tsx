@@ -1,6 +1,8 @@
 import React, { createContext, useState, useEffect } from "react";
 import apiRequest from "../Services/axios";
 import SpinLoader from "../Components/SpinLoader/SpinLoader";
+import { useGetMyUsersInfo } from "../hooks/user/useUser";
+import toast from "react-hot-toast";
 
 type AuthContextProviderProps = {
     children: React.ReactNode
@@ -49,23 +51,18 @@ export const AuthContext = createContext<AuthContextType | null>(null);
 
 const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     const [user, setUser] = useState<userInfo | null>(null);
-    const [loading, setLoading] = useState(true);
+    const { data: myInfo, isLoading, isSuccess, isError } = useGetMyUsersInfo();
 
     useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const response = await apiRequest.get(`users/user-information`);
-                setUser(response.data.response.user);
-            } catch (error) {
-                console.error("Error fetching user information", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchUserData();
-    }, []);
+        if (isSuccess) {
+            setUser(myInfo);
+        } else if (isError) {
+            toast.error("please try again later 😩")
+        }
+    }, [isSuccess, isError]);
 
-    if (loading) {
+
+    if (isLoading) {
         return <div><SpinLoader /></div>; // You can replace this with a spinner or skeleton component
     }
 

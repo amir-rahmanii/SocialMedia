@@ -165,7 +165,9 @@ function PostItem(props: PostItemProps) {
                     <Link to={`/profile/${props.user.id}`}><img draggable="false" className="w-10 h-10 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${props.user.userPicture.filename}`} alt="avatar" /></Link>
                     <Link to={`/profile/${props.user.id}`} className="text-black dark:text-white text-sm font-semibold">{props.user.username}</Link>
                 </div>
-                <button onClick={() => setPostDetailsToggle(true)} className="cursor-pointer text-black dark:text-white">{moreIcons}</button>
+                {authContext?.user?._id === props.user.id && (
+                    <button onClick={() => setPostDetailsToggle(true)} className="cursor-pointer text-black dark:text-white">{moreIcons}</button>
+                )}
             </div>
 
             {postDatailsToggle && (

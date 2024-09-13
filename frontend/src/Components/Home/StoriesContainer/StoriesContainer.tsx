@@ -36,7 +36,7 @@ const StoriesContainer = () => {
     };
 
 
-    console.log(authContext?.user?.name);
+ 
     
 
 

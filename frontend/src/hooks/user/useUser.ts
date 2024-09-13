@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import apiRequest from "../../Services/axios"
-import { forgetPassword, profile, resetPassword, updatePassword, user, userId, userInformationAll, userRegister } from "./user.types";
+import { forgetPassword, profile, resetPassword, updatePassword, user, userId, userInformation, userInformationAll, userRegister } from "./user.types";
 import { userLogin } from "./user.types";
 // import Cookies from "js-cookie";
 
@@ -51,10 +51,6 @@ function useGetUserData(userId: string) {
         },
         {
             enabled: !!userId, 
-            onSuccess : (res) => {
-                console.log(res);
-                
-            }
         }
     )
 }
@@ -64,6 +60,15 @@ function useGetAllUsersInformation() {
         async () => {
             const response = await apiRequest.get(`users/all-users`);
             return response.data
+        },
+    )
+}
+
+function useGetMyUsersInfo() {
+    return useQuery<userInformation>(['getMyUserInfo'],
+        async () => {
+            const response = await apiRequest.get(`users/user-information`);
+            return response.data.response.user;
         },
     )
 }
@@ -96,6 +101,7 @@ function useUpdateUserProfile() {
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
                 queryClient.invalidateQueries(["mySavedPost"]);
                 queryClient.invalidateQueries(["searchPosts"]);
+                queryClient.invalidateQueries(["getMyUserInfo"]);
             },
         }
     )
@@ -108,6 +114,7 @@ function usePostFollowToggle() {
     },
         {
             onSuccess: () => {
+                queryClient.invalidateQueries(["getMyUserInfo"]);
                 queryClient.invalidateQueries(["getUserData"]);
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
                 queryClient.invalidateQueries(["mySavedPost"]);
@@ -122,6 +129,7 @@ function usePostFollowToggle() {
 
 export {
     useGetAllUsersInformation,
+    useGetMyUsersInfo,
     useGetUserData,
     useUpdateUserProfile,
     usePostFollowToggle,
@@ -130,5 +138,5 @@ export {
     usePostUserForgetPassword,
     usePostUserUpdatePassword,
     usePostUserResetPassword,
-    usePostUserBan
+    usePostUserBan,
 }

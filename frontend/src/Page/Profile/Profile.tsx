@@ -7,7 +7,7 @@ import { useGetMySavedPost } from '../../hooks/post/usePost'
 import PostContainerUser from '../../Components/User/PostContainerUser/PostContainerUser'
 import SpinLoader from '../../Components/SpinLoader/SpinLoader'
 import NewPost from '../../Components/Header/NewPost/NewPost'
-import { useGetUserData, usePostFollowToggle } from '../../hooks/user/useUser'
+import { useGetMyUsersInfo, useGetUserData, usePostFollowToggle } from '../../hooks/user/useUser'
 import toast from 'react-hot-toast'
 import ChangeProfile from '../../Components/User/ChangeProfile/ChangeProfile'
 import ShowWhoFollow from '../../Components/Profile/ShowWhoFollow/ShowWhoFollow'
@@ -38,6 +38,8 @@ function Profile() {
   const { mutate: followToggle, isSuccess: isSuccessFollowToggle, isError: isErrorFollowToggle, error: errorFollow, data: dataFollow } = usePostFollowToggle();
   //this is for all users data
   const { data: informationUserData, isLoading: isLoadingUserData, isSuccess: isSucessGetUserData, refetch: refetchGerUserData } = useGetUserData(userid as string);
+ 
+
 
   const navigate = useNavigate(); // Initialize useHistory
   const authContext = useContext(AuthContext)
@@ -68,6 +70,8 @@ function Profile() {
       }
     }
   }, [isSucessGetUserData])
+
+  
 
 
 
@@ -219,6 +223,7 @@ function Profile() {
                 )}
 
                 <div className="cursor-pointer" onClick={() => setIsShowFollowing(true)}><span className="font-semibold">{informationUserData?.user.following.length}</span> following</div>
+                
                 {isShowFollowing && (
                   <ShowWhoFollow title="Following" dataFollow={informationUserData?.user.following} isOpenShowWhoFollow={isShowFollowing} setIsOpenShowWhoFollow={setIsShowFollowing} />
                 )}

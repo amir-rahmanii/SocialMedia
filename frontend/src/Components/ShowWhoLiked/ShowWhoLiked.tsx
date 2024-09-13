@@ -3,9 +3,8 @@ import React, { useContext, useEffect, useState } from 'react'
 import DateConverter from '../../utils/DateConverter'
 import { closeIcon } from '../SvgIcon/SvgIcon'
 import { Link } from 'react-router-dom'
-import { usePostFollowToggle } from '../../hooks/user/useUser'
+import { useGetMyUsersInfo, usePostFollowToggle } from '../../hooks/user/useUser'
 import toast from 'react-hot-toast'
-import { AuthContext } from '../../Context/AuthContext'
 
 type ShowWhoLikedProps = {
     isOpenShowLiked: boolean,
@@ -26,7 +25,7 @@ function ShowWhoLiked({ userLiked, isOpenShowLiked, setIsOpenShowLiked }: ShowWh
 
     const { mutate: followToggle, isSuccess: isSuccessFollowToggle, isError: isErrorFollowToggle, error: errorFollow, data: dataFollow } = usePostFollowToggle();
     const [followed, setFollowed] = useState<string[]>([])
-    const authContext = useContext(AuthContext)
+    const { data: myInfo } = useGetMyUsersInfo();
 
 
     useEffect(() => {
@@ -57,17 +56,16 @@ function ShowWhoLiked({ userLiked, isOpenShowLiked, setIsOpenShowLiked }: ShowWh
                 }
             )
         }
-    }, [isErrorFollowToggle, isSuccessFollowToggle])
+    }, [isErrorFollowToggle, isSuccessFollowToggle, dataFollow])
 
 
     // Check if the user is followed
     useEffect(() => {
-        if (authContext?.user?.following) {
-            const followedUserIds = authContext.user.following.map(follow => follow.userId);
+        if (myInfo) {
+            const followedUserIds = myInfo.following.map(follow => follow.userId);
             setFollowed(followedUserIds);
         }
-    }, [authContext?.user?.following]);
-
+    }, [myInfo]);
 
     return (
         <Dialog open={isOpenShowLiked} onClose={() => setIsOpenShowLiked(false)} maxWidth='xl'>
@@ -92,9 +90,10 @@ function ShowWhoLiked({ userLiked, isOpenShowLiked, setIsOpenShowLiked }: ShowWh
                                     </div>
                                 </div>
                                 <div className='ml-5'>
-                                {authContext?.user?._id !== data.userid && (
+                                    {myInfo?._id !== data.userid && (
                                         <button
                                             onClick={() => {
+                                                // درخواست API برای فالو/آنفالو
                                                 followToggle(data.userid);
                                             }}
                                             className="font-medium transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow rounded px-6 py-1.5"

@@ -107,16 +107,14 @@ function PostDetails({ postInfo, postId, userID, isBan, isShowPostDetails, setIs
             <Dialog open={isShowPostDetails} onClose={() => setIsShowPostDetails(false)} maxWidth='xl'>
                 <div className="flex flex-col min-w-60 border rounded dark:border-gray-300/20 border-gray-300">
                     <div className="flex flex-col w-full overflow-hidden rounded">
-                        {(authContext?.user?._id === userID || authContext?.user?.role === "ADMIN") ? (
+                        {(authContext?.user?._id === userID) && (
                             <button onClick={() => deletePostHandler(postId)} className="flex bg-red-500 text-white items-center justify-between p-2.5 text-sm pl-4 cursor-pointer font-semibold hover:bg-red-400 duration-300 transition-all">
                                 Delete
                                 <div className='w-5 h-5'>
                                     {deleteIcon}
                                 </div>
                             </button>
-                        ) :
-                            <p className='flex items-center justify-between p-2.5 text-sm pl-4 cursor-pointer bg-white dark:bg-black hover:bg-[#00376b1a] dark:hover:bg-gray-600  text-black dark:text-white duration-300 transition-all'>Sorry, you do not have access to this section😩</p>
-                        }
+                        )}
                         {authContext?.user?._id === userID && (
                             <button onClick={() => setUpdatePost(true)} className="flex text-black dark:text-white items-center justify-between p-2.5 text-sm pl-4 cursor-pointer bg-white dark:bg-black hover:bg-[#00376b1a] dark:hover:bg-gray-600 duration-300 transition-all">
                                 Edit

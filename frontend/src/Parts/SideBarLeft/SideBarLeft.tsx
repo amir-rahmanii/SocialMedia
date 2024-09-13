@@ -7,6 +7,8 @@ import { FormControlLabel } from '@mui/material';
 import { MaterialUISwitch } from '../../Components/MaterialUISwitch/MaterialUISwitch';
 import ShowSearchInput from '../../Components/ShowSearchInput/ShowSearchInput';
 import { useThemeContext } from '../../Context/ThemeContext';
+import toast from 'react-hot-toast';
+import { useGetMyUsersInfo } from '../../hooks/user/useUser';
 
 function SideBarLeft() {
     const authContext = useContext(AuthContext);
@@ -16,6 +18,15 @@ function SideBarLeft() {
         localStorage.getItem("theme") === "dark" ? true : false
     );
     const { toggleTheme, themeMode } = useThemeContext();
+
+    const { data: myInfo, isSuccess : isSuccessErrormyinfo, isError : isErrorMyInfo } = useGetMyUsersInfo();
+    useEffect(() => {
+        if (isSuccessErrormyinfo) {
+            authContext?.setUser(myInfo);
+        } else if (isErrorMyInfo) {
+            toast.error("please try again later 😩")
+        }
+    }, [isSuccessErrormyinfo, isErrorMyInfo]);
 
 
     return (
@@ -78,7 +89,7 @@ function SideBarLeft() {
                     <li className='p-3 rounded-md hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 group'>
                         <Link className='text-base/5 flex items-center justify-center xl:justify-start gap-3 font-bold text-black dark:text-white' to={`/profile/${authContext?.user?._id}`}>
                             <div className='w-6 h-6 group-hover:scale-110 transition-all duration-300'>
-                                <img loading='lazy' className='w-full h-full rounded-full object-cover' src={`http://localhost:4002/images/profiles/${authContext?.user?.profilePicture.filename}`} alt="profile" />
+                                <img loading='lazy' className='w-full h-full rounded-full object-cover' src={`http://localhost:4002/images/profiles/${myInfo?.profilePicture.filename}`} alt="profile" />
                             </div>
                             <span className='hidden xl:block'>Profile</span>
                         </Link>

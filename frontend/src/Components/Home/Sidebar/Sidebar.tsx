@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../../Context/AuthContext';
-import { useGetAllUsersInformation, usePostFollowToggle } from '../../../hooks/user/useUser';
+import { useGetAllUsersInformation, useGetMyUsersInfo, usePostFollowToggle } from '../../../hooks/user/useUser';
 import SkeletonUserItem from '../../User/SkeletonUserItem/SkeletonUserItem';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -9,10 +9,10 @@ import toast from 'react-hot-toast';
 
 function Sidebar() {
 
-    const authContext = useContext(AuthContext);
     const { data: informationAllUser, isLoading, isSuccess: isSuccessGetAllinfo } = useGetAllUsersInformation();
     const { mutate: followToggle, isSuccess: isSuccessFollowToggle, isError: isErrorFollowToggle, error: errorFollow, data: dataFollow } = usePostFollowToggle();
     const [followed, setFollowed] = useState<string[]>([])
+    const { data: myInfo } = useGetMyUsersInfo();
 
 
     useEffect(() => {
@@ -48,11 +48,12 @@ function Sidebar() {
 
     // Check if the user is followed
     useEffect(() => {
-        if (authContext?.user?.following) {
-            const followedUserIds = authContext.user.following.map(follow => follow.userId);
+        if (myInfo) {
+            const followedUserIds = myInfo.following.map(follow => follow.userId);
             setFollowed(followedUserIds);
         }
-    }, [authContext?.user?.following]);
+    }, [myInfo]);
+
 
 
 
@@ -68,24 +69,24 @@ function Sidebar() {
                     <div className='flex flex-col gap-1'>
                         <div className='flex justify-between items-center'>
                             <div className='flex items-center gap-2'>
-                                <Link to={`/profile/${authContext?.user?._id}`}>
-                                    <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/images/profiles/${authContext?.user?.profilePicture.filename}`} alt="avatar" />
+                                <Link to={`/profile/${myInfo?._id}`}>
+                                    <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/images/profiles/${myInfo?.profilePicture.filename}`} alt="avatar" />
                                 </Link>
                                 <div className='flex flex-col'>
-                                    <Link to={`/profile/${authContext?.user?._id}`} className="text-sm font-semibold hover:underline text-black dark:text-white">{authContext?.user?.username}</Link>
-                                    <Link to={`/profile/${authContext?.user?._id}`} className="text-sm text-gray-500">{authContext?.user?.name}</Link>
+                                    <Link to={`/profile/${myInfo?._id}`} className="text-sm font-semibold hover:underline text-black dark:text-white">{myInfo?.username}</Link>
+                                    <Link to={`/profile/${myInfo?._id}`} className="text-sm text-gray-500">{myInfo?.name}</Link>
                                 </div>
                             </div>
                             <div>
-                                <p className='text-primary-blue text-xs hover:text-primaryhover-blue'>{authContext?.user?.role}</p>
+                                <p className='text-primary-blue text-xs hover:text-primaryhover-blue'>{myInfo?.role}</p>
                             </div>
                         </div>
                         <div className='py-3'>
                             <p className='text-gray-500 text-sm font-bold'>Suggested for you</p>
                         </div>
-                        {informationAllUser?.response?.users?.slice(0 , 3).map((data) => (
+                        {informationAllUser?.response?.users?.slice(0, 3).map((data) => (
                             <div key={data._id}>
-                                {authContext?.user?._id !== data._id && (
+                                {myInfo?._id !== data._id && (
                                     <div className='flex items-center justify-between pb-2'>
                                         <div className='flex items-center gap-2'>
                                             <Link to={`/profile/${data._id}`}>
@@ -97,7 +98,7 @@ function Sidebar() {
                                             </div>
                                         </div>
                                         <div className='ml-5'>
-                                            {authContext?.user?._id !== data._id && (
+                                            {myInfo?._id !== data._id && (
                                                 <button
                                                     onClick={() => {
                                                         followToggle(data._id);

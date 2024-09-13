@@ -9,6 +9,7 @@ import Header from '../../Parts/Header/Header';
 import SideBarLeft from '../../Parts/SideBarLeft/SideBarLeft';
 import { emojiIcon } from '../../Components/SvgIcon/SvgIcon';
 import { AuthContext } from '../../Context/AuthContext';
+import { useGetMyUsersInfo } from '../../hooks/user/useUser';
 
 
 
@@ -57,6 +58,16 @@ function Inbox() {
     )
     const authContext = useContext(AuthContext);
     const [showEmojis, setShowEmojis] = useState(false);
+
+    const { data: myInfo, isSuccess, isError } = useGetMyUsersInfo();
+
+    useEffect(() => {
+        if (isSuccess) {
+            authContext?.setUser(myInfo);
+        } else if (isError) {
+            toast.error("please try again later 😩")
+        }
+    }, [isSuccess, isError]);
 
 
 

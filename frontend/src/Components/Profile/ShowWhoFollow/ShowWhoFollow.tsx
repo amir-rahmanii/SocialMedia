@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import DateConverter from '../../../utils/DateConverter'
 import { AuthContext } from '../../../Context/AuthContext'
 import toast from 'react-hot-toast'
-import { usePostFollowToggle } from '../../../hooks/user/useUser'
+import { useGetMyUsersInfo, usePostFollowToggle } from '../../../hooks/user/useUser'
 
 type ShowWhoFollowProps = {
   isOpenShowWhoFollow: boolean,
@@ -22,7 +22,7 @@ function ShowWhoFollow({ title, dataFollow, isOpenShowWhoFollow, setIsOpenShowWh
 
   const { mutate: followToggle, isSuccess: isSuccessFollowToggle, isError: isErrorFollowToggle, error: errorFollow, data: dataFollowing } = usePostFollowToggle();
   const [followed, setFollowed] = useState<string[]>([])
-  const authContext = useContext(AuthContext)
+  const { data: myInfo } = useGetMyUsersInfo();
 
   
 
@@ -60,11 +60,12 @@ function ShowWhoFollow({ title, dataFollow, isOpenShowWhoFollow, setIsOpenShowWh
 
   // Check if the user is followed
   useEffect(() => {
-    if (authContext?.user?.following) {
-      const followedUserIds = authContext.user.following.map(follow => follow.userId);
-      setFollowed(followedUserIds);
+    if (myInfo) {
+        const followedUserIds = myInfo.following.map(follow => follow.userId);
+        setFollowed(followedUserIds);
     }
-  }, [authContext?.user?.following]);
+}, [myInfo]);
+
 
 
   return (
@@ -92,7 +93,7 @@ function ShowWhoFollow({ title, dataFollow, isOpenShowWhoFollow, setIsOpenShowWh
                       </div>
                     </div>
                     <div className='ml-5'>
-                      {authContext?.user?._id !== data.userId && (
+                      {myInfo?._id !== data.userId && (
                         <button
                           onClick={() => {
                             followToggle(data.userId);
