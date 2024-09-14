@@ -11,10 +11,11 @@ type FilterDateProps = {
     isShowOpenFilter: boolean;
     setIsShowOpenFilter: (value: boolean) => void;
     fromPicker: string;
-    setFromPicker: (value: string) => void;
+    setFromPicker: (value: Dayjs) => void;
     untilPicker: string;
-    setUntilPicker: (value: string) => void;
+    setUntilPicker: (value: Dayjs) => void;
     filterDateHandler: () => void;
+    title : string
 }
 
 const FilterDate: React.FC<PropsWithChildren<FilterDateProps>> = ({
@@ -25,28 +26,25 @@ const FilterDate: React.FC<PropsWithChildren<FilterDateProps>> = ({
     untilPicker,
     setUntilPicker,
     filterDateHandler,
+    title,
     children
 }) => {
 
     const handleDateFromChange = (newValueDate: Dayjs | null) => {
         if (newValueDate) {
-            setFromPicker(newValueDate.format('YYYY-MM-DD')); // Example format
+            setFromPicker(newValueDate); // Example format
             // If fromPicker changes, update untilPicker to ensure it is not before fromPicker
             if (dayjs(untilPicker).isBefore(newValueDate)) {
-                setUntilPicker('');
+                setUntilPicker(dayjs());
             }
-        } else {
-            setFromPicker('');
-            // If fromPicker is cleared, clear untilPicker as well
-            setUntilPicker('');
-        }
+        } 
     };
 
     const handleDateUntilChange = (newValueDate: Dayjs | null) => {
         if (newValueDate) {
-            setUntilPicker(newValueDate.format('YYYY-MM-DD')); // Example format
+            setUntilPicker(newValueDate); // Example format
         } else {
-            setUntilPicker('');
+            setUntilPicker(dayjs());
         }
     };
 
@@ -58,11 +56,11 @@ const FilterDate: React.FC<PropsWithChildren<FilterDateProps>> = ({
         <Dialog open={isShowOpenFilter} onClose={() => setIsShowOpenFilter(false)} maxWidth='xl'>
             <div className="flex flex-col min-w-60 border rounded bg-white dark:bg-black  dark:border-gray-300/20 border-gray-300">
                 <DialogHeader
-                    title="Filter Login Info"
+                    title={title}
                     setIsOpenShowModal={setIsShowOpenFilter}
                 />
                 <form onSubmit={e => e.preventDefault()} className='bg-white dark:bg-black flex flex-col my-6 px-3 gap-4'>
-                    <div className='flex flex-col gap-4 md:gap-0 md:flex-row md:justify-between'>
+                    <div className='flex flex-col gap-4  md:flex-row md:justify-between'>
                         <DatePicker
                             label="From this date picker"
                             value={dayjs(fromPicker)}

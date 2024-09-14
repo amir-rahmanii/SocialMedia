@@ -43,20 +43,21 @@ exports.getUserTicket = async (req, res) => {
     const userId = req.user._id; // Assuming userId is extracted from the JWT token
 
     console.log(userId);
-    
 
     // Fetch the user's tickets
     const tickets = await Ticket.find({ "user.userId": userId });
 
+    // If no tickets are found, return an empty array with status 200
     if (!tickets || tickets.length === 0) {
-      return res.status(404).json({ message: "No tickets found." });
+      return res.status(200).json([]);
     }
 
-    res.status(200).json(tickets);
+    res.status(200).json(tickets.reverse());
   } catch (error) {
     res.status(500).json({ message: "An error occurred." });
   }
-}
+};
+
 
 
 exports.respondTicket = async (req, res) => {
@@ -72,6 +73,7 @@ exports.respondTicket = async (req, res) => {
     // Extract adminId and adminUsername from the authenticated user (JWT)
     const adminId = req.user.userId;
     const adminUsername = req.user.username;
+    const adminProfilePicture = req.user.profilePicture;
 
     // Find the ticket by ID
     const ticket = await Ticket.findById(ticketId);
@@ -85,6 +87,7 @@ exports.respondTicket = async (req, res) => {
         adminId,
         adminUsername,
         messageBack,
+        adminProfilePicture,
         responseDate: new Date(),
       },
       status: "Answered"

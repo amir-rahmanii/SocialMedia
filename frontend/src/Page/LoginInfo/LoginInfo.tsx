@@ -1,17 +1,17 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import MetaData from '../../Components/MetaData/MetaData'
 import Header from '../../Parts/Header/Header'
 import SideBarLeft from '../../Parts/SideBarLeft/SideBarLeft'
 import SideBarBottom from '../../Parts/SideBarBottom/SideBarBottom'
 import TableLogin from '../../Components/User/TableLogin/TableLogin'
-import SpinLoader from '../../Components/SpinLoader/SpinLoader'
 import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Radio, RadioGroup } from '@mui/material'
 import FilterDate from '../../Components/FilterDate/FilterDate'
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import toast from 'react-hot-toast'
 import { androidIcon, windowsIcon } from '../../Components/SvgIcon/SvgIcon'
-import { AuthContext } from '../../Context/AuthContext'
+import { useGetMyUsersInfo } from '../../hooks/user/useUser'
+import SkeletonTable from '../../Components/SkeletonTable/SkeletonTable'
 
 // Enable the 'isBetween' plugin for dayjs
 dayjs.extend(isBetween);
@@ -27,17 +27,21 @@ type InfoSystem = {
 
 function LoginInfo() {
 
-    const authContext = useContext(AuthContext);
+    const { data: myInfo, isLoading  } = useGetMyUsersInfo();
+
+
+
     const [isShowOpenFilter, setIsShowOpenFilter] = useState(false);
     // State to hold the filtered data
     const [filteredData, setFilteredData] = useState<InfoSystem | null>(null);
     const [allBrowser, setAllBrowser] = useState<string[]>(["Chrome", "Firefox", "Safari", "Opera", "Edge", "Other"])
     const [allOs, setAllOs] = useState<string[]>(["Windows", "Android", "Other"])
-    const [fromPicker, setFromPicker] = useState('')
-    const [untilPicker, setUntilPicker] = useState('')
+    const [fromPicker, setFromPicker] = useState(dayjs())
+    const [untilPicker, setUntilPicker] = useState(dayjs())
     const [orderSystemInfo, setOrderSystemInfo] = useState<"NTO" | "OTN">("NTO")
     const mainBrowsers = ["Chrome", "Firefox", "Safari", "Opera", "Edge"];
     const mainOs = ["Windows", "Android"];
+
 
 
 
@@ -59,11 +63,11 @@ function LoginInfo() {
         }
 
         // تبدیل fromPicker و untilPicker به شیء Dayjs
-        const fromDate = dayjs(fromPicker);
+        const fromDate = dayjs(fromPicker).startOf('day');
         const untilDate = dayjs(untilPicker).endOf('day');
 
         // فیلتر کردن systemInfos بر اساس بازه زمانی و مرورگر
-        const filteredSystemInfos = authContext?.user?.systemInfos.filter(info => {
+        const filteredSystemInfos = myInfo?.systemInfos.filter(info => {
             const isMainOsIncluded = allOs.includes(info.os);
             const isOtherOs = allOs.includes("Other") && !mainOs.includes(info.os);
             const isMainBrowserIncluded = allBrowser.includes(info.browser); // چک کردن مرورگرهای اصلی
@@ -115,19 +119,26 @@ function LoginInfo() {
             <MetaData title="login-info" />
             <Header />
             <div>
-                <div className='w-full md:w-4/6 md:ml-44 mt-14 lg:ml-60 xl:ml-72'>
+                <div className='w-full md:w-4/6 md:ml-44 mt-16 lg:ml-60 xl:ml-72 mb-5'>
                     <h3 className='text-2xl text-center my-7 font-medium text-black dark:text-white'>User Login info</h3>
                     <div className='mb-3 px-3'>
                         <Button onClick={() => setIsShowOpenFilter(true)} variant="outlined">Filter</Button>
                     </div>
-                    <TableLogin loginInformation={filteredData || authContext?.user?.systemInfos} />
+                    {isLoading ? (
+                        <SkeletonTable />
+                    ) : (
+                        <div className='px-3'>
+                            <TableLogin loginInformation={filteredData || myInfo?.systemInfos} />
+                        </div>
+                    )}
                 </div>
             </div>
             <FilterDate
+                title="Filter Login Info"
                 filterDateHandler={filterDateHandler}
-                fromPicker={fromPicker}
+                fromPicker={fromPicker.format('YYYY-MM-DD')}
                 setFromPicker={setFromPicker}
-                untilPicker={untilPicker}
+                untilPicker={untilPicker.format('YYYY-MM-DD')}
                 setUntilPicker={setUntilPicker}
                 isShowOpenFilter={isShowOpenFilter}
                 setIsShowOpenFilter={setIsShowOpenFilter}>

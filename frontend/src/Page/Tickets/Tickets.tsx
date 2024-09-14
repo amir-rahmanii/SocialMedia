@@ -14,32 +14,33 @@ import AddTicket from '../../Components/User/AddTicket/AddTicket'
 import { AuthContext } from '../../Context/AuthContext'
 import TableTicket from '../../Components/User/TableTicket/TableTicket'
 import { useGetUserTicket } from '../../hooks/ticket/useTicket'
+import SpinLoader from '../../Components/SpinLoader/SpinLoader'
+import { ticketUser } from '../../hooks/ticket/tickets.types'
+import SkeletonTable from '../../Components/SkeletonTable/SkeletonTable'
 
 // Enable the 'isBetween' plugin for dayjs
 dayjs.extend(isBetween);
 
-type InfoSystem = {
-    os: string;
-    browser: string;
-    country: string;
-    ip: string;
-    date: Date;
-    _id: string;
-}[]
+
 
 function Tickets() {
 
+
+
+
+
     const [isShowOpenFilter, setIsShowOpenFilter] = useState(false);
     // State to hold the filtered data
-    const [filteredData, setFilteredData] = useState<InfoSystem | null>(null);
-    const [fromPicker, setFromPicker] = useState('')
-    const [untilPicker, setUntilPicker] = useState('')
-    const [orderSystemInfo, setOrderSystemInfo] = useState<"NTO" | "OTN">("NTO")
-    const authContext = useContext(AuthContext);
+    const [filteredData, setFilteredData] = useState<ticketUser[] | null>(null);;
+    const [fromPicker, setFromPicker] = useState(dayjs());
+    const [untilPicker, setUntilPicker] = useState(dayjs());
+    const [orderTicket, setOrderTicket] = useState<"NTO" | "OTN">("NTO");
+    const [allPriority, setAllPriority] = useState<string[]>(["Low", "Medium", "High"]);
+    const [allStatus, setAllStatus] = useState<string[]>(["Open", "Closed", "Answered"]);
 
-    const {data : allTicket , isError , isSuccess , error} = useGetUserTicket()
+    const { data: allTicket, isError, isLoading, error, isSuccess } = useGetUserTicket()
 
-    
+
     useEffect(() => {
         if (isError) {
             if (error && (error as any).response) {
@@ -58,50 +59,61 @@ function Tickets() {
     }, [isError])
 
 
-    // const filterDateHandler = () => {
-    //     if (!fromPicker || !untilPicker) {
-    //         toast.error("Please fill in both start and end dates.");
-    //         return;
-    //     }
+    const filterDateHandler = () => {
+        if (!fromPicker || !untilPicker) {
+            toast.error("Please fill in both start and end dates.");
+            return;
+        }
 
-    //     if (allBrowser.length === 0) {
-    //         toast.error("You must select at least one browser.");
-    //         return;
-    //     }
+        if (allPriority.length === 0) {
+            toast.error("You must select at least one Priority.");
+            return;
+        }
 
-    //     if (allOs.length === 0) {
-    //         toast.error("You must select at least one os.");
-    //         return;
-    //     }
 
-    //     // تبدیل fromPicker و untilPicker به شیء Dayjs
-    //     const fromDate = dayjs(fromPicker);
-    //     const untilDate = dayjs(untilPicker).endOf('day');
+        // تبدیل fromPicker و untilPicker به شیء Dayjs
+        const fromDate = dayjs(fromPicker).startOf('day');
+        const untilDate = dayjs(untilPicker).endOf('day');
 
-    //     // فیلتر کردن systemInfos بر اساس بازه زمانی و مرورگر
-    //     const filteredSystemInfos = authContext?.user?.systemInfos.filter(info => {
-    //         const isMainOsIncluded = allOs.includes(info.os);
-    //         const isOtherOs = allOs.includes("Other") && !mainOs.includes(info.os);
-    //         const isMainBrowserIncluded = allBrowser.includes(info.browser); // چک کردن مرورگرهای اصلی
-    //         const isOtherBrowser = allBrowser.includes("Other") && !mainBrowsers.includes(info.browser); // چک کردن مرورگرهای غیر اصلی
-    //         const infoDate = dayjs(info.date);
-    //         const isDateInRange = infoDate.isBetween(fromDate, untilDate, null, '[]'); // چک کردن تاریخ
+        const filteredTickets = allTicket?.filter(info => {
+            const includedPriority = allPriority.includes(info.priority)
+            const includedStatus = allStatus.includes(info.status)
+            const infoDate = dayjs(info.createdAt);
+            const isDateInRange = infoDate.isBetween(fromDate, untilDate, null, '[]'); // چک کردن تاریخ
+            return (includedPriority && includedStatus) && isDateInRange;
+        });
 
-    //         // فیلتر مرورگر و تاریخ
-    //         return ((isMainOsIncluded || isOtherOs) && (isMainBrowserIncluded || isOtherBrowser)) && isDateInRange;
-    //     });
+        {
+            orderTicket === "NTO" ?
+                setFilteredData(filteredTickets?.reverse() || [])
+                : setFilteredData(filteredTickets || [])
+        }
 
-    //     // ذخیره داده‌های فیلتر شده
-    //     {
-    //         orderSystemInfo === "OTN" ?
-    //             setFilteredData(filteredSystemInfos?.reverse() || [])
-    //             : setFilteredData(filteredSystemInfos || [])
-    //     }
+        // close filter
+        setIsShowOpenFilter(false);
+    };
 
-    //     // بستن دیالوگ فیلتر
-    //     setIsShowOpenFilter(false);
-    // };
 
+
+    const changeHandlerPriority = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let newAllPriority = [...allPriority]
+        if (newAllPriority.includes(e.target.value)) {
+            let newAllPriorityFilters = newAllPriority.filter(priority => priority.toLowerCase() !== e.target.value.toLowerCase())
+            setAllPriority(newAllPriorityFilters)
+        } else {
+            setAllPriority(prev => [...prev, e.target.value])
+        }
+    }
+
+    const changeHandlerStatus = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let newAllStatus = [...allStatus]
+        if (newAllStatus.includes(e.target.value)) {
+            let newAllStatusFilters = newAllStatus.filter(status => status.toLowerCase() !== e.target.value.toLowerCase())
+            setAllStatus(newAllStatusFilters)
+        } else {
+            setAllStatus(prev => [...prev, e.target.value])
+        }
+    }
 
 
 
@@ -111,26 +123,120 @@ function Tickets() {
             <Header />
             <div>
 
-                <div className='w-full md:w-4/6 md:ml-44 mt-14 lg:ml-60 xl:ml-72'>
+                <div className='w-full md:w-4/6 md:ml-44 mt-16 lg:ml-60 xl:ml-72 mb-5'>
                     <h3 className='text-2xl text-center my-7 font-medium text-black dark:text-white'>Add New Ticket</h3>
                     <AddTicket />
-                    <div className='mb-3 px-3'>
-                        <Button onClick={() => setIsShowOpenFilter(true)} variant="outlined">Filter</Button>
-                    </div>
-                    <TableTicket allTicketUser={allTicket} />
+
+                    {isSuccess && allTicket?.length > 0 && (
+                        <div className='mb-3 px-3'>
+                            <Button onClick={() => setIsShowOpenFilter(true)} variant="outlined">Filter</Button>
+                        </div>
+                    )}
+                    {isLoading ? (
+                        <SkeletonTable />
+                    ) : (
+                        isSuccess && (
+                            <div className='px-3'>
+                                <TableTicket allTicketUser={filteredData || allTicket} />
+                            </div>
+                        )
+                    )}
                 </div>
 
             </div>
-            {/* <FilterDate
+            <FilterDate
+                title="Filter Tickets"
                 filterDateHandler={filterDateHandler}
-                fromPicker={fromPicker}
+                fromPicker={fromPicker.format('YYYY-MM-DD')} // تبدیل به رشته
                 setFromPicker={setFromPicker}
-                untilPicker={untilPicker}
+                untilPicker={untilPicker.format('YYYY-MM-DD')} // تبدیل به رشته
                 setUntilPicker={setUntilPicker}
                 isShowOpenFilter={isShowOpenFilter}
-                setIsShowOpenFilter={setIsShowOpenFilter}>
+                setIsShowOpenFilter={setIsShowOpenFilter}
+            >
+                <div className='flex flex-col gap-1'>
+                    <FormLabel className='font-medium text-base'>Priority</FormLabel>
+                    <FormGroup>
+                        <div className='flex flex-wrap gap-3'>
+                            <FormControlLabel
+                                label="Low"
+                                control={<Checkbox
+                                    value='Low'
+                                    checked={allPriority.some(data => data === "Low")}
+                                    onChange={changeHandlerPriority}
+                                />}
+                            />
+                            <FormControlLabel
+                                label="Medium"
+                                control={<Checkbox
+                                    value='Medium'
+                                    checked={allPriority.some(data => data === "Medium")}
+                                    onChange={changeHandlerPriority}
+                                />}
+                            />
+                            <FormControlLabel
+                                label="High"
+                                control={<Checkbox
+                                    value='High'
+                                    checked={allPriority.some(data => data === "High")}
+                                    onChange={changeHandlerPriority}
+                                />}
+                            />
 
-            </FilterDate> */}
+                        </div>
+                    </FormGroup>
+                </div>
+
+                <div className='flex flex-col gap-1'>
+                    <FormLabel className='font-medium text-base'>Status</FormLabel>
+                    <FormGroup>
+                        <div className='flex flex-wrap gap-3'>
+                            <FormControlLabel
+                                label="Open"
+                                control={<Checkbox
+                                    value='Open'
+                                    checked={allStatus.some(data => data === "Open")}
+                                    onChange={changeHandlerStatus}
+                                />}
+                            />
+                            <FormControlLabel
+                                label="Answered"
+                                control={<Checkbox
+                                    value='Answered'
+                                    checked={allStatus.some(data => data === "Answered")}
+                                    onChange={changeHandlerStatus}
+                                />}
+                            />
+                            <FormControlLabel
+                                label="Closed"
+                                control={<Checkbox
+                                    value='Closed'
+                                    checked={allStatus.some(data => data === "Closed")}
+                                    onChange={changeHandlerStatus}
+                                />}
+                            />
+
+                        </div>
+                    </FormGroup>
+                </div>
+
+                <div>
+                    <FormControl>
+                        <FormLabel id="demo-controlled-radio-buttons-group">Order By</FormLabel>
+                        <RadioGroup
+                            aria-labelledby="demo-controlled-radio-buttons-group"
+                            name="controlled-radio-buttons-group"
+                            value={orderTicket}
+                            onChange={(e) => setOrderTicket(e.target.value as "NTO" | "OTN")}
+                            style={{ display: 'flex', flexDirection: 'row' }} // اعمال flex
+                        >
+                            <FormControlLabel value="NTO" control={<Radio />} label="New to Old" />
+                            <FormControlLabel value="OTN" control={<Radio />} label="Old to New" />
+                        </RadioGroup>
+                    </FormControl>
+                </div>
+
+            </FilterDate>
 
 
             <SideBarLeft />

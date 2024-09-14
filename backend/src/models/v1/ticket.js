@@ -16,7 +16,7 @@ const ticketSchema = new mongoose.Schema({
         type: String,
         required: true,
         minlength: 3,
-        maxlength: 16
+        maxlength: 25
     },
     user: {
         userId: {
@@ -59,6 +59,18 @@ const ticketSchema = new mongoose.Schema({
         },
         adminUsername: {
             type: String,
+        },
+        adminProfilePicture: {
+            path: {
+                type: String,
+                required: true,
+                default: "images/profiles/default.jpg",
+            },
+            filename: {
+                type: String,
+                required: true,
+                default: "default.jpg",
+            },
         },
         messageBack: {
             type: String,

@@ -1,23 +1,28 @@
-// DateConverter.tsx
 import React from 'react';
 import { format, isToday, isYesterday } from 'date-fns';
 
 type DateConverterProps = {
-  date: Date | string;
-}
+  date: Date | string | undefined; // Allow undefined as a valid type
+};
 
 const DateConverter: React.FC<DateConverterProps> = ({ date }) => {
-  const formatDate = (date: Date | string): string => {
-    if (isToday(date)) {
-      return "Today " + format(date, 'hh:mm a');
-    } else if (isYesterday(date)) {
-      return "Yesterday " + format(date, 'hh:mm a');
+  const formatDate = (date: Date | string | undefined): string => {
+    if (!date) {
+      return "Unknown date"; // Fallback for undefined
+    }
+
+    const parsedDate = typeof date === 'string' ? new Date(date) : date; // Convert string to Date
+
+    if (isToday(parsedDate)) {
+      return "Today " + format(parsedDate, 'hh:mm a');
+    } else if (isYesterday(parsedDate)) {
+      return "Yesterday " + format(parsedDate, 'hh:mm a');
     } else {
-      return format(date, 'd MMMM yyyy');
+      return format(parsedDate, 'd MMMM yyyy');
     }
   };
 
-  return <span>{formatDate(date)}</span>;
+  return <span className='text-xs md:text-sm text-nowrap'>{formatDate(date)}</span>;
 };
 
 export default DateConverter;

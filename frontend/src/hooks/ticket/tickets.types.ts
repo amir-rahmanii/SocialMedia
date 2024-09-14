@@ -1,9 +1,9 @@
 export type newTicket = {
-    department: "Support" | "Technical" | "HR" | "Management" | "Design" | "Other",
+    department: string,
     description: string,
     title: string,
     userId: string,
-    priority: "Low" | "Medium" | "High",
+    priority: string,
 }
 
 
@@ -19,7 +19,8 @@ export type ticketUser = {
     response: {
         adminUsername: string,
         messageBack: string,
-        responseDate: string
+        responseDate: Date,
+        adminProfilePicture: { path: string, filename: string },
     };
     user: {
         profilePicture: { path: string, filename: string },

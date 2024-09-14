@@ -1,6 +1,5 @@
-import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, ThemeProvider } from '@mui/material'
+import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
-import { useThemeContext } from '../../../Context/ThemeContext';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import newTicketSchema from '../../../Validation/newTicket';
@@ -72,7 +71,7 @@ function AddTicket() {
 
     return (
         <form onSubmit={e => e.preventDefault()} className='py-7 px-3 rounded flex flex-col gap-4'>
-            <div className='w-full flex justify-between gap-4'>
+            <div className='w-full flex flex-col md:flex-row justify-between gap-4'>
                 <div className='flex flex-col w-full'>
                     <TextField
                         {...register('title')}
