@@ -5,6 +5,8 @@ import IsLoaderBtn from '../../IsLoaderBtn/IsLoaderBtn';
 import { AuthContext } from '../../../Context/AuthContext';
 import toast from 'react-hot-toast';
 import { closeIcon } from '../../SvgIcon/SvgIcon';
+import DialogHeader from '../../ShowDialogModal/DialogHeader/DialogHeader';
+
 
 type ChangeProfileProps = {
     isShowChangeProfile: boolean,
@@ -79,12 +81,10 @@ function ChangeProfile({ isShowChangeProfile, setIsShowChangeProfile }: ChangePr
     return (
         <Dialog open={isShowChangeProfile} onClose={() => setIsShowChangeProfile(false)} maxWidth='xl'>
             <div className="flex flex-col max-w-4xl xl:w-screen border rounded dark:border-gray-300/20 border-gray-300">
-                <div className="bg-white dark:bg-black py-3 border-b dark:border-gray-300/20 border-gray-300 px-4 flex justify-between w-full">
-                    <span className="font-medium text-black dark:text-white">Change Profile</span>
-                    <button onClick={() => setIsShowChangeProfile(false)} className="font-medium w-6 h-6 text-black dark:text-white">{closeIcon}</button>
-                </div>
-                {/* <LinearProgress /> */}
-
+                <DialogHeader
+                    title="Change Profile"
+                    setIsOpenShowModal={setIsShowChangeProfile}
+                />
                 <div className="flex items-center flex-col w-full pt-4 bg-white dark:bg-black">
 
                     {postImage ?

@@ -9,6 +9,8 @@ import newPostSchema from '../../../Validation/newPost';
 import { usePostCreatePost } from '../../../hooks/post/usePost';
 import IsLoaderBtn from '../../IsLoaderBtn/IsLoaderBtn';
 import { AuthContext } from '../../../Context/AuthContext';
+import DialogHeader from '../../ShowDialogModal/DialogHeader/DialogHeader';
+
 
 type NewPostProps = {
     newPost: boolean,
@@ -62,6 +64,7 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
             setPostPreview([])
             setdescription('')
             setNewPost(false)
+            reset();
         }
     }, [isError, isSuccess])
 
@@ -119,6 +122,7 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
     const {
         register,
         handleSubmit,
+        reset,
         formState: { errors },
     } = useForm({
         resolver: yupResolver(newPostSchema)
@@ -128,10 +132,10 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
     return (
         <Dialog open={newPost} onClose={() => setNewPost(false)} maxWidth='xl'>
             <div className="flex flex-col xl:w-screen max-w-4xl border dark:border-gray-300/20 border-gray-300 ">
-                <div className="bg-white dark:bg-black py-3 border-b dark:border-gray-300/20 border-gray-300 px-4 flex justify-between w-full">
-                    <span className="font-medium text-black dark:text-white">Create new post</span>
-                    <button onClick={() => setNewPost(false)} className="font-medium w-5 h-5 text-black dark:text-white">{closeIcon}</button>
-                </div>
+                <DialogHeader
+                    title="New Post"
+                    setIsOpenShowModal={setNewPost}
+                />
 
 
                 <div className="flex bg-white dark:bg-black  md:flex-row md:items-start items-center flex-col w-full">

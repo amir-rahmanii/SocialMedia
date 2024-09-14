@@ -51,20 +51,20 @@ export const AuthContext = createContext<AuthContextType | null>(null);
 
 const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     const [user, setUser] = useState<userInfo | null>(null);
-    const { data: myInfo, isLoading, isSuccess, isError } = useGetMyUsersInfo();
+    // const { data: myInfo, isLoading, isSuccess, isError } = useGetMyUsersInfo();
 
-    useEffect(() => {
-        if (isSuccess) {
-            setUser(myInfo);
-        } else if (isError) {
-            toast.error("please try again later 😩")
-        }
-    }, [isSuccess, isError]);
+    // useEffect(() => {
+    //     if (isSuccess) {
+    //         setUser(myInfo);
+    //     } else if (isError) {
+    //         toast.error("please try again later 😩")
+    //     }
+    // }, [isSuccess, isError]);
 
 
-    if (isLoading) {
-        return <div><SpinLoader /></div>; // You can replace this with a spinner or skeleton component
-    }
+    // if (isLoading) {
+    //     return <div><SpinLoader /></div>; // You can replace this with a spinner or skeleton component
+    // }
 
     return (
         <AuthContext.Provider value={{ user, setUser }}>

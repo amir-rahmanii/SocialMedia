@@ -6,6 +6,8 @@ import DateConverter from '../../../utils/DateConverter'
 import { AuthContext } from '../../../Context/AuthContext'
 import toast from 'react-hot-toast'
 import { useGetMyUsersInfo, usePostFollowToggle } from '../../../hooks/user/useUser'
+import DialogHeader from '../../ShowDialogModal/DialogHeader/DialogHeader'
+
 
 type ShowWhoFollowProps = {
   isOpenShowWhoFollow: boolean,
@@ -24,7 +26,7 @@ function ShowWhoFollow({ title, dataFollow, isOpenShowWhoFollow, setIsOpenShowWh
   const [followed, setFollowed] = useState<string[]>([])
   const { data: myInfo } = useGetMyUsersInfo();
 
-  
+
 
 
   useEffect(() => {
@@ -61,22 +63,20 @@ function ShowWhoFollow({ title, dataFollow, isOpenShowWhoFollow, setIsOpenShowWh
   // Check if the user is followed
   useEffect(() => {
     if (myInfo) {
-        const followedUserIds = myInfo.following.map(follow => follow.userId);
-        setFollowed(followedUserIds);
+      const followedUserIds = myInfo.following.map(follow => follow.userId);
+      setFollowed(followedUserIds);
     }
-}, [myInfo]);
+  }, [myInfo]);
 
 
 
   return (
     <Dialog open={isOpenShowWhoFollow} onClose={() => setIsOpenShowWhoFollow(false)} maxWidth='xl'>
       <div className="flex flex-col h-56 overflow-y-auto xl:w-screen max-w-xl bg-white dark:bg-black">
-        <div className="bg-white dark:bg-black py-3 border-b dark:border-gray-300/20 border-gray-300  px-4 flex justify-between w-full">
-          <span className="font-medium text-black dark:text-white">List Users {title}</span>
-          <button className='w-6 h-6 text-black dark:text-white' onClick={() => setIsOpenShowWhoFollow(false)}>
-            {closeIcon}
-          </button>
-        </div>
+        <DialogHeader
+          title={`List User ${title}`}
+          setIsOpenShowModal={setIsOpenShowWhoFollow}
+        />
         {dataFollow && (
           <>
             {dataFollow.length > 0 ? (

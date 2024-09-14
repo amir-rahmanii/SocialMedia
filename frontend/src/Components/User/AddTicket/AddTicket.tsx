@@ -53,6 +53,7 @@ function AddTicket() {
                     },
                 }
             )
+            reset();
         }
     }, [isError, isSuccess])
 
@@ -61,6 +62,7 @@ function AddTicket() {
     const {
         register,
         handleSubmit,
+        reset, 
         formState: { errors },
     } = useForm({
         resolver: yupResolver(newTicketSchema)

@@ -5,6 +5,8 @@ import { closeIcon } from '../SvgIcon/SvgIcon'
 import { Link } from 'react-router-dom'
 import { useGetMyUsersInfo, usePostFollowToggle } from '../../hooks/user/useUser'
 import toast from 'react-hot-toast'
+import DialogHeader from '../ShowDialogModal/DialogHeader/DialogHeader'
+
 
 type ShowWhoLikedProps = {
     isOpenShowLiked: boolean,
@@ -70,12 +72,10 @@ function ShowWhoLiked({ userLiked, isOpenShowLiked, setIsOpenShowLiked }: ShowWh
     return (
         <Dialog open={isOpenShowLiked} onClose={() => setIsOpenShowLiked(false)} maxWidth='xl'>
             <div className="flex flex-col h-56 overflow-y-auto xl:w-screen max-w-xl bg-white dark:bg-black">
-                <div className="bg-white dark:bg-black py-3 border-b dark:border-gray-300/20 border-gray-300  px-4 flex justify-between w-full">
-                    <span className="font-medium text-black dark:text-white">List Users Liked</span>
-                    <button className='w-6 h-6 text-black dark:text-white' onClick={() => setIsOpenShowLiked(false)}>
-                        {closeIcon}
-                    </button>
-                </div>
+                <DialogHeader
+                    title="List Users Liked"
+                    setIsOpenShowModal={setIsOpenShowLiked}
+                />
                 {userLiked.length > 0 ? (
                     <div className='py-3 px-4 flex flex-col'>
                         {userLiked.map((data, index) => (

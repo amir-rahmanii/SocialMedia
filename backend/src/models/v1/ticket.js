@@ -60,10 +60,8 @@ const ticketSchema = new mongoose.Schema({
         adminUsername: {
             type: String,
         },
-        message: {
+        messageBack: {
             type: String,
-            minlength: 5,
-            maxlength : 60
         },
         responseDate: {
             type: Date,

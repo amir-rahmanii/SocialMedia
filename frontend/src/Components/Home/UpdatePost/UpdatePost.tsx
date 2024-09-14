@@ -10,6 +10,8 @@ import toast from 'react-hot-toast'
 import { closeIcon, emojiIcon } from '../../SvgIcon/SvgIcon'
 import { usePutUpdatePost } from '../../../hooks/post/usePost'
 import IsLoaderBtn from '../../IsLoaderBtn/IsLoaderBtn'
+import DialogHeader from '../../ShowDialogModal/DialogHeader/DialogHeader'
+
 
 
 
@@ -63,6 +65,7 @@ function UpdatePost({ postInfo, updatePost, setUpdatePost }: UpdatePostProps) {
             setPostPreview([])
             setdescription('')
             setUpdatePost(false)
+            reset();
         }
     }, [isError, isSuccess])
 
@@ -103,6 +106,7 @@ function UpdatePost({ postInfo, updatePost, setUpdatePost }: UpdatePostProps) {
     const {
         register,
         handleSubmit,
+        reset,
         formState: { errors },
     } = useForm({
         defaultValues: {
@@ -124,12 +128,12 @@ function UpdatePost({ postInfo, updatePost, setUpdatePost }: UpdatePostProps) {
 
 
     return (
-        <Dialog open={updatePost} onClose={() => { setUpdatePost(false) }} maxWidth='xl'>
+        <Dialog open={updatePost} onClose={() => {setUpdatePost(false) }} maxWidth='xl'>
             <div className="flex flex-col xl:w-screen max-w-4xl border">
-                <div className="bg-white dark:bg-black py-3 border-b dark:border-gray-300/20 border-gray-300 px-4 flex justify-between w-full">
-                    <span className="font-medium text-black dark:text-white">Update post</span>
-                    <button onClick={() => setUpdatePost(false)} className="font-medium w-6 h-6 text-black dark:text-white">{closeIcon}</button>
-                </div>
+                <DialogHeader
+                    title="Uppdate Post"
+                    setIsOpenShowModal={setUpdatePost}
+                />
                 {/* <LinearProgress /> */}
 
                 <div className="flex md:flex-row md:items-start items-center flex-col w-full bg-white dark:bg-black">

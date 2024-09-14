@@ -1,20 +1,30 @@
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import apiRequest from "../../Services/axios";
-import { newTicket } from "./tickets.types";
+import { newTicket, ticketUser } from "./tickets.types";
 
 
 function usePostNewTicket() {
     const queryClient = useQueryClient();
-    return useMutation(async (newTicket : newTicket) => {
-        return apiRequest.post(`ticket/add-new-ticket` , newTicket)
+    return useMutation(async (newTicket: newTicket) => {
+        return apiRequest.post(`ticket/add-new-ticket`, newTicket)
     },
-        {
-            onSuccess: (res) => {
-                console.log(res);
-            },
+    {
+        onSuccess : () => {
+            queryClient.invalidateQueries(["getUserTicket"])
         }
+    }
+    )
+}
+
+function useGetUserTicket() {
+    return useQuery<ticketUser[]>(['getUserTicket'],
+        async () => {
+            const response = await apiRequest.get("ticket/user-tickets");
+            return response.data
+        },
     )
 }
 
 
-export {usePostNewTicket}
+
+export { useGetUserTicket , usePostNewTicket }
