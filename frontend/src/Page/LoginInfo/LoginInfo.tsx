@@ -6,7 +6,7 @@ import SideBarBottom from '../../Parts/SideBarBottom/SideBarBottom'
 import TableLogin from '../../Components/User/TableLogin/TableLogin'
 import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Radio, RadioGroup } from '@mui/material'
 import FilterDate from '../../Components/FilterDate/FilterDate'
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import toast from 'react-hot-toast'
 import { androidIcon, windowsIcon } from '../../Components/SvgIcon/SvgIcon'
@@ -36,8 +36,8 @@ function LoginInfo() {
     const [filteredData, setFilteredData] = useState<InfoSystem | null>(null);
     const [allBrowser, setAllBrowser] = useState<string[]>(["Chrome", "Firefox", "Safari", "Opera", "Edge", "Other"])
     const [allOs, setAllOs] = useState<string[]>(["Windows", "Android", "Other"])
-    const [fromPicker, setFromPicker] = useState(dayjs())
-    const [untilPicker, setUntilPicker] = useState(dayjs())
+    const [fromPicker, setFromPicker] = useState<Dayjs | null>(null);
+    const [untilPicker, setUntilPicker] = useState<Dayjs | null>(null);
     const [orderSystemInfo, setOrderSystemInfo] = useState<"NTO" | "OTN">("NTO")
     const mainBrowsers = ["Chrome", "Firefox", "Safari", "Opera", "Edge"];
     const mainOs = ["Windows", "Android"];
@@ -47,10 +47,10 @@ function LoginInfo() {
 
 
     const filterDateHandler = () => {
-        if (!fromPicker || !untilPicker) {
-            toast.error("Please fill in both start and end dates.");
-            return;
-        }
+        // if (!fromPicker || !untilPicker) {
+        //     toast.error("Please fill in both start and end dates.");
+        //     return;
+        // }
 
         if (allBrowser.length === 0) {
             toast.error("You must select at least one browser.");
@@ -136,9 +136,9 @@ function LoginInfo() {
             <FilterDate
                 title="Filter Login Info"
                 filterDateHandler={filterDateHandler}
-                fromPicker={fromPicker.format('YYYY-MM-DD')}
+                fromPicker={fromPicker}
                 setFromPicker={setFromPicker}
-                untilPicker={untilPicker.format('YYYY-MM-DD')}
+                untilPicker={untilPicker}
                 setUntilPicker={setUntilPicker}
                 isShowOpenFilter={isShowOpenFilter}
                 setIsShowOpenFilter={setIsShowOpenFilter}>

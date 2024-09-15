@@ -6,7 +6,7 @@ import SideBarBottom from '../../Parts/SideBarBottom/SideBarBottom'
 import TableLogin from '../../Components/User/TableLogin/TableLogin'
 import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Radio, RadioGroup } from '@mui/material'
 import FilterDate from '../../Components/FilterDate/FilterDate'
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import toast from 'react-hot-toast'
 import { androidIcon, iosIcon, linuxIcon, windowsIcon } from '../../Components/SvgIcon/SvgIcon'
@@ -32,8 +32,8 @@ function Tickets() {
     const [isShowOpenFilter, setIsShowOpenFilter] = useState(false);
     // State to hold the filtered data
     const [filteredData, setFilteredData] = useState<ticketUser[] | null>(null);;
-    const [fromPicker, setFromPicker] = useState(dayjs());
-    const [untilPicker, setUntilPicker] = useState(dayjs());
+    const [fromPicker, setFromPicker] = useState<Dayjs | null>(null);
+    const [untilPicker, setUntilPicker] = useState<Dayjs | null>(null);
     const [orderTicket, setOrderTicket] = useState<"NTO" | "OTN">("NTO");
     const [allPriority, setAllPriority] = useState<string[]>(["Low", "Medium", "High"]);
     const [allStatus, setAllStatus] = useState<string[]>(["Open", "Closed", "Answered"]);
@@ -60,10 +60,10 @@ function Tickets() {
 
 
     const filterDateHandler = () => {
-        if (!fromPicker || !untilPicker) {
-            toast.error("Please fill in both start and end dates.");
-            return;
-        }
+        // if (!fromPicker || !untilPicker) {
+        //     toast.error("Please fill in both start and end dates.");
+        //     return;
+        // }
 
         if (allPriority.length === 0) {
             toast.error("You must select at least one Priority.");
@@ -147,9 +147,9 @@ function Tickets() {
             <FilterDate
                 title="Filter Tickets"
                 filterDateHandler={filterDateHandler}
-                fromPicker={fromPicker.format('YYYY-MM-DD')} // تبدیل به رشته
+                fromPicker={fromPicker} // تبدیل به رشته
                 setFromPicker={setFromPicker}
-                untilPicker={untilPicker.format('YYYY-MM-DD')} // تبدیل به رشته
+                untilPicker={untilPicker} // تبدیل به رشته
                 setUntilPicker={setUntilPicker}
                 isShowOpenFilter={isShowOpenFilter}
                 setIsShowOpenFilter={setIsShowOpenFilter}

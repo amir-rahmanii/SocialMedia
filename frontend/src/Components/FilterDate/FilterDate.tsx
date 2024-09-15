@@ -10,12 +10,12 @@ import DialogHeader from '../ShowDialogModal/DialogHeader/DialogHeader';
 type FilterDateProps = {
     isShowOpenFilter: boolean;
     setIsShowOpenFilter: (value: boolean) => void;
-    fromPicker: string;
-    setFromPicker: (value: Dayjs) => void;
-    untilPicker: string;
-    setUntilPicker: (value: Dayjs) => void;
+    fromPicker: Dayjs | null;
+    setFromPicker: (value: Dayjs | null) => void;
+    untilPicker: Dayjs | null;
+    setUntilPicker: (value: Dayjs | null) => void;
     filterDateHandler: () => void;
-    title : string
+    title: string;
 }
 
 const FilterDate: React.FC<PropsWithChildren<FilterDateProps>> = ({
@@ -31,21 +31,14 @@ const FilterDate: React.FC<PropsWithChildren<FilterDateProps>> = ({
 }) => {
 
     const handleDateFromChange = (newValueDate: Dayjs | null) => {
-        if (newValueDate) {
-            setFromPicker(newValueDate); // Example format
-            // If fromPicker changes, update untilPicker to ensure it is not before fromPicker
-            if (dayjs(untilPicker).isBefore(newValueDate)) {
-                setUntilPicker(dayjs());
-            }
-        } 
+        setFromPicker(newValueDate);
+        if (newValueDate && untilPicker && dayjs(untilPicker).isBefore(newValueDate)) {
+            setUntilPicker(dayjs());
+        }
     };
 
     const handleDateUntilChange = (newValueDate: Dayjs | null) => {
-        if (newValueDate) {
-            setUntilPicker(newValueDate); // Example format
-        } else {
-            setUntilPicker(dayjs());
-        }
+        setUntilPicker(newValueDate);
     };
 
     const authContext = useContext(AuthContext);
@@ -63,14 +56,14 @@ const FilterDate: React.FC<PropsWithChildren<FilterDateProps>> = ({
                     <div className='flex flex-col gap-4  md:flex-row md:justify-between'>
                         <DatePicker
                             label="From this date picker"
-                            value={dayjs(fromPicker)}
+                            value={fromPicker}
                             onChange={handleDateFromChange}
                             maxDate={dayjs()}
                             minDate={dayjs(authContext?.user?.createdAt)}
                         />
                         <DatePicker
                             label="Until this date picker"
-                            value={dayjs(untilPicker)}
+                            value={untilPicker}
                             onChange={handleDateUntilChange}
                             maxDate={dayjs()}
                             minDate={dayjs(fromPicker)} // Set the minDate to ensure it's not before fromDate

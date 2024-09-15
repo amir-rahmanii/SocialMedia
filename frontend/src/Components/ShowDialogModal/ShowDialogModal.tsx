@@ -13,7 +13,7 @@ type ShowDialogModalProps = {
 function ShowDialogModal({ isOpenShowLDialogModal, setisOpenShowLDialogModal , height, title, children }: ShowDialogModalProps) {
   return (
     <Dialog open={isOpenShowLDialogModal} onClose={() => setisOpenShowLDialogModal(false)} maxWidth='xl'>
-      <div className={`flex flex-col ${height} overflow-y-auto xl:w-screen max-w-xl bg-white dark:bg-black`}>
+      <div className={`flex flex-col ${height} overflow-y-auto w-screen max-w-[300px] lg:max-w-xl bg-white dark:bg-black`}>
         <DialogHeader
           title={title}
           setIsOpenShowModal={setisOpenShowLDialogModal}

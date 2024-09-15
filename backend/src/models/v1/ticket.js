@@ -51,16 +51,17 @@ const ticketSchema = new mongoose.Schema({
         enum: ["Low", "Medium", "High"],
         default: "Medium",
     },
-    // بخش پاسخ ادمین
-    response: {
-        adminId: {
+    responses: [{
+        senderId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "user",
+            required: true,
         },
-        adminUsername: {
+        senderUsername: {
             type: String,
+            required: true,
         },
-        adminProfilePicture: {
+        senderProfilePicture: {
             path: {
                 type: String,
                 required: true,
@@ -72,13 +73,15 @@ const ticketSchema = new mongoose.Schema({
                 default: "default.jpg",
             },
         },
-        messageBack: {
+        message: {
             type: String,
+            required: true,
         },
         responseDate: {
             type: Date,
-        },
-    },
+            required : true
+        }
+    }],
 }, {
     timestamps: true,
 });

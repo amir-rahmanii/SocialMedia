@@ -7,6 +7,12 @@ export type newTicket = {
 }
 
 
+export type newMessageTicket = {
+    message : string , 
+    ticketId : string
+}
+
+
 export type ticketUser = {
     _id: string;
     createdAt: Date;
@@ -16,12 +22,13 @@ export type ticketUser = {
     status: "Open" | "Closed" | "Answered";
     title: string;
     priority: "Low" | "Medium" | "High";
-    response: {
-        adminUsername: string,
-        messageBack: string,
+    responses: {
+        senderId: string,
+        senderUsername: string,
+        message: string,
         responseDate: Date,
-        adminProfilePicture: { path: string, filename: string },
-    };
+        senderProfilePicture: { path: string, filename: string },
+    }[];
     user: {
         profilePicture: { path: string, filename: string },
         userId: string,

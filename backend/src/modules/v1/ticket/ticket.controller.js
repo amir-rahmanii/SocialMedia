@@ -63,17 +63,17 @@ exports.getUserTicket = async (req, res) => {
 exports.respondTicket = async (req, res) => {
   try {
     const { ticketId } = req.params;
-    const { messageBack } = req.body;
+    const { message } = req.body;
 
-    // بررسی خالی نبودن messageBack
-    if (!messageBack || messageBack.trim() === "") {
-      return res.status(400).json({ message: "MessageBack cannot be empty." });
+    // بررسی خالی نبودن message
+    if (!message || message.trim() === "") {
+      return res.status(400).json({ message: "message cannot be empty." });
     }
 
-    // Extract adminId and adminUsername from the authenticated user (JWT)
-    const adminId = req.user.userId;
-    const adminUsername = req.user.username;
-    const adminProfilePicture = req.user.profilePicture;
+    // Extract userId and username from the authenticated user (JWT)
+    const userId = req.user._id;
+    const username = req.user.username;
+    const profilePicture = req.user.profilePicture;
 
     // Find the ticket by ID
     const ticket = await Ticket.findById(ticketId);
@@ -81,21 +81,26 @@ exports.respondTicket = async (req, res) => {
       return res.status(404).json({ message: "Ticket not found." });
     }
 
-    // Update the response field
-    const updatedTicket = await Ticket.findByIdAndUpdate(ticketId, {
-      response: {
-        adminId,
-        adminUsername,
-        messageBack,
-        adminProfilePicture,
-        responseDate: new Date(),
-      },
-      status: "Answered"
-    }, { new: true });
+    // Add a new response to the responses array
+    const newResponse = {
+      senderId: userId,
+      senderUsername: username,
+      senderProfilePicture: profilePicture,
+      message: message,
+      responseDate: new Date(),
+    };
+
+    // Update the ticket with the new response and change status to "Answered"
+    ticket.responses.push(newResponse);
+    ticket.status = "Answered";
+
+    // Save the updated ticket
+    const updatedTicket = await ticket.save();
 
     res.status(200).json({ message: "Response added successfully.", ticket: updatedTicket });
   } catch (error) {
     res.status(500).json({ message: "An error occurred while responding to the ticket.", error });
   }
 };
+
 
