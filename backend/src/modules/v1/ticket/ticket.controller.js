@@ -70,18 +70,19 @@ exports.respondTicket = async (req, res) => {
       return res.status(400).json({ message: "message cannot be empty." });
     }
 
-    // Extract userId and username from the authenticated user (JWT)
+    // استخراج userId، username و role از کاربر احراز هویت‌شده (JWT)
     const userId = req.user._id;
     const username = req.user.username;
     const profilePicture = req.user.profilePicture;
+    const role = req.user.role; // فرض بر این است که نقش (role) در JWT موجود است
 
-    // Find the ticket by ID
+    // یافتن تیکت با ID
     const ticket = await Ticket.findById(ticketId);
     if (!ticket) {
       return res.status(404).json({ message: "Ticket not found." });
     }
 
-    // Add a new response to the responses array
+    // اضافه کردن پاسخ جدید به آرایه responses
     const newResponse = {
       senderId: userId,
       senderUsername: username,
@@ -90,11 +91,14 @@ exports.respondTicket = async (req, res) => {
       responseDate: new Date(),
     };
 
-    // Update the ticket with the new response and change status to "Answered"
     ticket.responses.push(newResponse);
-    ticket.status = "Answered";
 
-    // Save the updated ticket
+    // تغییر وضعیت تیکت به "Answered" فقط در صورتی که پاسخ‌دهنده ادمین باشد
+    if (role === "admin") {
+      ticket.status = "Answered";
+    }
+
+    // ذخیره‌سازی تیکت به‌روزرسانی شده
     const updatedTicket = await ticket.save();
 
     res.status(200).json({ message: "Response added successfully.", ticket: updatedTicket });
@@ -102,6 +106,7 @@ exports.respondTicket = async (req, res) => {
     res.status(500).json({ message: "An error occurred while responding to the ticket.", error });
   }
 };
+
 
 
 

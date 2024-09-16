@@ -6,16 +6,16 @@ import Header from '../../Parts/Header/Header'
 import { useGetMySavedPost } from '../../hooks/post/usePost'
 import PostContainerUser from '../../Components/User/PostContainerUser/PostContainerUser'
 import SpinLoader from '../../Components/SpinLoader/SpinLoader'
-import NewPost from '../../Components/Header/NewPost/NewPost'
+import NewPost from '../../Components/Home/NewPost/NewPost'
 import { useGetMyUsersInfo, useGetUserData, usePostFollowToggle } from '../../hooks/user/useUser'
 import toast from 'react-hot-toast'
 import ChangeProfile from '../../Components/User/ChangeProfile/ChangeProfile'
-import ShowWhoFollow from '../../Components/Profile/ShowWhoFollow/ShowWhoFollow'
 import { Dialog } from '@mui/material'
 import StoryContent from '../../Components/Home/StoriesContainer/StoryContent'
 import SideBarLeft from '../../Parts/SideBarLeft/SideBarLeft'
 import SideBarBottom from '../../Parts/SideBarBottom/SideBarBottom'
 import { AuthContext } from '../../Context/AuthContext'
+import ShowDialogModal from '../../Components/ShowDialogModal/ShowDialogModal'
 
 
 
@@ -28,7 +28,7 @@ function Profile() {
   const [isShowChangeProfile, setIsShowChangeProfile] = useState(false);
   const [isShowProfile, setIsShowProfile] = useState(false);
   const [isShowStoryContent, setIsShowStoryContent] = useState(false);
-
+  const [followedList, setFollowedList] = useState<string[]>([])
 
 
 
@@ -38,8 +38,7 @@ function Profile() {
   const { mutate: followToggle, isSuccess: isSuccessFollowToggle, isError: isErrorFollowToggle, error: errorFollow, data: dataFollow } = usePostFollowToggle();
   //this is for all users data
   const { data: informationUserData, isLoading: isLoadingUserData, isSuccess: isSucessGetUserData, refetch: refetchGerUserData } = useGetUserData(userid as string);
- 
-
+  const { data: myInfo } = useGetMyUsersInfo();
 
   const navigate = useNavigate(); // Initialize useHistory
   const authContext = useContext(AuthContext)
@@ -71,7 +70,16 @@ function Profile() {
     }
   }, [isSucessGetUserData])
 
-  
+
+  // Check if the user is followed
+  useEffect(() => {
+    if (myInfo) {
+      const followedUserIds = myInfo.following.map(follow => follow.userId);
+      setFollowedList(followedUserIds);
+    }
+  }, [myInfo]);
+
+
 
 
 
@@ -218,14 +226,101 @@ function Profile() {
                 </span> posts</div>
                 <div className="cursor-pointer" onClick={() => setIsShowFollowers(true)}><span className="font-semibold">{informationUserData?.user.followers.length}</span> followers</div>
 
+                  {/* show follower */}
                 {isShowFollowers && (
-                  <ShowWhoFollow title="Followed" dataFollow={informationUserData?.user.followers} isOpenShowWhoFollow={isShowFollowers} setIsOpenShowWhoFollow={setIsShowFollowers} />
+                  <ShowDialogModal
+                    isOpenShowLDialogModal={isShowFollowers}
+                    setisOpenShowLDialogModal={setIsShowFollowers}
+                    title="List User Followers"
+                    height='h-72'
+                  >
+                    {informationUserData?.user.followers && (
+                      <>
+                        {informationUserData?.user.followers.length > 0 ? (
+                          <div className='py-3 px-4 flex flex-col '>
+                            {informationUserData?.user.followers?.map((data, index) => (
+                              <div className='flex justify-between items-center'>
+                                <div key={index} className='flex items-center gap-2 p-2'>
+                                  <Link to={`/profile/${data.userId}`}>
+                                    <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/${data.profilePicture.path}`} alt="avatar" />
+                                  </Link>
+                                  <div className='flex flex-col'>
+                                    <Link to={`/profile/${data.userId}`} className="text-black dark:text-white text-sm font-semibold hover:underline">{data.username}</Link>
+                                    {/* <p className='text-xs text-gray-500"'><DateConverter date={data.createdAt} /></p> */}
+                                  </div>
+                                </div>
+                                <div className='ml-5'>
+                                  {myInfo?._id !== data.userId && (
+                                    <button
+                                      onClick={() => {
+                                        followToggle(data.userId);
+                                      }}
+                                      className="font-medium transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow rounded px-6 py-1.5"
+                                    >
+                                      {followedList.includes(data.userId) ? "UnFollow" : "Follow"}
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className='py-3 text-black dark:text-white px-4 text-xl'>
+                            No user found 😩
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </ShowDialogModal>
                 )}
 
                 <div className="cursor-pointer" onClick={() => setIsShowFollowing(true)}><span className="font-semibold">{informationUserData?.user.following.length}</span> following</div>
-                
+                  {/* show following */}
                 {isShowFollowing && (
-                  <ShowWhoFollow title="Following" dataFollow={informationUserData?.user.following} isOpenShowWhoFollow={isShowFollowing} setIsOpenShowWhoFollow={setIsShowFollowing} />
+                  <ShowDialogModal
+                  isOpenShowLDialogModal={isShowFollowing}
+                  setisOpenShowLDialogModal={setIsShowFollowing}
+                  title="List User Following"
+                  height='h-72'
+                >
+                  {informationUserData?.user.following && (
+                    <>
+                      {informationUserData?.user.following.length > 0 ? (
+                        <div className='py-3 px-4 flex flex-col '>
+                          {informationUserData?.user.following?.map((data, index) => (
+                            <div className='flex justify-between items-center'>
+                              <div key={index} className='flex items-center gap-2 p-2'>
+                                <Link to={`/profile/${data.userId}`}>
+                                  <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/${data.profilePicture.path}`} alt="avatar" />
+                                </Link>
+                                <div className='flex flex-col'>
+                                  <Link to={`/profile/${data.userId}`} className="text-black dark:text-white text-sm font-semibold hover:underline">{data.username}</Link>
+                                  {/* <p className='text-xs text-gray-500"'><DateConverter date={data.createdAt} /></p> */}
+                                </div>
+                              </div>
+                              <div className='ml-5'>
+                                {myInfo?._id !== data.userId && (
+                                  <button
+                                    onClick={() => {
+                                      followToggle(data.userId);
+                                    }}
+                                    className="font-medium transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow rounded px-6 py-1.5"
+                                  >
+                                    {followedList.includes(data.userId) ? "UnFollow" : "Follow"}
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className='py-3 text-black dark:text-white px-4 text-xl'>
+                          No user found 😩
+                        </div>
+                      )}
+                    </>
+                  )}
+                </ShowDialogModal>
                 )}
 
               </div>

@@ -9,17 +9,23 @@ import FilterDate from '../../Components/FilterDate/FilterDate'
 import dayjs, { Dayjs } from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import toast from 'react-hot-toast'
-import { androidIcon, iosIcon, linuxIcon, windowsIcon } from '../../Components/SvgIcon/SvgIcon'
 import AddTicket from '../../Components/User/AddTicket/AddTicket'
-import { AuthContext } from '../../Context/AuthContext'
 import TableTicket from '../../Components/User/TableTicket/TableTicket'
 import { useGetUserTicket } from '../../hooks/ticket/useTicket'
-import SpinLoader from '../../Components/SpinLoader/SpinLoader'
 import { ticketUser } from '../../hooks/ticket/tickets.types'
 import SkeletonTable from '../../Components/SkeletonTable/SkeletonTable'
+import ShowDialogModal from '../../Components/ShowDialogModal/ShowDialogModal'
 
 // Enable the 'isBetween' plugin for dayjs
 dayjs.extend(isBetween);
+
+type ticketFilterLocalStorage = {
+    status: string[],
+    priority: string[],
+    order: "OTN" | "NTO",
+    fromDate: Dayjs,
+    untilDate: Dayjs
+}
 
 
 
@@ -28,15 +34,32 @@ function Tickets() {
 
 
 
+    const [ticketFilterLocalStorage, setTicketFilterLocalStorage] = useState<ticketFilterLocalStorage | null>(
+        localStorage.getItem("ticketFilter")
+            ? JSON.parse(localStorage.getItem("ticketFilter") as string)
+            : null
+    )
+
+
 
     const [isShowOpenFilter, setIsShowOpenFilter] = useState(false);
     // State to hold the filtered data
     const [filteredData, setFilteredData] = useState<ticketUser[] | null>(null);;
-    const [fromPicker, setFromPicker] = useState<Dayjs | null>(null);
-    const [untilPicker, setUntilPicker] = useState<Dayjs | null>(null);
-    const [orderTicket, setOrderTicket] = useState<"NTO" | "OTN">("NTO");
-    const [allPriority, setAllPriority] = useState<string[]>(["Low", "Medium", "High"]);
-    const [allStatus, setAllStatus] = useState<string[]>(["Open", "Closed", "Answered"]);
+    const [fromPicker, setFromPicker] = useState<Dayjs | null>(
+        dayjs(ticketFilterLocalStorage?.fromDate) || null
+    );
+    const [untilPicker, setUntilPicker] = useState<Dayjs | null>(
+        dayjs(ticketFilterLocalStorage?.untilDate) || null
+    );
+    const [orderTicket, setOrderTicket] = useState<"NTO" | "OTN">(
+        ticketFilterLocalStorage?.order || "NTO"
+    );
+    const [allPriority, setAllPriority] = useState<string[]>(
+        ticketFilterLocalStorage?.priority || ["Low", "Medium", "High"]
+    );
+    const [allStatus, setAllStatus] = useState<string[]>(
+        ticketFilterLocalStorage?.status || ["Open", "Closed", "Answered"]
+    );
 
     const { data: allTicket, isError, isLoading, error, isSuccess } = useGetUserTicket()
 
@@ -44,26 +67,20 @@ function Tickets() {
     useEffect(() => {
         if (isError) {
             if (error && (error as any).response) {
-                toast.error((error as any).response.data.error.message,
-                    {
-                        icon: '❌',
-                        style: {
-                            borderRadius: '10px',
-                            background: '#333',
-                            color: '#fff',
-                        },
-                    }
+                toast.error((error as any).response.data.error.message
                 )
             }
         }
     }, [isError])
 
+    useEffect(() => {
+        if (ticketFilterLocalStorage) {
+            filterDateHandler();
+        }
+    }, [allTicket, ticketFilterLocalStorage])
+
 
     const filterDateHandler = () => {
-        // if (!fromPicker || !untilPicker) {
-        //     toast.error("Please fill in both start and end dates.");
-        //     return;
-        // }
 
         if (allPriority.length === 0) {
             toast.error("You must select at least one Priority.");
@@ -74,6 +91,15 @@ function Tickets() {
         // تبدیل fromPicker و untilPicker به شیء Dayjs
         const fromDate = dayjs(fromPicker).startOf('day');
         const untilDate = dayjs(untilPicker).endOf('day');
+
+        //save in localStorage
+        localStorage.setItem("ticketFilter", JSON.stringify({
+            status: allStatus,
+            priority: allPriority,
+            order: orderTicket,
+            fromDate,
+            untilDate
+        }))
 
         const filteredTickets = allTicket?.filter(info => {
             const includedPriority = allPriority.includes(info.priority)
@@ -144,99 +170,103 @@ function Tickets() {
                 </div>
 
             </div>
-            <FilterDate
-                title="Filter Tickets"
-                filterDateHandler={filterDateHandler}
-                fromPicker={fromPicker} // تبدیل به رشته
-                setFromPicker={setFromPicker}
-                untilPicker={untilPicker} // تبدیل به رشته
-                setUntilPicker={setUntilPicker}
-                isShowOpenFilter={isShowOpenFilter}
-                setIsShowOpenFilter={setIsShowOpenFilter}
+            <ShowDialogModal 
+            isOpenShowLDialogModal= {isShowOpenFilter}
+            setisOpenShowLDialogModal= {setIsShowOpenFilter}
+            title="Filter Tickets"
+            height= 'h-90'
             >
-                <div className='flex flex-col gap-1'>
-                    <FormLabel className='font-medium text-base'>Priority</FormLabel>
-                    <FormGroup>
-                        <div className='flex flex-wrap gap-3'>
-                            <FormControlLabel
-                                label="Low"
-                                control={<Checkbox
-                                    value='Low'
-                                    checked={allPriority.some(data => data === "Low")}
-                                    onChange={changeHandlerPriority}
-                                />}
-                            />
-                            <FormControlLabel
-                                label="Medium"
-                                control={<Checkbox
-                                    value='Medium'
-                                    checked={allPriority.some(data => data === "Medium")}
-                                    onChange={changeHandlerPriority}
-                                />}
-                            />
-                            <FormControlLabel
-                                label="High"
-                                control={<Checkbox
-                                    value='High'
-                                    checked={allPriority.some(data => data === "High")}
-                                    onChange={changeHandlerPriority}
-                                />}
-                            />
+                <FilterDate
+                    filterDateHandler={filterDateHandler}
+                    fromPicker={fromPicker}
+                    setFromPicker={setFromPicker}
+                    untilPicker={untilPicker}
+                    setUntilPicker={setUntilPicker}
+                >
+                    <div className='flex flex-col gap-1'>
+                        <FormLabel className='font-medium text-base'>Priority</FormLabel>
+                        <FormGroup>
+                            <div className='flex flex-wrap gap-3'>
+                                <FormControlLabel
+                                    label="Low"
+                                    control={<Checkbox
+                                        value='Low'
+                                        checked={allPriority.some(data => data === "Low")}
+                                        onChange={changeHandlerPriority}
+                                    />}
+                                />
+                                <FormControlLabel
+                                    label="Medium"
+                                    control={<Checkbox
+                                        value='Medium'
+                                        checked={allPriority.some(data => data === "Medium")}
+                                        onChange={changeHandlerPriority}
+                                    />}
+                                />
+                                <FormControlLabel
+                                    label="High"
+                                    control={<Checkbox
+                                        value='High'
+                                        checked={allPriority.some(data => data === "High")}
+                                        onChange={changeHandlerPriority}
+                                    />}
+                                />
 
-                        </div>
-                    </FormGroup>
-                </div>
+                            </div>
+                        </FormGroup>
+                    </div>
 
-                <div className='flex flex-col gap-1'>
-                    <FormLabel className='font-medium text-base'>Status</FormLabel>
-                    <FormGroup>
-                        <div className='flex flex-wrap gap-3'>
-                            <FormControlLabel
-                                label="Open"
-                                control={<Checkbox
-                                    value='Open'
-                                    checked={allStatus.some(data => data === "Open")}
-                                    onChange={changeHandlerStatus}
-                                />}
-                            />
-                            <FormControlLabel
-                                label="Answered"
-                                control={<Checkbox
-                                    value='Answered'
-                                    checked={allStatus.some(data => data === "Answered")}
-                                    onChange={changeHandlerStatus}
-                                />}
-                            />
-                            <FormControlLabel
-                                label="Closed"
-                                control={<Checkbox
-                                    value='Closed'
-                                    checked={allStatus.some(data => data === "Closed")}
-                                    onChange={changeHandlerStatus}
-                                />}
-                            />
+                    <div className='flex flex-col gap-1'>
+                        <FormLabel className='font-medium text-base'>Status</FormLabel>
+                        <FormGroup>
+                            <div className='flex flex-wrap gap-3'>
+                                <FormControlLabel
+                                    label="Open"
+                                    control={<Checkbox
+                                        value='Open'
+                                        checked={allStatus.some(data => data === "Open")}
+                                        onChange={changeHandlerStatus}
+                                    />}
+                                />
+                                <FormControlLabel
+                                    label="Answered"
+                                    control={<Checkbox
+                                        value='Answered'
+                                        checked={allStatus.some(data => data === "Answered")}
+                                        onChange={changeHandlerStatus}
+                                    />}
+                                />
+                                <FormControlLabel
+                                    label="Closed"
+                                    control={<Checkbox
+                                        value='Closed'
+                                        checked={allStatus.some(data => data === "Closed")}
+                                        onChange={changeHandlerStatus}
+                                    />}
+                                />
 
-                        </div>
-                    </FormGroup>
-                </div>
+                            </div>
+                        </FormGroup>
+                    </div>
 
-                <div>
-                    <FormControl>
-                        <FormLabel id="demo-controlled-radio-buttons-group">Order By</FormLabel>
-                        <RadioGroup
-                            aria-labelledby="demo-controlled-radio-buttons-group"
-                            name="controlled-radio-buttons-group"
-                            value={orderTicket}
-                            onChange={(e) => setOrderTicket(e.target.value as "NTO" | "OTN")}
-                            style={{ display: 'flex', flexDirection: 'row' }} // اعمال flex
-                        >
-                            <FormControlLabel value="NTO" control={<Radio />} label="New to Old" />
-                            <FormControlLabel value="OTN" control={<Radio />} label="Old to New" />
-                        </RadioGroup>
-                    </FormControl>
-                </div>
+                    <div>
+                        <FormControl>
+                            <FormLabel id="demo-controlled-radio-buttons-group">Order By</FormLabel>
+                            <RadioGroup
+                                aria-labelledby="demo-controlled-radio-buttons-group"
+                                name="controlled-radio-buttons-group"
+                                value={orderTicket}
+                                onChange={(e) => setOrderTicket(e.target.value as "NTO" | "OTN")}
+                                style={{ display: 'flex', flexDirection: 'row' }} // اعمال flex
+                            >
+                                <FormControlLabel value="NTO" control={<Radio />} label="New to Old" />
+                                <FormControlLabel value="OTN" control={<Radio />} label="Old to New" />
+                            </RadioGroup>
+                        </FormControl>
+                    </div>
 
-            </FilterDate>
+                </FilterDate>
+            </ShowDialogModal>
 
 
             <SideBarLeft />

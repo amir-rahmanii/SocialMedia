@@ -4,7 +4,7 @@ import SkeletonPost from '../../SkeletonPost/SkeletonPost'
 import PostItem from '../PostItem/PostItem';
 import { useGetAllPostAllUsers } from '../../../hooks/post/usePost';
 import PostItemProps from '../PostItem/PostItem'
-import NewPost from '../../Header/NewPost/NewPost';
+import NewPost from '../NewPost/NewPost';
 import { postUploadOutline } from '../../SvgIcon/SvgIcon';
 
 export type PostItemProps = {

@@ -19,29 +19,14 @@ function Login() {
     useEffect(() => {
         if (isError) {
             if (error && (error as any).response) {
-                toast.error((error as any).response.data.error.message,
-                    {
-                        icon: '❌',
-                        style: {
-                            borderRadius: '10px',
-                            background: '#333',
-                            color: '#fff',
-                        },
-                    }
+                toast.error((error as any).response.data.error.message
                 )
             }
         }
 
         if (isSuccess) {
             toast.success("User login successfuly",
-                {
-                    icon: '✅',
-                    style: {
-                        borderRadius: '10px',
-                        background: '#333',
-                        color: '#fff',
-                    },
-                }
+                
             )
             navigate("/")
         }

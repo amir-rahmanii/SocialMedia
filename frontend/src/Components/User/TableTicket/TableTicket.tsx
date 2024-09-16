@@ -98,29 +98,14 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
     useEffect(() => {
         if (isErrorAddNewMessage) {
             if (errorNewMessage && (errorNewMessage as any).response) {
-                toast.error((errorNewMessage as any).response.data.error.message,
-                    {
-                        icon: '❌',
-                        style: {
-                            borderRadius: '10px',
-                            background: '#333',
-                            color: '#fff',
-                        },
-                    }
+                toast.error((errorNewMessage as any).response.data.error.message
                 )
             }
         }
 
         if (isSuccessAddNewMessage) {
             toast.success("Message send successfuly",
-                {
-                    icon: '✅',
-                    style: {
-                        borderRadius: '10px',
-                        background: '#333',
-                        color: '#fff',
-                    },
-                }
+                
             )
             setMessage("")
         }
@@ -130,29 +115,14 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
     useEffect(() => {
         if (isErrorAddRating) {
             if (errorAddRating && (errorAddRating as any).response) {
-                toast.error((errorAddRating as any).response.data.error.message,
-                    {
-                        icon: '❌',
-                        style: {
-                            borderRadius: '10px',
-                            background: '#333',
-                            color: '#fff',
-                        },
-                    }
+                toast.error((errorAddRating as any).response.data.error.message
                 )
             }
         }
 
         if (isSuccessAddRating) {
             toast.success("Rating send successfuly",
-                {
-                    icon: '✅',
-                    style: {
-                        borderRadius: '10px',
-                        background: '#333',
-                        color: '#fff',
-                    },
-                }
+                
             )
             setMessage("")
         }
@@ -249,7 +219,7 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
                         )}
                     </>
                 ) : (
-                    <p className='font-medium text-lg text-center py-4'>
+                    <p className='font-medium  text-lg text-center py-4'>
                         You have not registered a ticket yet or no ticket was found with this filter 😩</p>
                 )}
             </Paper>
@@ -259,7 +229,7 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
                 isOpenShowLDialogModal={isShowAnswer}
                 setisOpenShowLDialogModal={setisShowAnswer}
                 title="Messages"
-                height="h-72"
+                height="h-80"
             >
                 <div className="self-end flex flex-col p-2">
                     <div className="flex justify-between items-start text-white bg-violet-600 rounded-3xl max-w-[260px] px-4  py-3 overflow-hidden">

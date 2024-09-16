@@ -59,29 +59,14 @@ function AddNewStory({ showAddStory, setShowAddStory }: AddNewStoryProps) {
     useEffect(() => {
         if (isError) {
             if (error && (error as any).response) {
-                toast.error((error as any).response.data.error.message,
-                    {
-                        icon: '❌',
-                        style: {
-                            borderRadius: '10px',
-                            background: '#333',
-                            color: '#fff',
-                        },
-                    }
+                toast.error((error as any).response.data.error.message
                 )
             }
         }
 
         if (isSuccess) {
             toast.success("Story Uploaded successfuly",
-                {
-                    icon: '✅',
-                    style: {
-                        borderRadius: '10px',
-                        background: '#333',
-                        color: '#fff',
-                    },
-                }
+                
             )
             setPostImage(null)
             setPostPreview(null)
@@ -174,4 +159,4 @@ function AddNewStory({ showAddStory, setShowAddStory }: AddNewStoryProps) {
     );
 }
 
-export default AddNewStory;
+export default React.memo(AddNewStory);

@@ -1,16 +1,17 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { commentIcon, deleteIcon, emojiIcon, likeIconOutline, moreIcons, saveIconFill, saveIconOutline, shareIcon } from '../../SvgIcon/SvgIcon'
+import { commentIcon, deleteIcon, editPostIcon, emojiIcon, likeIconOutline, moreIcons, saveIconFill, saveIconOutline, shareIcon } from '../../SvgIcon/SvgIcon'
 import { likeFill } from '../../SvgIcon/SvgIcon';
 import EmojiPicker from '@emoji-mart/react';
 import { PostItemProps } from '../PostsContainer/PostsContainer';
 import DateConverter from '../../../utils/DateConverter';
-import { useDeleteComment, usePostAddComment, usePostLikeToggle, usePostSavePostToggle } from '../../../hooks/post/usePost';
+import { useDeleteComment, useDeletePost, usePostAddComment, usePostLikeToggle, usePostSavePostToggle } from '../../../hooks/post/usePost';
 import toast from 'react-hot-toast';
-import ShowWhoLiked from '../../ShowWhoLiked/ShowWhoLiked';
-import PostDetails from '../../PostDetails/PostDetails';
 import Slider from "react-slick";
 import { AuthContext } from '../../../Context/AuthContext';
+import ShowDialogModal from '../../ShowDialogModal/ShowDialogModal';
+import { useGetMyUsersInfo, usePostFollowToggle } from '../../../hooks/user/useUser';
+import UpdatePost from '../UpdatePost/UpdatePost';
 
 
 
@@ -26,12 +27,40 @@ function PostItem(props: PostItemProps) {
     const [showMoreDesc, setShowMoreDesc] = useState(false);
     const [isOpenShowLiked, setIsOpenShowLiked] = useState(false);
     const [postDatailsToggle, setPostDetailsToggle] = useState(false);
+    const [updatePost, setUpdatePost] = useState(false)
+    const { mutate: followToggle, isSuccess: isSuccessFollowToggle, isError: isErrorFollowToggle, error: errorFollow, data: dataFollow } = usePostFollowToggle();
+    const [followedListUser, setFollowedListUser] = useState<string[]>([])
 
 
     const { mutate: addPostLikeToggle } = usePostLikeToggle();
     const { mutate: addPostSaveToggle } = usePostSavePostToggle();
     const { mutate: addComment, isSuccess: isSuccessAddComment, isError: isErrorAddComment, error } = usePostAddComment();
     const { mutate: deleteComment, isSuccess: isSuccessDeleteComment, isError: isErroeDeleteComment, error: errorDeleteComment } = useDeleteComment();
+    const { mutate: deletePost, isSuccess: isSuccessDeletePost, isError: isErrorDeletePost, error: errorDeletePost } = useDeletePost();
+    const { data: myInfo } = useGetMyUsersInfo();
+
+    const deletePostHandler = (postId: string) => {
+        let newObj = {
+            postid: postId
+        }
+        deletePost(newObj)
+    }
+
+
+    useEffect(() => {
+        if (isErrorDeletePost) {
+            if (errorDeletePost && (errorDeletePost as any).response) {
+                toast.error((errorDeletePost as any).response.data.error.message
+                )
+            }
+        }
+
+        if (isSuccessDeletePost) {
+            toast.success("Post removed successfuly",
+
+            )
+        }
+    }, [isErrorDeletePost, isSuccessDeletePost])
 
     const setLike = (postid: string) => {
         setLikeEffect(true)
@@ -97,29 +126,14 @@ function PostItem(props: PostItemProps) {
     useEffect(() => {
         if (isErrorAddComment) {
             if (error && (error as any).response) {
-                toast.error((error as any).response.data.error.message,
-                    {
-                        icon: '❌',
-                        style: {
-                            borderRadius: '10px',
-                            background: '#333',
-                            color: '#fff',
-                        },
-                    }
+                toast.error((error as any).response.data.error.message
                 )
             }
         }
 
         if (isSuccessAddComment) {
             toast.success("Comment Add successfuly",
-                {
-                    icon: '✅',
-                    style: {
-                        borderRadius: '10px',
-                        background: '#333',
-                        color: '#fff',
-                    },
-                }
+
             )
         }
     }, [isErrorAddComment, isSuccessAddComment])
@@ -128,32 +142,41 @@ function PostItem(props: PostItemProps) {
     useEffect(() => {
         if (isErroeDeleteComment) {
             if (errorDeleteComment && (errorDeleteComment as any).response) {
-                toast.error((errorDeleteComment as any).response.data.error.message,
-                    {
-                        icon: '❌',
-                        style: {
-                            borderRadius: '10px',
-                            background: '#333',
-                            color: '#fff',
-                        },
-                    }
+                toast.error((errorDeleteComment as any).response.data.error.message
                 )
             }
         }
 
         if (isSuccessDeleteComment) {
             toast.success("Comment removed successfuly",
-                {
-                    icon: '✅',
-                    style: {
-                        borderRadius: '10px',
-                        background: '#333',
-                        color: '#fff',
-                    },
-                }
+
             )
         }
     }, [isErroeDeleteComment, isSuccessDeleteComment])
+
+    useEffect(() => {
+        if (isErrorFollowToggle) {
+            if (errorFollow && (errorFollow as any).response) {
+                toast.error((errorFollow as any).response.data.error.message
+                )
+            }
+        }
+
+        if (isSuccessFollowToggle) {
+            toast.success(dataFollow.data.message,
+                
+            )
+        }
+    }, [isErrorFollowToggle, isSuccessFollowToggle, dataFollow])
+
+
+    // Check if the user is followed
+    useEffect(() => {
+        if (myInfo) {
+            const followedUserIds = myInfo.following.map(follow => follow.userId);
+            setFollowedListUser(followedUserIds);
+        }
+    }, [myInfo]);
 
 
 
@@ -171,7 +194,36 @@ function PostItem(props: PostItemProps) {
             </div>
 
             {postDatailsToggle && (
-                <PostDetails isShowPostDetails={postDatailsToggle} setIsShowPostDetails={setPostDetailsToggle} postInfo={props} isBan={props.user.isban} postId={props._id} userID={props.user.id} />
+                <ShowDialogModal
+                isOpenShowLDialogModal={postDatailsToggle}
+                setisOpenShowLDialogModal={setPostDetailsToggle}
+                title="Post Deatils"
+                height='h-auto'
+                >
+                    <div className="flex flex-col w-full overflow-hidden rounded">
+                        {(authContext?.user?._id === props.user.id) && (
+                            <button onClick={() => deletePostHandler(props._id)} className="flex bg-red-500 text-white items-center justify-between p-2.5 text-sm pl-4 cursor-pointer font-semibold hover:bg-red-400 duration-300 transition-all">
+                                Delete
+                                <div className='w-5 h-5'>
+                                    {deleteIcon}
+                                </div>
+                            </button>
+                        )}
+                        {authContext?.user?._id === props.user.id && (
+                            <button onClick={() => setUpdatePost(true)} className="flex text-black dark:text-white items-center justify-between p-2.5 text-sm pl-4 cursor-pointer bg-white dark:bg-black hover:bg-[#00376b1a] dark:hover:bg-gray-600 duration-300 transition-all">
+                                Edit
+                                <div className='w-5 h-5 text-black dark:text-white'>
+                                    {editPostIcon}
+                                </div>
+                            </button>
+                        )}
+                    </div>
+
+                </ShowDialogModal>
+            )}
+
+             {updatePost && (
+                <UpdatePost postInfo={props} updatePost={updatePost} setUpdatePost={setUpdatePost} />
             )}
 
             {/* post image container */}
@@ -325,8 +377,48 @@ function PostItem(props: PostItemProps) {
             </div>
 
 
-            <ShowWhoLiked userLiked={props.likes} isOpenShowLiked={isOpenShowLiked} setIsOpenShowLiked={setIsOpenShowLiked} />
+            {/* <ShowWhoLiked userLiked={props.likes} isOpenShowLiked={isOpenShowLiked} setIsOpenShowLiked={setIsOpenShowLiked} /> */}
 
+            <ShowDialogModal
+            isOpenShowLDialogModal={isOpenShowLiked}
+            setisOpenShowLDialogModal={setIsOpenShowLiked}
+            title="List User Liked"
+            height='h-72'
+            >
+                {props.likes.length > 0 ? (
+                    <div className='py-3 px-4 flex flex-col'>
+                        {props.likes.map((data, index) => (
+                            <div key={index} className='flex items-center justify-between border-b dark:border-gray-300/20 border-gray-300 p-2'>
+                                <div className='flex items-center gap-2'>
+                                    <Link className='shrink-0' to={`/profile/${data.userid}`}>
+                                        <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/images/profiles/${data.userPicture.filename}`} alt="avatar" />
+                                    </Link>
+                                    <div className='flex flex-col'>
+                                        <Link to={`/profile/${data.userid}`} className="text-sm text-black dark:text-white font-semibold hover:underline">{data.username}</Link>
+                                        <p className='text-xs text-gray-500'><DateConverter date={data.createdAt} /></p>
+                                    </div>
+                                </div>
+                                <div className='ml-5'>
+                                    {myInfo?._id !== data.userid && (
+                                        <button
+                                            onClick={() => {
+                                                followToggle(data.userid);
+                                            }}
+                                            className="font-medium transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow rounded px-2 md:px-6 py-1.5"
+                                        >
+                                            {followedListUser.includes(data.userid) ? "UnFollow" : "Follow"}
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className='py-3 px-4 text-xl'>
+                        No one has liked this post 😩
+                    </div>
+                )}
+            </ShowDialogModal>
         </div >
     )
 }

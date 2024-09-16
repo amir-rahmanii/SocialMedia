@@ -18,29 +18,14 @@ function Sidebar() {
     useEffect(() => {
         if (isErrorFollowToggle) {
             if (errorFollow && (errorFollow as any).response) {
-                toast.error((errorFollow as any).response.data.error.message,
-                    {
-                        icon: '❌',
-                        style: {
-                            borderRadius: '10px',
-                            background: '#333',
-                            color: '#fff',
-                        },
-                    }
+                toast.error((errorFollow as any).response.data.error.message
                 )
             }
         }
 
         if (isSuccessFollowToggle) {
             toast.success(dataFollow.data.message,
-                {
-                    icon: '✅',
-                    style: {
-                        borderRadius: '10px',
-                        background: '#333',
-                        color: '#fff',
-                    },
-                }
+                
             )
         }
     }, [isErrorFollowToggle, isSuccessFollowToggle])

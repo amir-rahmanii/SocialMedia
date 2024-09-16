@@ -22,29 +22,14 @@ function ResetPassword() {
     useEffect(() => {
         if (isError) {
             if (error && (error as any).response) {
-                toast.error("token (otp) not valid or expierd",
-                    {
-                        icon: '❌',
-                        style: {
-                            borderRadius: '10px',
-                            background: '#333',
-                            color: '#fff',
-                        },
-                    }
+                toast.error("token (otp) not valid or expierd"
                 )
             }
         }
 
         if (isSuccess) {
             toast.success("password change successfuly",
-                {
-                    icon: '✅',
-                    style: {
-                        borderRadius: '10px',
-                        background: '#333',
-                        color: '#fff',
-                    },
-                }
+                
             )
             navigate("/login")
         }

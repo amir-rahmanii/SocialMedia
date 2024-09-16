@@ -1,9 +1,9 @@
-import React, { useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { IMessage } from "../../../Page/Inbox/Inbox"
 import { formatTime } from "../../../utils/formatTime";
-import { moreIcons } from "../../SvgIcon/SvgIcon";
-import MessageDetails from "../MessageDetails/MessageDetails";
-import MessageEdited from "../MessageEdited/MessageEdited";
+import { deleteIcon, editPostIcon, moreIcons } from "../../SvgIcon/SvgIcon";
+import ShowDialogModal from "../../ShowDialogModal/ShowDialogModal";
+import { TextField } from "@mui/material";
 
 
 
@@ -21,6 +21,24 @@ const Message = (props: MessageProps) => {
 
     const [showDetailsMessage, setShowDetailsMessage] = useState(false);
     const [showEditMessageBox, setShowEditMessageBox] = useState(false);
+
+    const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+    const [newMessage, setNewMessage] = useState(props.message.content);
+
+    useEffect(() => {
+        if (textAreaRef.current) {
+            textAreaRef.current.focus();
+        }
+    }, [])
+
+
+    const submitHandler = () => {
+        if (newMessage.trim()) {
+            props.handleEditMessage(props.message._id, newMessage)
+            setShowEditMessageBox(false)
+            setShowDetailsMessage(false)
+        }
+    }
 
     return (
         <>
@@ -40,11 +58,9 @@ const Message = (props: MessageProps) => {
                                         )}
                                     </div>
                                 </div>
-                                <button onClick={() => setShowDetailsMessage(prev => !prev)} className="cursor-pointer relative rotate-90 text-white">
+                                <button onClick={() => setShowDetailsMessage(true)} className="cursor-pointer relative rotate-90 text-white">
                                     {moreIcons}
-                                    {showDetailsMessage && (
-                                        <MessageDetails setShowEditMessageBox={setShowEditMessageBox} setShowDetailsMessage={setShowDetailsMessage} handleDeleteMessage={props.handleDeleteMessage} msgId={props.message._id} />
-                                    )}
+
                                 </button>
                             </div>
                             {
@@ -101,14 +117,61 @@ const Message = (props: MessageProps) => {
                         </div>
             }
 
-            {showEditMessageBox && (
+            {/* DetailsMessage */}
+            <ShowDialogModal
+                isOpenShowLDialogModal={showDetailsMessage}
+                setisOpenShowLDialogModal={setShowDetailsMessage}
+                title="Details Message"
+                height="h-auto"
+            >
+                <div className="flex flex-col w-full overflow-hidden rounded">
+                    <div onClick={() => props.handleDeleteMessage(props.message._id)} className="flex bg-red-500 text-white items-center justify-between p-2.5 text-sm pl-4 cursor-pointer font-semibold hover:bg-red-400 duration-300 transition-all">
+                        Delete
+                        <div className='w-4 h-4'>
+                            {deleteIcon}
+                        </div>
+                    </div>
+                    <div onClick={() => {
+                        setShowEditMessageBox(true)
+                    }} className="flex bg-green-500 text-white items-center justify-between p-2.5 text-sm pl-4 cursor-pointer font-semibold hover:bg-green-400 duration-300 transition-all">
+                        Edit
+                        <div className='w-4 h-4 text-white'>
+                            {editPostIcon}
+                        </div>
+                    </div>
+                </div>
+            </ShowDialogModal>
+
+            {/* {showEditMessageBox && (
                 <MessageEdited
                     handleEditMessage={props.handleEditMessage}
                     msgId={props.message._id}
                     msgContent={props.message.content}
                     showEditMessageBox={showEditMessageBox}
                     setShowEditMessageBox={setShowEditMessageBox} />
-            )}
+            )} */}
+            {/* editMessage */}
+            <ShowDialogModal
+                isOpenShowLDialogModal={showEditMessageBox}
+                setisOpenShowLDialogModal={setShowEditMessageBox}
+                title="Edit Message Box"
+                height="h-auto"
+            >
+                <form onSubmit={e => e.preventDefault()} className='flex flex-col gap-2 px-4'>
+                    <TextField
+                        label="New Message"
+                        name="New Message"
+                        inputRef={textAreaRef}
+                        className='border border-gray-500 p-3 font-medium rounded text-gray-500'
+                        placeholder='Write...'
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}>
+                    </TextField>
+                    <button onClick={submitHandler} className='font-medium py-2 rounded text-white w-full  duration-300 transition-all bg-primary-blue hover:bg-primaryhover-blue'>
+                        Submit
+                    </button>
+                </form>
+            </ShowDialogModal>
         </>
     )
 }

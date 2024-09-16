@@ -1,14 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { exploreOutline, homeFill, likeIconOutline, logOutIcon, messageOutline, postUploadOutline, reelsIcon, searchIcon } from '../../Components/SvgIcon/SvgIcon'
+import { exploreOutline, homeFill, likeIconOutline, logOutIcon, messageOutline, postUploadOutline, reelsIcon, searchIcon, ticketIcon } from '../../Components/SvgIcon/SvgIcon'
 import { AuthContext } from '../../Context/AuthContext';
-import NewPost from '../../Components/Header/NewPost/NewPost';
+import NewPost from '../../Components/Home/NewPost/NewPost';
 import { FormControlLabel } from '@mui/material';
 import { MaterialUISwitch } from '../../Components/MaterialUISwitch/MaterialUISwitch';
-import ShowSearchInput from '../../Components/ShowSearchInput/ShowSearchInput';
 import { useThemeContext } from '../../Context/ThemeContext';
 import toast from 'react-hot-toast';
 import { useGetMyUsersInfo } from '../../hooks/user/useUser';
+import ShowDialogModal from '../../Components/ShowDialogModal/ShowDialogModal';
+import SearchBox from '../../Components/Header/SearchBox/SearchBox';
 
 function SideBarLeft() {
     const authContext = useContext(AuthContext);
@@ -80,7 +81,7 @@ function SideBarLeft() {
                     <li className='p-3 rounded-md hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 group'>
                         <Link className='text-base/5 flex items-center justify-center xl:justify-start gap-3 font-bold text-black dark:text-white' to='/tickets'>
                             <div className='w-6 h-6 group-hover:scale-110 transition-all duration-300'>
-                                {reelsIcon}
+                                {ticketIcon}
                             </div>
                             <span className='hidden xl:block'>Tickets</span>
                         </Link>
@@ -154,7 +155,16 @@ function SideBarLeft() {
             {/* new post show */}
             <NewPost newPost={newPost} setNewPost={setNewPost} />
 
-            <ShowSearchInput isShowSearch={isShowSearch} setIsShowSearch={setIsShowSearch} />
+            <ShowDialogModal
+            isOpenShowLDialogModal={isShowSearch}
+            setisOpenShowLDialogModal={setIsShowSearch}
+            title="Search title"
+            height="h-auto"
+            >
+                <div className="flex justify-center items-center border rounded dark:border-gray-300/20 border-gray-300">
+                    <SearchBox />
+                </div>
+            </ShowDialogModal>
         </div>
     )
 }

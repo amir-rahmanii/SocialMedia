@@ -47,29 +47,14 @@ function ChangeProfile({ isShowChangeProfile, setIsShowChangeProfile }: ChangePr
     useEffect(() => {
         if (isError) {
             if (error && (error as any).response) {
-                toast.error((error as any).response.data.error.message,
-                    {
-                        icon: '❌',
-                        style: {
-                            borderRadius: '10px',
-                            background: '#333',
-                            color: '#fff',
-                        },
-                    }
+                toast.error((error as any).response.data.error.message
                 )
             }
         }
 
         if (isSuccess) {
             toast.success("Profile Uploaded successfuly",
-                {
-                    icon: '✅',
-                    style: {
-                        borderRadius: '10px',
-                        background: '#333',
-                        color: '#fff',
-                    },
-                }
+                
             )
             setPostImage(null)
             setPostPreview(null)
@@ -166,4 +151,4 @@ function ChangeProfile({ isShowChangeProfile, setIsShowChangeProfile }: ChangePr
     )
 }
 
-export default ChangeProfile
+export default React.memo(ChangeProfile)

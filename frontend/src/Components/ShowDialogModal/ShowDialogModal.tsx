@@ -6,22 +6,22 @@ type ShowDialogModalProps = {
   isOpenShowLDialogModal: boolean,
   setisOpenShowLDialogModal: (value: boolean) => void,
   title: string,
-  height : string,
+  height: string,
   children: React.ReactNode
 }
 
-function ShowDialogModal({ isOpenShowLDialogModal, setisOpenShowLDialogModal , height, title, children }: ShowDialogModalProps) {
+function ShowDialogModal({ isOpenShowLDialogModal, setisOpenShowLDialogModal, height, title, children }: ShowDialogModalProps) {
   return (
     <Dialog open={isOpenShowLDialogModal} onClose={() => setisOpenShowLDialogModal(false)} maxWidth='xl'>
-      <div className={`flex flex-col ${height} overflow-y-auto w-screen max-w-[300px] lg:max-w-xl bg-white dark:bg-black`}>
+      <div className={`flex flex-col ${height} overflow-y-auto w-screen max-w-[300px] md:max-w-xl bg-white dark:bg-black`}>
         <DialogHeader
           title={title}
           setIsOpenShowModal={setisOpenShowLDialogModal}
         />
-      {children}
+        {children}
       </div>
     </Dialog>
   )
 }
 
-export default ShowDialogModal
+export default React.memo(ShowDialogModal)
