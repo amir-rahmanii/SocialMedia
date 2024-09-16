@@ -13,7 +13,8 @@ import { ticketUser } from '../../../hooks/ticket/tickets.types';
 import ShowDialogModal from '../../ShowDialogModal/ShowDialogModal';
 import { useGetMyUsersInfo } from '../../../hooks/user/useUser';
 import toast from 'react-hot-toast';
-import { usePutNewMessageTicket } from '../../../hooks/ticket/useTicket';
+import { usePutNewMessageTicket, usePutNewRating } from '../../../hooks/ticket/useTicket';
+import { Rating } from '@mui/material';
 
 export type allTicketUserProps = {
     allTicketUser: ticketUser[]
@@ -33,7 +34,8 @@ type infoMessage = {
     department: "Support" | "Technical" | "HR" | "Management" | "Design" | "Other",
     createdAt: Date,
     status: "Open" | "Closed" | "Answered",
-    _id: string
+    _id: string,
+    rating: string
 }
 
 
@@ -45,7 +47,8 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
     const [isShowAnswer, setisShowAnswer] = useState(false);
     const [answerInfo, setAnswerInfo] = useState<response[] | null>(null);
     const { data: myInfo } = useGetMyUsersInfo();
-    const [message, setMessage] = useState('')
+    const [message, setMessage] = useState('');
+    const [rating, setRating] = useState<number | undefined>(undefined);
 
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
@@ -57,6 +60,7 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
     };
 
     const { mutate: addNewMessage, isError: isErrorAddNewMessage, error: errorNewMessage, isSuccess: isSuccessAddNewMessage } = usePutNewMessageTicket();
+    const { mutate: addRating, isError: isErrorAddRating, error: errorAddRating, isSuccess: isSuccessAddRating } = usePutNewRating();
 
     // send ticket message
     const sendMessageHandler = () => {
@@ -121,6 +125,38 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
             setMessage("")
         }
     }, [isErrorAddNewMessage, isSuccessAddNewMessage])
+
+    // is success and is error rating
+    useEffect(() => {
+        if (isErrorAddRating) {
+            if (errorAddRating && (errorAddRating as any).response) {
+                toast.error((errorAddRating as any).response.data.error.message,
+                    {
+                        icon: '❌',
+                        style: {
+                            borderRadius: '10px',
+                            background: '#333',
+                            color: '#fff',
+                        },
+                    }
+                )
+            }
+        }
+
+        if (isSuccessAddRating) {
+            toast.success("Rating send successfuly",
+                {
+                    icon: '✅',
+                    style: {
+                        borderRadius: '10px',
+                        background: '#333',
+                        color: '#fff',
+                    },
+                }
+            )
+            setMessage("")
+        }
+    }, [isErrorAddRating, isSuccessAddRating])
 
 
 
@@ -187,7 +223,8 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
                                                             description: data.description,
                                                             department: data.department,
                                                             createdAt: data.createdAt,
-                                                            status: data.status
+                                                            status: data.status,
+                                                            rating: data.rating,
                                                         })
                                                         setAnswerInfo(data.responses)
                                                     }} className={`bg-purple-500/30 rounded px-1`}>
@@ -225,7 +262,7 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
                 height="h-72"
             >
                 <div className="self-end flex flex-col p-2">
-                    <div className="flex justify-between items-start text-white bg-violet-600 rounded-3xl max-w-xs px-4  py-3 overflow-hidden">
+                    <div className="flex justify-between items-start text-white bg-violet-600 rounded-3xl max-w-[260px] px-4  py-3 overflow-hidden">
                         <div className=" flex  flex-col gap-1.5 text-sm ">
                             <span className='text-sm font-medium text-wrap'>{infoMessageUser?.description}</span>
                             <div className="flex justify-between items-center mt-1">
@@ -238,7 +275,7 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
                     <Fragment key={index}>
                         {myInfo?._id === data.senderId ? (
                             <div className="self-end flex flex-col p-2">
-                                <div className="flex justify-between items-start text-white bg-violet-600 rounded-3xl max-w-xs px-4 py-3 overflow-hidden">
+                                <div className="flex justify-between items-start text-white bg-violet-600 rounded-3xl max-w-[260px] px-4 py-3 overflow-hidden">
                                     <div className=" flex flex-col gap-1.5 text-sm">
                                         <p className='text-sm font-medium text-wrap'>{data.message}</p>
                                         <div className="flex justify-between items-center mt-1">
@@ -253,7 +290,7 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
                                 <div className="flex flex-col ">
                                     <span className="text-xs text-gray-500 px-3 py-1">{data.senderUsername} ( {infoMessageUser?.department} )</span>
                                     <div className="flex flex-col">
-                                        <div className="px-4  flex flex-col gap-1.5 py-3 text-sm bg-gray-200 rounded-3xl max-w-xs overflow-hidden">
+                                        <div className="px-4  flex flex-col gap-1.5 py-3 text-sm bg-gray-200 rounded-3xl max-w-[260px] overflow-hidden">
                                             <span className="text-black text-sm font-medium text-wrap">{data.message}</span>
                                             <div className="flex justify-between items-center mt-1">
                                                 <span className="text-xs text-gray-500"><DateConverter date={data.responseDate} /></span>
@@ -267,7 +304,7 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
                 )))}
 
                 {infoMessageUser?.status !== "Closed" ? (
-                    <form onSubmit={e => e.preventDefault()} className="flex items-center gap-3 justify-between border rounded-full py-2.5 px-4 m-5 relative">
+                    <form onSubmit={e => e.preventDefault()} className="flex items-center mt-auto gap-3 justify-between border rounded-full py-2.5 px-4 m-5 relative">
 
                         <input
                             className="flex-1 outline-none text-sm bg-white dark:bg-black text-black dark:text-white"
@@ -286,14 +323,29 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
                         <div className='w-7 h-7'>
 
                         </div>
-                    <div className="flex flex-col ">
-                        <div className="flex flex-col">
-                            <div className="px-4  flex flex-col gap-1.5 py-3 text-sm bg-red-400/30 rounded-3xl max-w-xs overflow-hidden">
-                                <span className="dark:text-gray-200 text-slate-600 text-sm font-medium text-wrap"> This ticket is closed 😩</span>
+                        <div className="flex flex-col ">
+                            <div className="flex flex-col">
+                                <div className="px-4  flex flex-col gap-1.5 py-3 text-sm bg-red-400/30 rounded-3xl max-w-xs overflow-hidden">
+                                    <span className="dark:text-gray-200 text-slate-600 text-sm font-medium text-wrap">
+                                        This ticket is closed, but please rate the admins' response. 😩</span>
+                                    <Rating
+                                        name="simple-controlled"
+                                        value={ rating || +infoMessageUser.rating || 0} // Provide a default value if infoMessageUser.rating is undefined
+                                        onChange={(event, newValue) => {
+                                            setRating(newValue || 0); // Provide a default value if newValue is undefined
+                                            if (infoMessageUser?._id && newValue !== null) {
+                                                let newObjectAddRating = {
+                                                    ticketId: infoMessageUser._id,
+                                                    rating: +newValue // Ensure newValue is a number
+                                                };
+                                                addRating(newObjectAddRating);
+                                            }
+                                        }}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
                 )}
 
             </ShowDialogModal>

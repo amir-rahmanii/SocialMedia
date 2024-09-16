@@ -104,3 +104,34 @@ exports.respondTicket = async (req, res) => {
 };
 
 
+
+exports.updateRating = async (req, res) => {
+  try {
+      const { ticketId } = req.params;
+      const { rating } = req.body;
+
+      // بررسی وجود rating و نوع داده صحیح
+      if (typeof rating !== 'string' || isNaN(Number(rating)) || Number(rating) < 0 || Number(rating) > 5) {
+          return res.status(400).json({ status: 400, success: false, error: 'Invalid rating. It should be a string between "0" and "5".' });
+      }
+
+      // پیدا کردن تیکت و به‌روزرسانی rating
+      const updatedTicket = await Ticket.findByIdAndUpdate(
+          ticketId,
+          { rating: rating.toString() }, // اطمینان از اینکه مقدار rating به صورت رشته ذخیره شود
+          { new: true }
+      );
+
+      if (!updatedTicket) {
+          return res.status(404).json({ status: 404, success: false, error: 'Ticket not found.' });
+      }
+
+      res.status(200).json({ status: 200, success: true, ticket: updatedTicket });
+  } catch (error) {
+      console.error('Error updating ticket rating:', error.message);
+      res.status(500).json({ status: 500, success: false, error: 'Server error.', details: error.message });
+  }
+}
+
+
+

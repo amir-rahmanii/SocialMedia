@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import apiRequest from "../../Services/axios";
-import { newMessageTicket, newTicket, ticketUser } from "./tickets.types";
+import { newMessageTicket, newRatingTicket, newTicket, ticketUser } from "./tickets.types";
 
 
 function usePostNewTicket() {
@@ -31,6 +31,25 @@ function usePutNewMessageTicket() {
     )
 }
 
+function usePutNewRating() {
+    const queryClient = useQueryClient();
+    return useMutation(async ({ticketId , rating} : newRatingTicket) => {
+        return apiRequest.put(`ticket/add-rating/${ticketId}`, {
+            rating : rating.toString()
+        })
+    },
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries(["getUserTicket"])
+            },
+            onError : (res) => {
+                console.log(res);
+
+            }
+        }
+    )
+}
+
 function useGetUserTicket() {
     return useQuery<ticketUser[]>(['getUserTicket'],
         async () => {
@@ -44,6 +63,7 @@ function useGetUserTicket() {
 
 export {
     useGetUserTicket,
+    usePutNewRating,
     usePostNewTicket,
     usePutNewMessageTicket
 

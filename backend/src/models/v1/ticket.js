@@ -82,6 +82,10 @@ const ticketSchema = new mongoose.Schema({
             required : true
         }
     }],
+    rating: {
+        type: String,
+        default: "0", // Default to 0
+    }
 }, {
     timestamps: true,
 });

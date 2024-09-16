@@ -8,8 +8,13 @@ export type newTicket = {
 
 
 export type newMessageTicket = {
-    message : string , 
-    ticketId : string
+    message: string,
+    ticketId: string
+}
+
+export type newRatingTicket = {
+    rating: number,
+    ticketId: string
 }
 
 
@@ -17,6 +22,7 @@ export type ticketUser = {
     _id: string;
     createdAt: Date;
     updatedAt: Date;
+    rating: string;
     department: "Support" | "Technical" | "HR" | "Management" | "Design" | "Other";
     description: string;
     status: "Open" | "Closed" | "Answered";
