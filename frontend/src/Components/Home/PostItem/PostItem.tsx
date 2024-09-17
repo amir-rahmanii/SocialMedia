@@ -8,16 +8,29 @@ import DateConverter from '../../../utils/DateConverter';
 import { useDeleteComment, useDeletePost, usePostAddComment, usePostLikeToggle, usePostSavePostToggle } from '../../../hooks/post/usePost';
 import toast from 'react-hot-toast';
 import Slider from "react-slick";
-import { AuthContext } from '../../../Context/AuthContext';
 import ShowDialogModal from '../../ShowDialogModal/ShowDialogModal';
 import { useGetMyUsersInfo, usePostFollowToggle } from '../../../hooks/user/useUser';
 import UpdatePost from '../UpdatePost/UpdatePost';
+import { AuthContext } from '../../../Context/AuthContext';
+
+
+type likesProps = {
+    createdAt: Date;
+    postid: string;
+    updatedAt: Date;
+    username: string;
+    userid: string;
+    _id: string;
+    userPicture: {
+        path: string;
+        filename: string;
+    };
+}[]
 
 
 
 function PostItem(props: PostItemProps) {
     const commentInput = useRef<HTMLInputElement>(null);
-    const authContext = useContext(AuthContext)
     const [liked, setLiked] = useState(false);
     const [saved, setSaved] = useState(false);
     const [comment, setComment] = useState("");
@@ -30,6 +43,9 @@ function PostItem(props: PostItemProps) {
     const [updatePost, setUpdatePost] = useState(false)
     const { mutate: followToggle, isSuccess: isSuccessFollowToggle, isError: isErrorFollowToggle, error: errorFollow, data: dataFollow } = usePostFollowToggle();
     const [followedListUser, setFollowedListUser] = useState<string[]>([])
+    const [listUserLiked, setListUserLiked] = useState<likesProps>(props.likes);
+    const [listUserSaved, setListUserSaved] = useState<string[]>(props.saved);
+
 
 
     const { mutate: addPostLikeToggle } = usePostLikeToggle();
@@ -37,7 +53,16 @@ function PostItem(props: PostItemProps) {
     const { mutate: addComment, isSuccess: isSuccessAddComment, isError: isErrorAddComment, error } = usePostAddComment();
     const { mutate: deleteComment, isSuccess: isSuccessDeleteComment, isError: isErroeDeleteComment, error: errorDeleteComment } = useDeleteComment();
     const { mutate: deletePost, isSuccess: isSuccessDeletePost, isError: isErrorDeletePost, error: errorDeletePost } = useDeletePost();
-    const { data: myInfo } = useGetMyUsersInfo();
+    const authContext = useContext(AuthContext);
+    const { data: myInfo , isSuccess : isSuccessMyInfo , isError : isErrorMyInfo} = useGetMyUsersInfo();
+
+    useEffect(() => {
+        if (isSuccessMyInfo) {
+            authContext?.setUser(myInfo);
+        } else if (isErrorMyInfo) {
+            toast.error("please try again later 😩")
+        }
+    }, [isSuccessMyInfo, isErrorMyInfo]);
 
     const deletePostHandler = (postId: string) => {
         let newObj = {
@@ -67,7 +92,7 @@ function PostItem(props: PostItemProps) {
         setTimeout(() => {
             setLikeEffect(false)
         }, 500)
-        if (props.likes.some(id => props.user.id === id.userid)) {
+        if (listUserLiked.some(id => props.user.id === id.userid)) {
             return;
         }
         handleLike(postid);
@@ -78,24 +103,74 @@ function PostItem(props: PostItemProps) {
             postid
         }
         addPostLikeToggle(newObjLikeToggle)
-        setLiked(prev => !prev)
+
+        if (authContext?.user) {
+            const newObjUpdateUserLiked = {
+                createdAt: new Date(),
+                postid: postid,
+                updatedAt: new Date(),
+                username: authContext?.user?.username,
+                userid: authContext?.user?._id,
+                _id: crypto.randomUUID(),
+                userPicture: {
+                    path: authContext?.user?.profilePicture.path,
+                    filename: authContext?.user?.profilePicture.filename
+                }
+            };
+
+
+            if (liked) {
+                let listUserLikedNew = [...listUserLiked]
+                let listUserLikedNewFilter = listUserLikedNew.filter(data => data.username !== authContext?.user?.username);
+                setListUserLiked(listUserLikedNewFilter)
+            } else {
+                setListUserLiked(prev => [...prev, newObjUpdateUserLiked])
+            }
+        } else {
+            toast.error("please try again 😩")
+        }
+
     }
+
+
 
     const handleSave = (postid: string) => {
         let newObjSaveToggle = {
             postid
         }
         addPostSaveToggle(newObjSaveToggle)
-        setSaved(prev => !prev)
+        if (authContext?.user) {
+            if (saved) {
+                let listUserSavedNew = [...listUserSaved]
+                let listUserSavedNewFilter = listUserSavedNew.filter(data => data !== authContext?.user?._id);
+                setListUserSaved(listUserSavedNewFilter)
+            } else {
+                setListUserSaved(prev => [...prev, authContext?.user?._id || ''])
+            }
+        }
+        else {
+            toast.error("please try again 😩")
+        }
     }
 
     //for show liked
     useEffect(() => {
-        let isLiked = props.likes.some(id => authContext?.user?._id === id.userid);
-        let isPosted = props.saved.some(id => authContext?.user?._id === id);
-        setLiked(isLiked);
-        setSaved(isPosted);
-    }, [])
+        if (authContext?.user) {
+            let isLiked = listUserLiked.some(data => authContext?.user?.username === data.username);
+            setLiked(isLiked);
+        } else {
+            toast.error("please try again 😩")
+        }
+    }, [listUserLiked])
+
+    useEffect(() => {
+        if (authContext?.user) {
+            let isPosted = listUserSaved.some(data => authContext?.user?._id === data);
+            setSaved(isPosted);
+        } else {
+            toast.error("please try again 😩")
+        }
+    }, [listUserSaved])
 
     const settings = {
         dots: true,
@@ -113,14 +188,16 @@ function PostItem(props: PostItemProps) {
     }
 
     const submitComment = (postid: string) => {
-        let newObjAddComment = {
-            postid,
-            title: "title",
-            content: comment
+        if(authContext?.user){
+            let newObjAddComment = {
+                postid,
+                title: "title",
+                content: comment
+            }
+    
+            addComment(newObjAddComment);
         }
-
-        addComment(newObjAddComment),
-            setComment('')
+        setComment('')
     }
 
     useEffect(() => {
@@ -164,7 +241,7 @@ function PostItem(props: PostItemProps) {
 
         if (isSuccessFollowToggle) {
             toast.success(dataFollow.data.message,
-                
+
             )
         }
     }, [isErrorFollowToggle, isSuccessFollowToggle, dataFollow])
@@ -195,10 +272,10 @@ function PostItem(props: PostItemProps) {
 
             {postDatailsToggle && (
                 <ShowDialogModal
-                isOpenShowLDialogModal={postDatailsToggle}
-                setisOpenShowLDialogModal={setPostDetailsToggle}
-                title="Post Deatils"
-                height='h-auto'
+                    isOpenShowLDialogModal={postDatailsToggle}
+                    setisOpenShowLDialogModal={setPostDetailsToggle}
+                    title="Post Deatils"
+                    height='h-auto'
                 >
                     <div className="flex flex-col w-full overflow-hidden rounded">
                         {(authContext?.user?._id === props.user.id) && (
@@ -222,7 +299,7 @@ function PostItem(props: PostItemProps) {
                 </ShowDialogModal>
             )}
 
-             {updatePost && (
+            {updatePost && (
                 <UpdatePost postInfo={props} updatePost={updatePost} setUpdatePost={setUpdatePost} />
             )}
 
@@ -276,7 +353,7 @@ function PostItem(props: PostItemProps) {
                         </div>
 
                         {/* likes  */}
-                        <button onClick={() => setIsOpenShowLiked(true)} className="font-semibold text-sm cursor-pointer text-left text-black dark:text-white">{props.likes.length} likes</button>
+                        <button onClick={() => setIsOpenShowLiked(true)} className="font-semibold text-sm cursor-pointer text-left text-black dark:text-white">{listUserLiked.length} likes</button>
 
                         {/* comment */}
                         <div className="flex flex-auto items-center space-x-1 text-black dark:text-white">
@@ -316,7 +393,7 @@ function PostItem(props: PostItemProps) {
                                                 <p className="text-sm line-clamp-3">{c.content}</p>
                                                 <span className="text-xs text-gray-500">{<DateConverter date={c.createdAt} />}</span>
                                             </div>
-                                            {(authContext?.user?.role === "ADMIN" || props.user.id === authContext?.user?._id || c.userid === authContext?.user?._id) && (
+                                            {(props.user.id === authContext?.user?._id || c.userid === authContext?.user?._id) && (
                                                 <button onClick={() => {
                                                     let objDeleteComment = {
                                                         commentid: c._id
@@ -380,14 +457,14 @@ function PostItem(props: PostItemProps) {
             {/* <ShowWhoLiked userLiked={props.likes} isOpenShowLiked={isOpenShowLiked} setIsOpenShowLiked={setIsOpenShowLiked} /> */}
 
             <ShowDialogModal
-            isOpenShowLDialogModal={isOpenShowLiked}
-            setisOpenShowLDialogModal={setIsOpenShowLiked}
-            title="List User Liked"
-            height='h-72'
+                isOpenShowLDialogModal={isOpenShowLiked}
+                setisOpenShowLDialogModal={setIsOpenShowLiked}
+                title="List User Liked"
+                height='h-72'
             >
-                {props.likes.length > 0 ? (
+                {listUserLiked.length > 0 ? (
                     <div className='py-3 px-4 flex flex-col'>
-                        {props.likes.map((data, index) => (
+                        {listUserLiked.map((data, index) => (
                             <div key={index} className='flex items-center justify-between border-b dark:border-gray-300/20 border-gray-300 p-2'>
                                 <div className='flex items-center gap-2'>
                                     <Link className='shrink-0' to={`/profile/${data.userid}`}>
@@ -399,7 +476,7 @@ function PostItem(props: PostItemProps) {
                                     </div>
                                 </div>
                                 <div className='ml-5'>
-                                    {myInfo?._id !== data.userid && (
+                                    {authContext?.user?._id !== data.userid && (
                                         <button
                                             onClick={() => {
                                                 followToggle(data.userid);

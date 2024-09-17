@@ -6,7 +6,7 @@ export type postid = {
 export type comment = {
     postid: string,
     title: string,
-    content: string
+    content: string,
 }
 
 export type deletecomment = {

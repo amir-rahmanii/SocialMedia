@@ -501,6 +501,31 @@ exports.updateUserProfile = async (req, res) => {
       }
     );
 
+    // After updating profile picture in other collections
+    await ticketModel.updateMany(
+      { "user.userId": userId },
+      {
+        $set: {
+          "user.profilePicture.path": filePath,
+          "user.profilePicture.filename": file.filename,
+        },
+      }
+    );
+
+    // Update profile picture in ticket responses
+    await ticketModel.updateMany(
+      { "responses.senderId": userId },
+      {
+        $set: {
+          "responses.$[elem].senderProfilePicture.path": filePath,
+          "responses.$[elem].senderProfilePicture.filename": file.filename,
+        },
+      },
+      {
+        arrayFilters: [{ "elem.senderId": userId }],
+      }
+    );
+
     res.status(200).json({ message: "Profile picture updated", user: updatedUser });
   } catch (error) {
     res.status(error.statusCode || 500).json({ message: error.message });

@@ -122,7 +122,6 @@ function SideBarLeft() {
                             onChange={(e) => {
                                 const isChecked = (e.target as HTMLInputElement).checked;
                                 setTheme((prev) => !prev);
-                                console.log(isChecked);
                                 if (isChecked) {
                                     localStorage.setItem("theme", "dark");
                                     document.documentElement.classList.remove("light");

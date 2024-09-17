@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import MetaData from '../../Components/MetaData/MetaData'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { changeProfilePicture, postsIconFill, postsIconOutline, postUploadOutline, reelsIcon, savedIconFill, savedIconOutline, settingsIcon, taggedIcon } from '../../Components/SvgIcon/SvgIcon'
@@ -33,15 +33,19 @@ function Profile() {
 
 
 
-  const { userid } = useParams();
-  const { data: mySavedPost, isLoading: isLoadingMySavedPost } = useGetMySavedPost();
+  const { userid } = useParams<string>();
   const { mutate: followToggle, isSuccess: isSuccessFollowToggle, isError: isErrorFollowToggle, error: errorFollow, data: dataFollow } = usePostFollowToggle();
+  const { data: mySavedPost, isLoading: isLoadingMySavedPost } = useGetMySavedPost();
   //this is for all users data
-  const { data: informationUserData, isLoading: isLoadingUserData, isSuccess: isSucessGetUserData, refetch: refetchGerUserData } = useGetUserData(userid as string);
-  const { data: myInfo } = useGetMyUsersInfo();
+  const { data: informationUserData, isLoading: isLoadingUserData, isSuccess: isSucessGetUserData , refetch: refetchUserData  } = useGetUserData(userid || "");
+  const { data: myInfo} = useGetMyUsersInfo();
 
   const navigate = useNavigate(); // Initialize useHistory
   const authContext = useContext(AuthContext)
+
+
+ 
+
 
   // Function to handle story click and update URL with storyid as a query parameter
   const handleStoryClick = (storyId: string) => {
@@ -50,13 +54,19 @@ function Profile() {
     navigate({ search: searchParams.toString() });
   };
 
+  const refetchUserDataCallback = useCallback(() => {
+    if (userid) {
+      refetchUserData(); 
+      setSavedTab(false);
+      setIsShowFollowers(false);
+      setIsShowFollowing(false);
+    }
+  }, [userid, refetchUserData]);
 
+  
   useEffect(() => {
-    setSavedTab(false)
-    setIsShowFollowers(false)
-    setIsShowFollowing(false)
-    refetchGerUserData()
-  }, [userid])
+    refetchUserDataCallback();
+  }, [refetchUserDataCallback]);
 
 
   useEffect(() => {
@@ -239,7 +249,7 @@ function Profile() {
                         {informationUserData?.user.followers.length > 0 ? (
                           <div className='py-3 px-4 flex flex-col '>
                             {informationUserData?.user.followers?.map((data, index) => (
-                              <div className='flex justify-between items-center'>
+                              <div key={index} className='flex justify-between items-center'>
                                 <div key={index} className='flex items-center gap-2 p-2'>
                                   <Link to={`/profile/${data.userId}`}>
                                     <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/${data.profilePicture.path}`} alt="avatar" />
@@ -288,7 +298,7 @@ function Profile() {
                       {informationUserData?.user.following.length > 0 ? (
                         <div className='py-3 px-4 flex flex-col '>
                           {informationUserData?.user.following?.map((data, index) => (
-                            <div className='flex justify-between items-center'>
+                            <div key={data._id} className='flex justify-between items-center'>
                               <div key={index} className='flex items-center gap-2 p-2'>
                                 <Link to={`/profile/${data.userId}`}>
                                   <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/${data.profilePicture.path}`} alt="avatar" />

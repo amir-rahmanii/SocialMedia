@@ -49,9 +49,6 @@ function useGetUserData(userId: string) {
             const response = await apiRequest.get(`users/user-allData/${userId}`);
             return response.data
         },
-        {
-            enabled: !!userId, 
-        }
     )
 }
 

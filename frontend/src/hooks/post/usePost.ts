@@ -91,12 +91,12 @@ function usePostLikeToggle() {
         return apiRequest.post(`posts/like-toggle`, postid)
     },
         {
-            onSuccess: () => {
-                queryClient.invalidateQueries(["getUserData"]);
-                queryClient.invalidateQueries(["AllPostAllUsers"]);
-                queryClient.invalidateQueries(["mySavedPost"]);
-                queryClient.invalidateQueries(["searchPosts"]);
-            },
+            // onSuccess: () => {
+            //     queryClient.invalidateQueries(["getUserData"]);
+            //     queryClient.invalidateQueries(["AllPostAllUsers"]);
+            //     queryClient.invalidateQueries(["mySavedPost"]);
+            //     queryClient.invalidateQueries(["searchPosts"]);
+            // },
         }
     )
 }
@@ -106,33 +106,34 @@ function usePostSavePostToggle() {
     return useMutation(async (postid: postid) => {
         return apiRequest.post(`posts/save-post-toggle`, postid)
     },
-        {
-            onSuccess: () => {
-                queryClient.invalidateQueries(["getUserData"]);
-                queryClient.invalidateQueries(["AllPostAllUsers"]);
-                queryClient.invalidateQueries(["mySavedPost"]);
-                queryClient.invalidateQueries(["searchPosts"]);
-            }
-        }
+        // {
+        //     onSuccess: () => {
+        //         queryClient.invalidateQueries(["getUserData"]);
+        //         queryClient.invalidateQueries(["AllPostAllUsers"]);
+        //         queryClient.invalidateQueries(["mySavedPost"]);
+        //         queryClient.invalidateQueries(["searchPosts"]);
+        //     }
+        // }
     )
 }
 
 
 function usePostAddComment() {
     const queryClient = useQueryClient();
-    return useMutation(async (comment: comment) => {
-        return apiRequest.post(`posts/add-comment`, comment)
-    },
-        {
-            onSuccess: () => {
-                queryClient.invalidateQueries(["getUserData"]);
-                queryClient.invalidateQueries(["AllPostAllUsers"]);
-                queryClient.invalidateQueries(["mySavedPost"]);
-                queryClient.invalidateQueries(["searchPosts"]);
-            }
-        }
-    )
-}
+    return useMutation(
+      async (comment: comment) => {
+        return apiRequest.post(`posts/add-comment`, comment);
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["getUserData"]); 
+          queryClient.invalidateQueries(["AllPostAllUsers"]);
+          queryClient.invalidateQueries(["mySavedPost"]);
+          queryClient.invalidateQueries(["searchPosts"]);
+        },
+      }
+    );
+  }
 
 
 function useDeleteComment() {

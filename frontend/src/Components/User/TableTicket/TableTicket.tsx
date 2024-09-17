@@ -77,7 +77,7 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
                     setAnswerInfo((prev) => [
                         ...(prev || []),
                         {
-                            senderId: myInfo._id,  // اینجا مطمئن هستید که myInfo همیشه وجود دارد
+                            senderId: myInfo._id,  
                             senderUsername: myInfo.username,
                             message: message,
                             responseDate: new Date(),

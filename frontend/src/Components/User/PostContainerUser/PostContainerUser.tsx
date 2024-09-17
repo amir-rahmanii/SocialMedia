@@ -7,7 +7,7 @@ import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@m
 
 type PostContainerUserProps = {
     posts: PostItemProps[],
-    showCol: boolean
+    showCol: boolean,
 };
 
 function PostContainerUser({ showCol, posts }: PostContainerUserProps) {
