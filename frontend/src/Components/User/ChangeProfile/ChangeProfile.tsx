@@ -7,6 +7,7 @@ import usePostData from '../../../hooks/usePostData';
 import { useQueryClient } from 'react-query';
 import useGetData from '../../../hooks/useGetData';
 import { userInformation } from '../../../hooks/user/user.types';
+import { useParams } from 'react-router-dom';
 
 
 type ChangeProfileProps = {
@@ -22,13 +23,15 @@ function ChangeProfile({ isShowChangeProfile, setIsShowChangeProfile }: ChangePr
         "users/user-information"
     );
 
+    const { userId } = useParams<string>();
+
 
 
     const { mutate: updateProfilePicture, isLoading } = usePostData('users/update-profile-picture'
         , 'Profile picture updated successfuly!'
         , true,
         () => {
-            queryClient.invalidateQueries(["getUserData", myInfo?._id]);
+            queryClient.invalidateQueries(["getUserData" , userId]);
             queryClient.invalidateQueries(["getMyUserInfo"]);
             setPostImage(null);
             setPostPreview(null);

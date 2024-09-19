@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {  useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Dialog } from '@mui/material';
 import { closeIcon, deleteIcon, photoIcon } from '../../SvgIcon/SvgIcon';
-import { usePostCreateStory } from '../../../hooks/story/useStory';
 import IsLoaderBtn from '../../IsLoaderBtn/IsLoaderBtn';
+import usePostData from '../../../hooks/usePostData';
+import { useQueryClient } from 'react-query';
 
 type AddNewStoryProps = {
     showAddStory: boolean;
@@ -15,7 +16,20 @@ function AddNewStory({ showAddStory, setShowAddStory }: AddNewStoryProps) {
     const [postPreview, setPostPreview] = useState<string | null>(null);
     const [isCameraActive, setIsCameraActive] = useState(false);
     const videoRef = useRef<HTMLVideoElement | null>(null);
-    const { mutate: addNewStory, isLoading, isError, error, isSuccess } = usePostCreateStory();
+
+    const queryClient = useQueryClient();
+    const { mutate: addNewStory, isLoading } = usePostData(
+        'story/createStory',
+        "Story Uploaded successfuly",
+        false,
+        () => {
+            setPostImage(null);
+            setPostPreview(null);
+            setShowAddStory(false);
+            queryClient.invalidateQueries(["getAllStories"]);
+        },
+        true
+    );
 
     const handleStartCamera = async () => {
         try {
@@ -55,26 +69,6 @@ function AddNewStory({ showAddStory, setShowAddStory }: AddNewStoryProps) {
         }
     };
 
-
-    useEffect(() => {
-        if (isError) {
-            if (error && (error as any).response) {
-                toast.error((error as any).response.data.error.message
-                )
-            }
-        }
-
-        if (isSuccess) {
-            toast.success("Story Uploaded successfuly",
-                
-            )
-            setPostImage(null)
-            setPostPreview(null)
-            setShowAddStory(false)
-        }
-    }, [isError, isSuccess])
-
-
     return (
         <Dialog open={showAddStory} onClose={() => setShowAddStory(false)} maxWidth='xl'>
             <div className="flex flex-col max-w-4xl border dark:border-gray-300/20 border-gray-300 ">
@@ -100,7 +94,7 @@ function AddNewStory({ showAddStory, setShowAddStory }: AddNewStoryProps) {
 
                     {!postPreview && (
                         <>
-                            {!isCameraActive  && (
+                            {!isCameraActive && (
                                 <button onClick={handleStartCamera} className="my-6 bg-blue-500 text-white py-2 px-4 rounded">
                                     Open Camera
                                 </button>

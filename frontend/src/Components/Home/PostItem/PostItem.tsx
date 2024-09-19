@@ -1,12 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { commentIcon, deleteIcon, editPostIcon, emojiIcon, likeIconOutline, moreIcons, saveIconFill, saveIconOutline, shareIcon } from '../../SvgIcon/SvgIcon'
 import { likeFill } from '../../SvgIcon/SvgIcon';
 import EmojiPicker from '@emoji-mart/react';
-import { PostItemProps } from '../PostsContainer/PostsContainer';
 import DateConverter from '../../../utils/DateConverter';
-import { useDeleteComment, useDeletePost, usePostAddComment, usePostLikeToggle, usePostSavePostToggle } from '../../../hooks/post/usePost';
-import toast from 'react-hot-toast';
 import Slider from "react-slick";
 import ShowDialogModal from '../../ShowDialogModal/ShowDialogModal';
 import UpdatePost from '../UpdatePost/UpdatePost';
@@ -14,11 +11,22 @@ import { useQueryClient } from 'react-query';
 import usePostData from '../../../hooks/usePostData';
 import useGetData from '../../../hooks/useGetData';
 import { userInformation } from '../../../hooks/user/user.types';
+import { Post } from '../../../hooks/post/post.types';
+import useDeleteData from '../../../hooks/useDeleteData';
+
+
+interface PostDeleteData {
+    postid: string;
+}
+
+// Define the type for comment deletion
+interface CommentDeleteData {
+    commentid: string;
+}
 
 
 
-
-const PostItem: React.FC<PostItemProps> = (props) => {
+const PostItem: React.FC<Post> = (props) => {
 
     const commentInput = useRef<HTMLInputElement>(null);
     const [liked, setLiked] = useState(false);
@@ -33,6 +41,7 @@ const PostItem: React.FC<PostItemProps> = (props) => {
     const [updatePost, setUpdatePost] = useState(false)
     const [followedListUser, setFollowedListUser] = useState<string[]>([])
 
+    const { userId } = useParams<string>();
 
     const queryClient = useQueryClient();
     const { mutate: followToggle } = usePostData("users/followToggle"
@@ -45,41 +54,81 @@ const PostItem: React.FC<PostItemProps> = (props) => {
 
 
 
-    const { mutate: addPostLikeToggle } = usePostLikeToggle();
-    const { mutate: addPostSaveToggle } = usePostSavePostToggle();
-    const { mutate: addComment, isSuccess: isSuccessAddComment, isError: isErrorAddComment, error } = usePostAddComment(props.user.id);
-    const { mutate: deleteComment, isSuccess: isSuccessDeleteComment, isError: isErroeDeleteComment, error: errorDeleteComment } = useDeleteComment();
-    const { mutate: deletePost, isSuccess: isSuccessDeletePost, isError: isErrorDeletePost, error: errorDeletePost } = useDeletePost();
-  
-    const { data: myInfo , isLoading : isLoadingMyInfo , isSuccess : isSuccessMyInfo} = useGetData<userInformation>(
+    const { mutate: addPostLikeToggle } = usePostData(
+        'posts/like-toggle',
+        "post liked/unLiked successfuly!",
+        false,
+        () => {
+            queryClient.invalidateQueries(["getUserData" , userId]);
+            queryClient.invalidateQueries(["AllPostAllUsers"]);
+            queryClient.invalidateQueries(["mySavedPost"]);
+            queryClient.invalidateQueries(["searchPosts"]);
+        }
+    );
+
+    const { mutate: addPostSaveToggle } = usePostData(
+        'posts/save-post-toggle',
+        "post saved/unSaved successfuly!",
+        false,
+        () => {
+            queryClient.invalidateQueries(["getUserData" , userId]);
+            queryClient.invalidateQueries(["mySavedPost"]);
+        }
+    );
+
+
+    const { mutate: addComment } = usePostData(
+        'posts/add-comment',
+        'Comment Add successfuly',
+        false,
+        () => {
+            setComment('');
+            queryClient.invalidateQueries(["getUserData" , userId]);
+            queryClient.invalidateQueries(["AllPostAllUsers"]);
+            queryClient.invalidateQueries(["mySavedPost"]);
+            queryClient.invalidateQueries(["searchPosts"]);
+        }
+    );
+
+
+    const { mutate: deleteComment } = useDeleteData<CommentDeleteData>(
+        `posts/delete-comment`,
+        "Comment Deleted successfully",
+        () => {
+            queryClient.invalidateQueries(["getUserData" , userId]);
+            queryClient.invalidateQueries(["AllPostAllUsers"]);
+            queryClient.invalidateQueries(["mySavedPost"]);
+            queryClient.invalidateQueries(["searchPosts"]);
+        }
+    );
+
+    const { mutate: deletePost } = useDeleteData<PostDeleteData>(
+        `posts/delete-post`,
+        "Post Deleted successfully",
+        () => {
+            queryClient.invalidateQueries(["getUserData" , userId]);
+            queryClient.invalidateQueries(["AllPostAllUsers"]);
+            queryClient.invalidateQueries(["mySavedPost"]);
+            queryClient.invalidateQueries(["searchPosts"]);
+        }
+    );
+
+
+
+    const { data: myInfo, isSuccess: isSuccessMyInfo } = useGetData<userInformation>(
         ["getMyUserInfo"],
         "users/user-information"
     );
 
 
 
-    const deletePostHandler = (postId: string) => {
-        let newObj = {
-            postid: postId
+    const deletePostHandler = (postid: string) => {
+        const postIdDelete = {
+            postid
         }
-        deletePost(newObj)
+        deletePost(postIdDelete)
     }
 
-
-    useEffect(() => {
-        if (isErrorDeletePost) {
-            if (errorDeletePost && (errorDeletePost as any).response) {
-                toast.error((errorDeletePost as any).response.data.error.message
-                )
-            }
-        }
-
-        if (isSuccessDeletePost) {
-            toast.success("Post removed successfuly",
-
-            )
-        }
-    }, [isErrorDeletePost, isSuccessDeletePost])
 
     const setLike = (postid: string) => {
         setLikeEffect(true)
@@ -147,41 +196,9 @@ const PostItem: React.FC<PostItemProps> = (props) => {
             content: comment
         };
         addComment(newObjAddComment);
-        setComment('');
-
     };
 
 
-    useEffect(() => {
-        if (isErrorAddComment) {
-            if (error && (error as any).response) {
-                toast.error((error as any).response.data.error.message
-                )
-            }
-        }
-
-        if (isSuccessAddComment) {
-            toast.success("Comment Add successfuly",
-
-            )
-        }
-    }, [isErrorAddComment, isSuccessAddComment])
-
-
-    useEffect(() => {
-        if (isErroeDeleteComment) {
-            if (errorDeleteComment && (errorDeleteComment as any).response) {
-                toast.error((errorDeleteComment as any).response.data.error.message
-                )
-            }
-        }
-
-        if (isSuccessDeleteComment) {
-            toast.success("Comment removed successfuly",
-
-            )
-        }
-    }, [isErroeDeleteComment, isSuccessDeleteComment])
 
 
 
@@ -336,10 +353,10 @@ const PostItem: React.FC<PostItemProps> = (props) => {
                                             </div>
                                             {(props.user.id === myInfo?._id || c.userid === myInfo?._id) && (
                                                 <button onClick={() => {
-                                                    let objDeleteComment = {
+                                                    const commentIdDelete = {
                                                         commentid: c._id
                                                     }
-                                                    deleteComment(objDeleteComment)
+                                                    deleteComment(commentIdDelete)
                                                 }}>
                                                     <div className='w-4 h-4 text-black dark:text-white'>
                                                         {deleteIcon}
@@ -421,7 +438,7 @@ const PostItem: React.FC<PostItemProps> = (props) => {
                                         <button
                                             onClick={() => {
                                                 const objFollow = {
-                                                    userIdToFollow : data.userid
+                                                    userIdToFollow: data.userid
                                                 }
                                                 followToggle(objFollow);
                                             }}

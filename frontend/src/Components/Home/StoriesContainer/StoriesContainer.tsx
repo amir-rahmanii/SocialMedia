@@ -1,7 +1,6 @@
 import Slider from "react-slick";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { useGetAllStories } from "../../../hooks/story/useStory";
 import { useState } from "react";
 import AddNewStory from "../AddNewStory/AddNewStory";
 import { plusIcon } from "../../SvgIcon/SvgIcon";
@@ -9,10 +8,15 @@ import StoryContent from "./StoryContent";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { userInformation } from "../../../hooks/user/user.types";
 import useGetData from "../../../hooks/useGetData";
+import { allStories } from "../../../hooks/story/story.types";
 
 const StoriesContainer = () => {
 
-    const { data: allStories, isSuccess } = useGetAllStories();
+    const { data: allStories, isSuccess } = useGetData<allStories>(
+        ['getAllStories'],
+        "story/get-all-stories"
+    );
+
     const [showAddStory, setShowAddStory] = useState(false);
     const [isShowStoryContent, setIsShowStoryContent] = useState(false);
 

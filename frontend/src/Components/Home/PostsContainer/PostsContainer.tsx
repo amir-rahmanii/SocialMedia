@@ -2,57 +2,64 @@ import React, { useState } from 'react'
 import StoriesContainer from '../StoriesContainer/StoriesContainer'
 import SkeletonPost from '../../SkeletonPost/SkeletonPost'
 import PostItem from '../PostItem/PostItem';
-import { useGetAllPostAllUsers } from '../../../hooks/post/usePost';
-import PostItemProps from '../PostItem/PostItem'
 import NewPost from '../NewPost/NewPost';
 import { postUploadOutline } from '../../SvgIcon/SvgIcon';
+import useGetData from '../../../hooks/useGetData';
+import { Post } from '../../../hooks/post/post.types';
 
-export type PostItemProps = {
-    _id: string,
-    saved: string[],
-    comments: {
-        title: string,
-        content: string,
-        createdAt: Date,
-        postid: string,
-        updatedAt: Date,
-        userid: string,
-        username: string,
-        _id: string,
-        userPicture: { path: string, filename: string }
-    }[],
-    description: string,
-    hashtags: string,
-    likes: {
-        createdAt: Date,
-        postid: string,
-        updatedAt: Date,
-        username: string,
-        userid: string,
-        _id: string,
-        userPicture: { path: string, filename: string }
-    }[],
-    media: { _id: string, path: string, filename: string }[],
-    title: string,
-    user: {
-        email: string,
-        id: string,
-        isban: boolean,
-        name: string,
-        role: "ADMIN" | "USER",
-        username: string,
-        userPicture: { path: string, filename: string }
-    },
-    createdAt: Date,
-    updatedAt: Date,
-    isSaved: boolean
-}
+// export type PostItemProps = {
+//     _id: string,
+//     saved: string[],
+//     comments: {
+//         title: string,
+//         content: string,
+//         createdAt: Date,
+//         postid: string,
+//         updatedAt: Date,
+//         userid: string,
+//         username: string,
+//         _id: string,
+//         userPicture: { path: string, filename: string }
+//     }[],
+//     description: string,
+//     hashtags: string,
+//     likes: {
+//         createdAt: Date,
+//         postid: string,
+//         updatedAt: Date,
+//         username: string,
+//         userid: string,
+//         _id: string,
+//         userPicture: { path: string, filename: string }
+//     }[],
+//     media: { _id: string, path: string, filename: string }[],
+//     title: string,
+//     user: {
+//         email: string,
+//         id: string,
+//         isban: boolean,
+//         name: string,
+//         role: "ADMIN" | "USER",
+//         username: string,
+//         userPicture: { path: string, filename: string }
+//     },
+//     createdAt: Date,
+//     updatedAt: Date,
+//     isSaved: boolean
+// }
 
 
 
 function PostsContainer() {
 
-    const { data, isLoading } = useGetAllPostAllUsers();
+    const { data, isLoading } = useGetData<Post[]>(
+        ['AllPostAllUsers'],
+        'posts/get-all-posts'
+    );
+
+  
+    
+
     const [newPost, setNewPost] = useState(false);
 
     return (
@@ -67,9 +74,9 @@ function PostsContainer() {
                         Array(5).fill("").map((el, i) => (<SkeletonPost key={i} />))
                     ) : (
                         <>
-                            {data?.response?.allPosts.length > 0 ? (
+                            {data && data?.length > 0 ? (
                                 <div className="flex flex-col space-y-4">
-                                    {data.response.allPosts.map((post: PostItemProps) => (
+                                    {data?.map((post) => (
                                         <PostItem key={post._id} {...post} />
                                     ))}
                                 </div>

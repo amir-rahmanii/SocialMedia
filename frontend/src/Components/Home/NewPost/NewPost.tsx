@@ -1,16 +1,18 @@
 import { Dialog, TextField } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import toast from 'react-hot-toast';
 import { emojiIcon } from '../../SvgIcon/SvgIcon';
 import EmojiPicker from '@emoji-mart/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import newPostSchema from '../../../Validation/newPost';
-import { usePostCreatePost } from '../../../hooks/post/usePost';
 import IsLoaderBtn from '../../IsLoaderBtn/IsLoaderBtn';
 import DialogHeader from '../../ShowDialogModal/DialogHeader/DialogHeader';
 import useGetData from '../../../hooks/useGetData';
 import { userInformation } from '../../../hooks/user/user.types';
+import usePostData from '../../../hooks/usePostData';
+import { useQueryClient } from 'react-query';
+import { useParams } from 'react-router-dom';
 
 
 type NewPostProps = {
@@ -33,46 +35,25 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
         ["getMyUserInfo"],
         "users/user-information"
     );
+    const { userId } = useParams<string>();
 
-
-
-    const { mutate: addNewPost, isLoading, isError, error, isSuccess } = usePostCreatePost();
-
-
-    useEffect(() => {
-        if (isError) {
-            if (error && (error as any).response) {
-                toast.error((error as any).response.data.error.message,
-                    {
-                        icon: '❌',
-                        style: {
-                            borderRadius: '10px',
-                            background: '#333',
-                            color: '#fff',
-                        },
-                    }
-                )
-            }
-        }
-
-        if (isSuccess) {
-            toast.success("Post Created successfuly",
-                {
-                    icon: '✅',
-                    style: {
-                        borderRadius: '10px',
-                        background: '#333',
-                        color: '#fff',
-                    },
-                }
-            )
+    const queryClient = useQueryClient();
+    const { mutate: addNewPost, isLoading } = usePostData(
+        'posts/create-post',
+        'Post Created successfuly',
+        false,
+        () => {
             setPostImage([])
             setPostPreview([])
             setdescription('')
             setNewPost(false)
             reset();
-        }
-    }, [isError, isSuccess])
+            queryClient.invalidateQueries(["getUserData" , userId]);
+            queryClient.invalidateQueries(["AllPostAllUsers"]);
+        },
+        true
+    );
+
 
 
     const handleDragChange = () => {

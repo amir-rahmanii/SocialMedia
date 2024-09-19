@@ -322,7 +322,9 @@ function Inbox() {
                                     </React.Fragment>
                                 ))
                             ) : (
-                                <SpinLoader />
+                                <div className='text-2xl'>
+                                    Sorry, no messages have been registered yet 😩 
+                                </div>
                             )}
                             {/* {isTyping &&
                             <>

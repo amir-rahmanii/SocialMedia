@@ -3,7 +3,6 @@ import MetaData from '../../Components/MetaData/MetaData'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { changeProfilePicture, postsIconFill, postsIconOutline, postUploadOutline, reelsIcon, savedIconFill, savedIconOutline, settingsIcon, taggedIcon } from '../../Components/SvgIcon/SvgIcon'
 import Header from '../../Parts/Header/Header'
-import { useGetMySavedPost } from '../../hooks/post/usePost'
 import PostContainerUser from '../../Components/User/PostContainerUser/PostContainerUser'
 import SpinLoader from '../../Components/SpinLoader/SpinLoader'
 import NewPost from '../../Components/Home/NewPost/NewPost'
@@ -17,6 +16,7 @@ import { useQueryClient } from 'react-query'
 import usePostData from '../../hooks/usePostData'
 import useGetData from '../../hooks/useGetData'
 import { profile, userInformation } from '../../hooks/user/user.types'
+import { Post } from '../../hooks/post/post.types'
 
 
 
@@ -49,15 +49,17 @@ function Profile() {
     }
   );
 
-  const { data: mySavedPost, isLoading: isLoadingMySavedPost } = useGetMySavedPost();
+  const { data: mySavedPost, isLoading: isLoadingMySavedPost } = useGetData<Post[]>(
+    ['mySavedPost'],
+    'posts/my-save-posts'
+  );
+
   //this is for all users data
   const { data: informationUserData, isLoading: isLoadingUserData, isSuccess: isSucessGetUserData, isError } = useGetData<profile>(
     ['getUserData', userId as string],
     `users/user-allData/${userId}`,
-    {
-      enabled: !!userId,
-    }
   );
+
 
   const { data: myInfo, isLoading: isLoadingMyInfo, isSuccess: isSuccessMyInfo } = useGetData<userInformation>(
     ["getMyUserInfo"],
@@ -85,6 +87,8 @@ function Profile() {
       setIsShowFollowing(false);
     }
   }, [userId]);
+
+
 
 
 
@@ -388,8 +392,8 @@ function Profile() {
               {savedTab ? (
                 <>
                   {isLoadingMySavedPost ? <SpinLoader /> : (
-                    (mySavedPost && mySavedPost.response && mySavedPost.response.myPosts.length > 0) ? (
-                      <PostContainerUser showCol={true} posts={mySavedPost.response.myPosts} />
+                    (mySavedPost && mySavedPost.length > 0) ? (
+                      <PostContainerUser showCol={true} posts={mySavedPost} />
                     ) : (
                       <div className='text-black dark:text-white text-center mt-2 p-4 text-xl rounded'>
                         Sorry, no posts have been Saved yet😩

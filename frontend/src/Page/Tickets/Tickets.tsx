@@ -106,8 +106,8 @@ function Tickets() {
 
         {
             orderTicket === "NTO" ?
-                setFilteredData(filteredTickets?.reverse() || [])
-                : setFilteredData(filteredTickets || [])
+                setFilteredData(filteredTickets || [])
+                : setFilteredData(filteredTickets?.reverse()  || [])
         }
 
         // close filter

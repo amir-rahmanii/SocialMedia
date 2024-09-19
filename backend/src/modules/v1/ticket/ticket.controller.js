@@ -44,19 +44,21 @@ exports.getUserTicket = async (req, res) => {
 
     console.log(userId);
 
-    // Fetch the user's tickets
-    const tickets = await Ticket.find({ "user.userId": userId });
+    // Fetch the user's tickets and sort by creation date (newest first)
+    const tickets = await Ticket.find({ "user.userId": userId })
+      .sort({ createdAt: -1 }); // Sorting by createdAt field in descending order (-1)
 
     // If no tickets are found, return an empty array with status 200
     if (!tickets || tickets.length === 0) {
       return res.status(200).json([]);
     }
 
-    res.status(200).json(tickets.reverse());
+    res.status(200).json(tickets);
   } catch (error) {
     res.status(500).json({ message: "An error occurred." });
   }
 };
+
 
 
 

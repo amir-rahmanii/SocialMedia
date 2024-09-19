@@ -29,8 +29,8 @@ function AddTicket() {
         'ticket sent successfuly!',
         false,
         () => {
-            queryClient.invalidateQueries(["getUserTicket"]);
             reset();
+            queryClient.invalidateQueries(["getUserTicket"]);
         }
     );
 

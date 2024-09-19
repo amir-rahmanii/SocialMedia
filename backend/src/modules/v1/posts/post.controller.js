@@ -62,15 +62,16 @@ exports.getAllPosts = async (req, res) => {
     // Update all posts to set isSaved to false
     await postModel.updateMany({}, { isSaved: false });
 
-    // Retrieve all posts with isSaved set to false
+    // Retrieve all posts with isSaved set to false and sort by creation date (newest first)
     const allPosts = await postModel
       .find({}, { __v: 0 })
       .populate("comments", "-__v")
-      .populate("likes", "-__v");
+      .populate("likes", "-__v")
+      .sort({ createdAt: -1 }); // Sorting by createdAt field in descending order (-1)
 
-    successResponse(res, 200, { allPosts });
+    res.status(200).json(allPosts); // Directly send the array of posts
   } catch (error) {
-    errorResponse(res, 500, { message: error.message, error });
+    res.status(500).json({ message: error.message, error });
   }
 };
 
@@ -118,7 +119,7 @@ exports.searchPosts = async (req, res) => {
       post.saved = post.saved.map(userId => userId.toString());
     });
 
-    successResponse(res, 200, { resultSearch });
+    res.status(200).json(resultSearch);
   } catch (error) {
     errorResponse(res, error.statusCode, { message: error.message });
   }
@@ -138,6 +139,7 @@ exports.deletePost = async (req, res) => {
     errorResponse(res, error.statusCode, { message: error.message });
   }
 };
+
 
 exports.updatePost = async (req, res) => {
   try {
@@ -360,17 +362,24 @@ exports.addComment = async (req, res) => {
 
 exports.deleteComment = async (req, res) => {
   try {
-    const { commentid } = req.body;
+    const { commentid } = req.body; // دریافت commentId از body
+
+    // اعتبارسنجی و سایر پردازش‌ها
     await postValidator.deleteCommentPostValidator(req, res);
+
+    // حذف کامنت
     const resultDelete = await commentModel.deleteOne({ _id: commentid });
+
     if (resultDelete.deletedCount < 1) {
-      throwError("comment is not found", 404);
+      throwError("Comment not found", 404);
     }
-    successResponse(res, 201, { message: "comment deleted" });
+
+    successResponse(res, 200, { message: "Comment deleted successfully" });
   } catch (error) {
-    errorResponse(res, error.statusCode, { message: error.message });
+    errorResponse(res, error.statusCode || 500, { message: error.message });
   }
 };
+
 
 exports.mySavePosts = async (req, res) => {
   try {
@@ -394,7 +403,7 @@ exports.mySavePosts = async (req, res) => {
       }
     }
 
-    successResponse(res, 200, { myPosts });
+    res.status(200).json(myPosts);
   } catch (error) {
     errorResponse(res, 500, { message: error.message });
   }

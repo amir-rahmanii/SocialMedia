@@ -1,23 +1,25 @@
 import { Dialog, TextField } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import { PostItemProps } from '../PostsContainer/PostsContainer'
+import React, {  useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import newPostSchema from '../../../Validation/newPost'
 import EmojiPicker from '@emoji-mart/react'
 import toast from 'react-hot-toast'
 import { emojiIcon } from '../../SvgIcon/SvgIcon'
-import { usePutUpdatePost } from '../../../hooks/post/usePost'
 import IsLoaderBtn from '../../IsLoaderBtn/IsLoaderBtn'
 import DialogHeader from '../../ShowDialogModal/DialogHeader/DialogHeader'
 import useGetData from '../../../hooks/useGetData'
 import { userInformation } from '../../../hooks/user/user.types'
+import usePostData from '../../../hooks/usePostData'
+import { useQueryClient } from 'react-query'
+import { Post } from '../../../hooks/post/post.types'
+import { useParams } from 'react-router-dom'
 
 
 
 
 type UpdatePostProps = {
-    postInfo: PostItemProps,
+    postInfo: Post,
     updatePost: boolean,
     setUpdatePost: (value: boolean) => void,
 }
@@ -31,8 +33,24 @@ function UpdatePost({ postInfo, updatePost, setUpdatePost }: UpdatePostProps) {
     const [description, setdescription] = useState(postInfo.description);
     const [showEmojis, setShowEmojis] = useState(false);
     // const [dragged, setDragged] = useState(false);
-
-    const { mutate: updatedPost, isLoading, isError, error, isSuccess } = usePutUpdatePost();
+    const { userId } = useParams<string>();
+    const queryClient = useQueryClient();
+    const { mutate: updatedPost, isLoading} = usePostData(
+        'posts/update-post',
+        "Updated Post successfuly!",
+        true,
+        () => {
+            setPostImage([])
+            setPostPreview([])
+            setdescription('')
+            setUpdatePost(false)
+            reset();
+            queryClient.invalidateQueries(["getUserData" , userId]);
+            queryClient.invalidateQueries(["AllPostAllUsers"]);
+            queryClient.invalidateQueries(["mySavedPost"]);
+            queryClient.invalidateQueries(["searchPosts"]);
+        }
+    );
 
     const { data: myInfo, isSuccess: isSuccessMyInfo } = useGetData<userInformation>(
         ["getMyUserInfo"],
@@ -40,40 +58,6 @@ function UpdatePost({ postInfo, updatePost, setUpdatePost }: UpdatePostProps) {
     );
 
 
-    useEffect(() => {
-        if (isError) {
-            if (error && (error as any).response) {
-                toast.error((error as any).response.data.error.message,
-                    {
-                        icon: '❌',
-                        style: {
-                            borderRadius: '10px',
-                            background: '#333',
-                            color: '#fff',
-                        },
-                    }
-                )
-            }
-        }
-
-        if (isSuccess) {
-            toast.success("Post Updated successfuly",
-                {
-                    icon: '✅',
-                    style: {
-                        borderRadius: '10px',
-                        background: '#333',
-                        color: '#fff',
-                    },
-                }
-            )
-            setPostImage([])
-            setPostPreview([])
-            setdescription('')
-            setUpdatePost(false)
-            reset();
-        }
-    }, [isError, isSuccess])
 
     const handleEmojiSelect = (emoji: any) => {
         setdescription(description + emoji.native)
