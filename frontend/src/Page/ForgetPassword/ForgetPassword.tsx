@@ -6,28 +6,12 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import forgetPassSchema from '../../Validation/forgetPassword';
 import IsLoaderBtn from '../../Components/IsLoaderBtn/IsLoaderBtn';
-import { usePostUserForgetPassword } from '../../hooks/user/useUser';
-import toast from 'react-hot-toast';
+import usePostData from '../../hooks/usePostData';
 
 function ForgetPassword() {
 
-    const { mutate: forgetPasswordUser, isLoading, isError, error, isSuccess } = usePostUserForgetPassword();
+    const { mutate: forgetPasswordUser, isLoading } = usePostData('users/forget-password' , "Email sent successfuly");
 
-
-    useEffect(() => {
-        if (isError) {
-            if (error && (error as any).response) {
-                toast.error((error as any).response.data.error.message
-                )
-            }
-        }
-
-        if (isSuccess) {
-            toast.success("Email sent successfuly",
-                
-            )
-        }
-    }, [isError, isSuccess])
 
     // hook form
     const {

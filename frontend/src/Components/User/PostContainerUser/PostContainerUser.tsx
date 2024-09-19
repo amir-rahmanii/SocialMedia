@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import PostItem from '../../Home/PostItem/PostItem'
 import { PostItemProps } from '../../Home/PostsContainer/PostsContainer'
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { QueryObserverResult } from 'react-query';
 
 
 

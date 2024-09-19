@@ -1,34 +1,40 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { AuthContext } from '../../../Context/AuthContext';
-import { useGetAllUsersInformation, useGetMyUsersInfo, usePostFollowToggle } from '../../../hooks/user/useUser';
+import React, { useEffect, useState } from 'react'
 import SkeletonUserItem from '../../User/SkeletonUserItem/SkeletonUserItem';
 import { Link } from 'react-router-dom';
-import toast from 'react-hot-toast';
+import usePostData from '../../../hooks/usePostData';
+import { useQueryClient } from 'react-query';
+import useGetData from '../../../hooks/useGetData';
+import { userInformation, userInformationAll } from '../../../hooks/user/user.types';
 
 
 
 function Sidebar() {
-
-    const { data: informationAllUser, isLoading, isSuccess: isSuccessGetAllinfo } = useGetAllUsersInformation();
-    const { mutate: followToggle, isSuccess: isSuccessFollowToggle, isError: isErrorFollowToggle, error: errorFollow, data: dataFollow } = usePostFollowToggle();
     const [followed, setFollowed] = useState<string[]>([])
-    const { data: myInfo } = useGetMyUsersInfo();
+
+    const { data: informationAllUser, isLoading } = useGetData<userInformationAll>(
+        ['getAllUserData'],
+        "users/all-users"
+    );
+
+    const { data: myInfo  , isLoading : isLoadingMyInfo} = useGetData<userInformation>(
+        ["getMyUserInfo"],
+        "users/user-information"
+    );
 
 
-    useEffect(() => {
-        if (isErrorFollowToggle) {
-            if (errorFollow && (errorFollow as any).response) {
-                toast.error((errorFollow as any).response.data.error.message
-                )
-            }
+    const queryClient = useQueryClient();
+
+    const { mutate: followToggle } = usePostData("users/followToggle"
+        , "User Followed/UnFollowed succesfuly!",
+        false,
+        () => {
+            queryClient.invalidateQueries(["getMyUserInfo"]);
         }
+    );
 
-        if (isSuccessFollowToggle) {
-            toast.success(dataFollow.data.message,
-                
-            )
-        }
-    }, [isErrorFollowToggle, isSuccessFollowToggle])
+
+
+
 
 
     // Check if the user is followed
@@ -47,11 +53,11 @@ function Sidebar() {
 
     return (
         <div className="fixed lg:right-[0px] hidden w-fit h-full lg:flex flex-col flex-auto m-8 xl:pr-8 -z-1">
-            <div className="xl:ml-10 mt-4 flex flex-col h-96 overflow-auto lg:p-1 xl:p-4 rounded">
-                {isLoading ? (
+            <div className="xl:ml-10 mt-4 flex flex-col lg:p-1 xl:p-4 rounded">
+                {isLoading && isLoadingMyInfo ? (
                     Array(5).fill("").map((el, i) => (<SkeletonUserItem key={i} />))
                 ) : (
-                    <div className='flex flex-col gap-1'>
+                    <div className='flex flex-col px-1 gap-1 overflow-y-auto h-72'>
                         <div className='flex justify-between items-center'>
                             <div className='flex items-center gap-2'>
                                 <Link to={`/profile/${myInfo?._id}`}>
@@ -69,8 +75,8 @@ function Sidebar() {
                         <div className='py-3'>
                             <p className='text-gray-500 text-sm font-bold'>Suggested for you</p>
                         </div>
-                        {informationAllUser?.response?.users?.slice(0, 3).map((data) => (
-                            <div key={data._id}>
+                        {informationAllUser?.response?.users?.map((data) => (
+                            <div className='' key={data._id}>
                                 {myInfo?._id !== data._id && (
                                     <div className='flex items-center justify-between pb-2'>
                                         <div className='flex items-center gap-2'>
@@ -86,7 +92,10 @@ function Sidebar() {
                                             {myInfo?._id !== data._id && (
                                                 <button
                                                     onClick={() => {
-                                                        followToggle(data._id);
+                                                        const objFollow = {
+                                                            userIdToFollow: data._id
+                                                        }
+                                                        followToggle(objFollow);
                                                     }}
                                                     className="font-medium transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow rounded px-6 py-1.5"
                                                 >

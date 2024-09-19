@@ -1,11 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { useUpdateUserProfile } from '../../../hooks/user/useUser';
+import React, { useContext, useState } from 'react'
 import { Dialog } from '@mui/material';
 import IsLoaderBtn from '../../IsLoaderBtn/IsLoaderBtn';
-import { AuthContext } from '../../../Context/AuthContext';
 import toast from 'react-hot-toast';
-import { closeIcon } from '../../SvgIcon/SvgIcon';
 import DialogHeader from '../../ShowDialogModal/DialogHeader/DialogHeader';
+import usePostData from '../../../hooks/usePostData';
+import { useQueryClient } from 'react-query';
+import useGetData from '../../../hooks/useGetData';
+import { userInformation } from '../../../hooks/user/user.types';
 
 
 type ChangeProfileProps = {
@@ -16,11 +17,29 @@ type ChangeProfileProps = {
 
 function ChangeProfile({ isShowChangeProfile, setIsShowChangeProfile }: ChangeProfileProps) {
 
-    const { mutate: updateProfilePicture, isLoading, isError, error, isSuccess } = useUpdateUserProfile();
+    const { data: myInfo, isSuccess: isSuccessMyInfo } = useGetData<userInformation>(
+        ["getMyUserInfo"],
+        "users/user-information"
+    );
+
+
+
+    const { mutate: updateProfilePicture, isLoading } = usePostData('users/update-profile-picture'
+        , 'Profile picture updated successfuly!'
+        , true,
+        () => {
+            queryClient.invalidateQueries(["getUserData", myInfo?._id]);
+            queryClient.invalidateQueries(["getMyUserInfo"]);
+            setPostImage(null);
+            setPostPreview(null);
+            setIsShowChangeProfile(false);
+        }, true);
+
+
     const [postImage, setPostImage] = useState<File | null>(null);
     const [postPreview, setPostPreview] = useState<string | null>(null);
     const [dragged, setDragged] = useState(false);
-    const authContext = useContext(AuthContext)
+    const queryClient = useQueryClient();
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -42,25 +61,6 @@ function ChangeProfile({ isShowChangeProfile, setIsShowChangeProfile }: ChangePr
     const handleDragChange = () => {
         setDragged(!dragged);
     }
-
-
-    useEffect(() => {
-        if (isError) {
-            if (error && (error as any).response) {
-                toast.error((error as any).response.data.error.message
-                )
-            }
-        }
-
-        if (isSuccess) {
-            toast.success("Profile Uploaded successfuly",
-                
-            )
-            setPostImage(null)
-            setPostPreview(null)
-            setIsShowChangeProfile(false)
-        }
-    }, [isError, isSuccess])
 
 
     return (
@@ -90,10 +90,12 @@ function ChangeProfile({ isShowChangeProfile, setIsShowChangeProfile }: ChangePr
 
                     <div className="flex flex-col border-l border-b dark:border-gray-300/20 border-gray-300 w-full bg-white dark:bg-black">
 
-                        <div className="flex gap-3 px-3 py-2 items-center">
-                            <img draggable="false" className="w-11 h-11 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${authContext?.user?.profilePicture.filename}`} alt="avatar" />
-                            <span className="text-black dark:text-white text-sm font-semibold">{authContext?.user?.username}</span>
-                        </div>
+                        {isSuccessMyInfo && (
+                            <div className="flex gap-3 px-3 py-2 items-center">
+                                <img draggable="false" className="w-11 h-11 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${myInfo?.profilePicture.filename}`} alt="avatar" />
+                                <span className="text-black dark:text-white text-sm font-semibold">{myInfo?.username}</span>
+                            </div>
+                        )}
 
 
                         <div className="p-3 w-full border-b relative">

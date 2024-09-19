@@ -2,19 +2,24 @@ import Slider from "react-slick";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useGetAllStories } from "../../../hooks/story/useStory";
-import { useContext, useState } from "react";
-import { AuthContext } from "../../../Context/AuthContext";
+import { useState } from "react";
 import AddNewStory from "../AddNewStory/AddNewStory";
 import { plusIcon } from "../../SvgIcon/SvgIcon";
 import StoryContent from "./StoryContent";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { userInformation } from "../../../hooks/user/user.types";
+import useGetData from "../../../hooks/useGetData";
 
 const StoriesContainer = () => {
 
     const { data: allStories, isSuccess } = useGetAllStories();
-    const authContext = useContext(AuthContext);
     const [showAddStory, setShowAddStory] = useState(false);
     const [isShowStoryContent, setIsShowStoryContent] = useState(false);
+
+    const { data: myInfo, isSuccess: isSuccessMyInfo } = useGetData<userInformation>(
+        ["getMyUserInfo"],
+        "users/user-information"
+    );
 
     const settings = {
         dots: false,
@@ -36,8 +41,8 @@ const StoriesContainer = () => {
     };
 
 
- 
-    
+
+
 
 
 
@@ -48,11 +53,11 @@ const StoriesContainer = () => {
                     setShowAddStory(true)
                 }} className="flex flex-col text-center justify-center items-center p-2 cursor-pointer">
                     <div className="w-[60px] h-[60px] md:w-[90px] md:h-[90px] rounded-full border-2 border-red-500 relative">
-                        {authContext?.user && (
+                        {isSuccessMyInfo && (
                             <img
                                 loading="lazy"
                                 className="rounded-full h-full w-full object-cover"
-                                src={`http://localhost:4002/images/profiles/${authContext.user?.profilePicture.filename}`}
+                                src={`http://localhost:4002/images/profiles/${myInfo.profilePicture.filename}`}
                                 draggable="false"
                                 alt="story"
                             />
@@ -61,7 +66,9 @@ const StoriesContainer = () => {
                             {plusIcon}
                         </button>
                     </div>
-                    <span className="text-xs mt-2 text-black dark:text-white">{authContext?.user?.username}</span>
+                    {isSuccessMyInfo && (
+                        <span className="text-xs mt-2 text-black dark:text-white">{myInfo?.username}</span>
+                    )}
                 </div>
                 {allStories?.stories?.map((s) => (
                     <div key={s._id}> {/* Ensure each story is in a separate div */}

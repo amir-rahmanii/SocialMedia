@@ -3,7 +3,6 @@ import { useRoutes } from 'react-router-dom'
 import routes from './routes'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import Toast from './Components/Toast/Toast'
-import AuthContextProvider, { AuthContext } from './Context/AuthContext'
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { ThemeProviderContext } from './Context/ThemeContext'
@@ -19,16 +18,14 @@ function App() {
   const client = new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 1000 * 60 * 5,
+        staleTime: 0, // always consider data stale
         cacheTime: 1000 * 60 * 10,
         refetchOnWindowFocus: true,
-        // retry: 1,
+        retry : 1,
       },
-      // mutations: {
-      //   retry: 0,
-      // }
     }
   });
+  
 
   //change theme
   useEffect(() => {
@@ -41,7 +38,6 @@ function App() {
 
   return (
     <QueryClientProvider client={client}>
-      <AuthContextProvider>
         <ThemeProviderContext>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             {route}
@@ -49,7 +45,6 @@ function App() {
             <Toast />
           </LocalizationProvider>
         </ThemeProviderContext>
-      </AuthContextProvider>
     </QueryClientProvider>
   )
 }

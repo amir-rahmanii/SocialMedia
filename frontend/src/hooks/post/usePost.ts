@@ -19,7 +19,7 @@ function usePostCreatePost() {
                 queryClient.invalidateQueries(["getUserData"]);
                 queryClient.invalidateQueries(["AllPostAllUsers"]);
                 queryClient.invalidateQueries(["mySavedPost"]);
-                queryClient.invalidateQueries(["searchPosts"]);   
+                queryClient.invalidateQueries(["searchPosts"]);
             },
         }
     )
@@ -75,7 +75,7 @@ function useGetMySavedPost() {
     )
 }
 
-function useGetAllSearchPosts(search : string) {
+function useGetAllSearchPosts(search: string) {
     return useQuery(['searchPosts'],
         async () => {
             const response = await apiRequest.get(`posts/search-posts?query=${search}`);
@@ -91,12 +91,12 @@ function usePostLikeToggle() {
         return apiRequest.post(`posts/like-toggle`, postid)
     },
         {
-            // onSuccess: () => {
-            //     queryClient.invalidateQueries(["getUserData"]);
-            //     queryClient.invalidateQueries(["AllPostAllUsers"]);
-            //     queryClient.invalidateQueries(["mySavedPost"]);
-            //     queryClient.invalidateQueries(["searchPosts"]);
-            // },
+            onSuccess: () => {
+                queryClient.invalidateQueries(["getUserData"]);
+                queryClient.invalidateQueries(["AllPostAllUsers"]);
+                queryClient.invalidateQueries(["mySavedPost"]);
+                queryClient.invalidateQueries(["searchPosts"]);
+            },
         }
     )
 }
@@ -106,34 +106,34 @@ function usePostSavePostToggle() {
     return useMutation(async (postid: postid) => {
         return apiRequest.post(`posts/save-post-toggle`, postid)
     },
-        // {
-        //     onSuccess: () => {
-        //         queryClient.invalidateQueries(["getUserData"]);
-        //         queryClient.invalidateQueries(["AllPostAllUsers"]);
-        //         queryClient.invalidateQueries(["mySavedPost"]);
-        //         queryClient.invalidateQueries(["searchPosts"]);
-        //     }
-        // }
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries(["getUserData"]);
+                queryClient.invalidateQueries(["AllPostAllUsers"]);
+                queryClient.invalidateQueries(["mySavedPost"]);
+                queryClient.invalidateQueries(["searchPosts"]);
+            }
+        }
     )
 }
 
 
-function usePostAddComment() {
+function usePostAddComment(userId: string) {
     const queryClient = useQueryClient();
     return useMutation(
-      async (comment: comment) => {
-        return apiRequest.post(`posts/add-comment`, comment);
-      },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries(["getUserData"]); 
-          queryClient.invalidateQueries(["AllPostAllUsers"]);
-          queryClient.invalidateQueries(["mySavedPost"]);
-          queryClient.invalidateQueries(["searchPosts"]);
+        async (comment: comment) => {
+            return apiRequest.post(`posts/add-comment`, comment);
         },
-      }
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries(['getUserData', userId]);
+                queryClient.invalidateQueries(["AllPostAllUsers"]);
+                queryClient.invalidateQueries(["mySavedPost"]);
+                queryClient.invalidateQueries(["searchPosts"]);
+            },
+        }
     );
-  }
+}
 
 
 function useDeleteComment() {

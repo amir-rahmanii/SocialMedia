@@ -1,8 +1,10 @@
 
 import { DatePicker } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
-import { PropsWithChildren, useContext } from 'react';
-import { AuthContext } from '../../Context/AuthContext';
+import { PropsWithChildren } from 'react';
+import { userInformation } from '../../hooks/user/user.types';
+import useGetData from '../../hooks/useGetData';
+
 
 
 type FilterDateProps = {
@@ -33,7 +35,11 @@ const FilterDate: React.FC<PropsWithChildren<FilterDateProps>> = ({
         setUntilPicker(newValueDate);
     };
 
-    const authContext = useContext(AuthContext);
+    const { data: myInfo } = useGetData<userInformation>(
+        ["getMyUserInfo"],
+        "users/user-information"
+    );
+
 
 
 
@@ -47,7 +53,7 @@ const FilterDate: React.FC<PropsWithChildren<FilterDateProps>> = ({
                             value={fromPicker}
                             onChange={handleDateFromChange}
                             maxDate={dayjs()}
-                            minDate={dayjs(authContext?.user?.createdAt)}
+                            minDate={dayjs(myInfo?.createdAt)}
                         />
                         <DatePicker
                             label="Until this date picker"

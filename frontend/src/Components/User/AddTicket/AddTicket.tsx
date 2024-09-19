@@ -1,12 +1,14 @@
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, } from '@mui/material'
-import React, { useContext, useEffect, useState } from 'react'
+import React, {  useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import newTicketSchema from '../../../Validation/newTicket';
 import IsLoaderBtn from '../../IsLoaderBtn/IsLoaderBtn';
-import { usePostNewTicket } from '../../../hooks/ticket/useTicket';
-import { AuthContext } from '../../../Context/AuthContext';
 import toast from 'react-hot-toast';
+import useGetData from '../../../hooks/useGetData';
+import { userInformation } from '../../../hooks/user/user.types';
+import usePostData from '../../../hooks/usePostData';
+import { useQueryClient } from 'react-query';
 
 function AddTicket() {
 
@@ -21,25 +23,25 @@ function AddTicket() {
         setPriority(e.target.value)
     }
 
-
-    const { mutate: addNewTicket, isLoading  , isSuccess , isError , error} = usePostNewTicket();
-    const authContext = useContext(AuthContext);
-
-    useEffect(() => {
-        if (isError) {
-            if (error && (error as any).response) {
-                toast.error((error as any).response.data.error.message
-                )
-            }
-        }
-
-        if (isSuccess) {
-            toast.success("ticket sent successfuly",
-                
-            )
+    const queryClient = useQueryClient();
+    const { mutate: addNewTicket, isLoading} = usePostData(
+        'ticket/add-new-ticket',
+        'ticket sent successfuly!',
+        false,
+        () => {
+            queryClient.invalidateQueries(["getUserTicket"]);
             reset();
         }
-    }, [isError, isSuccess])
+    );
+
+
+    const { data: myInfo, isSuccess: isSuccessMyInfo } = useGetData<userInformation>(
+        ["getMyUserInfo"],
+        "users/user-information"
+    );
+
+
+
 
 
     // hook form
@@ -119,12 +121,12 @@ function AddTicket() {
             <div className="flex items-center justify-between">
                 <button onClick={handleSubmit((data) => {
                 
-                if(authContext?.user?._id){
+                if(myInfo && isSuccessMyInfo){
                     const newObj = {
                         department: departement,
                         description: data.description,
                         title: data.title,
-                        userId: authContext?.user?._id,
+                        userId: myInfo._id,
                         priority: priority,
                     }
                     

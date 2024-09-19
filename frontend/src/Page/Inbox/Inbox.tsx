@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, {useEffect, useRef, useState } from 'react'
 import MetaData from '../../Components/MetaData/MetaData'
 import EmojiPicker from '@emoji-mart/react';
 import SpinLoader from '../../Components/SpinLoader/SpinLoader';
@@ -8,8 +8,9 @@ import toast from 'react-hot-toast';
 import Header from '../../Parts/Header/Header';
 import SideBarLeft from '../../Parts/SideBarLeft/SideBarLeft';
 import { emojiIcon } from '../../Components/SvgIcon/SvgIcon';
-import { AuthContext } from '../../Context/AuthContext';
-import { useGetMyUsersInfo } from '../../hooks/user/useUser';
+import useGetData from '../../hooks/useGetData';
+import { userInformation } from '../../hooks/user/user.types';
+
 
 
 
@@ -56,18 +57,14 @@ function Inbox() {
     const [backgroundColorChat, setBackgroundColorChat] = useState(
         localStorage.getItem("chatBg") || "#FFFFFF"
     )
-    const authContext = useContext(AuthContext);
     const [showEmojis, setShowEmojis] = useState(false);
 
-    const { data: myInfo, isSuccess, isError } = useGetMyUsersInfo();
+    const { data: myInfo , isLoading : isLoadingMyInfo , isSuccess : isSuccessMyInfo} = useGetData<userInformation>(
+        ["getMyUserInfo"],
+        "users/user-information"
+    );
 
-    useEffect(() => {
-        if (isSuccess) {
-            authContext?.setUser(myInfo);
-        } else if (isError) {
-            toast.error("please try again later 😩")
-        }
-    }, [isSuccess, isError]);
+  
 
 
 
@@ -175,13 +172,13 @@ function Inbox() {
 
 
     const sendMessageHandler = () => {
-        if (authContext?.user && socket) {
+        if (myInfo && socket) {
             const messageData: IUserMessage = {
-                senderId: authContext?.user?._id,
+                senderId: myInfo?._id ,
                 content: message,
             };
               socket.emit("chat message", messageData);
-              socket.emit('typing', { userId: authContext?.user?._id, username: authContext.user.username, isTyping: false });
+              socket.emit('typing', { userId: myInfo?._id , username: myInfo.username , isTyping: false });
 
         } else {
             toast.error("Sorry , try again later😩")
@@ -191,9 +188,9 @@ function Inbox() {
 
     const handleSubmitSendHeart = (e: React.MouseEvent<SVGSVGElement, MouseEvent>, msg: string) => {
         e.preventDefault();
-        if (authContext?.user && socket) {
+        if (myInfo && socket) {
             const messageData: IUserMessage = {
-                senderId: authContext?.user?._id,
+                senderId: myInfo?._id ,
                 content: msg,
             };
              socket.emit("chat message", messageData);
@@ -208,16 +205,16 @@ function Inbox() {
 
     const handleInputChanges = (e: React.ChangeEvent<HTMLInputElement>) => {
         setMessage(e.target.value)
-        if (authContext?.user && socket) {
-             socket.emit('typing', { userId: authContext?.user?._id, username: authContext.user.username, isTyping: e.target.value !== '' });
+        if (myInfo && socket) {
+             socket.emit('typing', { userId: myInfo?._id , username: myInfo.username, isTyping: e.target.value !== '' });
         } else {
             toast.error("Sorry , try again later😩")
         }
     }
 
     const handleLikeMessage = (msgId: string) => {
-        if (authContext?.user && socket) {
-             socket.emit("like message", { msgId, userId: authContext?.user?._id });
+        if (myInfo && socket) {
+             socket.emit("like message", { msgId, userId: myInfo?._id  });
         } else {
             toast.error("Sorry , try again later😩")
         }
@@ -261,7 +258,7 @@ function Inbox() {
                             <div className='flex flex-col gap-1 p-2'>
                                 {informationAllUser?.response?.users?.map((data) => (
                                     <div key={data._id}>
-                                        {authContext?.user?._id !== data._id && (
+                                        {myInfo?._id  !== data._id && (
                                             <div onClick={() => toUserIdHandler(data._id)} className='flex items-center justify-between border-b pb-2.5'>
                                                 <div className='flex items-center gap-2'>
                                                     <Link to={`/profile/${data._id}`}>
@@ -286,7 +283,7 @@ function Inbox() {
                         <div className="flex py-3 px-6 border-b dark:border-gray-300/20 border-gray-300 items-center justify-between">
                             <div className="flex gap-2 items-center">
                                 <div className="w-8 h-8 relative">
-                                    <img draggable="false" className="w-7 h-7 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${authContext?.user?.profilePicture.filename}`} alt="profile" />
+                                    <img draggable="false" className="w-7 h-7 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${myInfo?.profilePicture.filename}`} alt="profile" />
 
                                     {/* {onlineUsers[informationUserData.user._id] && (
                                             <div className="absolute -right-0.5 -bottom-0.5 h-3 w-3 bg-green-500 rounded-full"></div>
@@ -294,8 +291,8 @@ function Inbox() {
                                 </div>
                                 <div className='flex flex-col'>
                                     <span className="font-medium cursor-pointer text-black dark:text-white">Group Instagram</span>
-                                    {authContext?.user && (
-                                        (typingUsers.length > 0 && !typingUsers.includes(authContext.user.username)) ? (
+                                    {myInfo && (
+                                        (typingUsers.length > 0 && !typingUsers.includes(myInfo.username)) ? (
                                             <span className="font-medium cursor-pointer text-xs text-gray-500">{typingUsers.join(', ')} is Typing...</span>
                                         ) : (
                                             <span className="font-medium cursor-pointer text-xs text-gray-500">{countUsersOnline} Users Online</span>
@@ -320,7 +317,7 @@ function Inbox() {
                                 allMessages?.map((m) => (
                                     <React.Fragment key={m._id}>
 
-                                        <Message handleEditMessage={handleEditMessage} handleDeleteMessage={handleDeleteMessage} handleLikeMessage={handleLikeMessage} ownMsg={m.sender._id === authContext?.user?._id} message={m} />
+                                        <Message handleEditMessage={handleEditMessage} handleDeleteMessage={handleDeleteMessage} handleLikeMessage={handleLikeMessage} ownMsg={m.sender._id === myInfo?._id } message={m} />
                                         <div ref={scrollRef}></div>
                                     </React.Fragment>
                                 ))

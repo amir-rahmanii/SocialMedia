@@ -1,24 +1,23 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { exploreOutline, homeFill, messageOutline, searchIcon } from '../../Components/SvgIcon/SvgIcon'
-import { AuthContext } from '../../Context/AuthContext';
-import toast from 'react-hot-toast';
-import { useGetMyUsersInfo } from '../../hooks/user/useUser';
 import ShowDialogModal from '../../Components/ShowDialogModal/ShowDialogModal';
 import SearchBox from '../../Components/Header/SearchBox/SearchBox';
+import useGetData from '../../hooks/useGetData';
+import { userInformation } from '../../hooks/user/user.types';
 
 function SideBarBottom() {
-    const authContext = useContext(AuthContext);
+
     const [isShowSearch, setIsShowSearch] = useState(false);
 
-    const { data: myInfo, isSuccess: isSuccessmyinfo, isError: isErrorMyInfo } = useGetMyUsersInfo();
-    useEffect(() => {
-        if (isSuccessmyinfo) {
-            authContext?.setUser(myInfo);
-        } else if (isErrorMyInfo) {
-            toast.error("please try again later 😩")
-        }
-    }, [isSuccessmyinfo, isErrorMyInfo]);
+    const { data: myInfo, isSuccess } = useGetData<userInformation>(
+        ["getMyUserInfo"],
+        "users/user-information"
+    );
+
+
+
+
 
 
     return (
@@ -58,29 +57,30 @@ function SideBarBottom() {
                             <span className='hidden xl:block'>Message</span>
                         </Link>
                     </li>
-
                     <li className='p-3 rounded-md hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 group'>
-                        <Link className='text-base/5 flex items-center justify-center xl:justify-start gap-3 font-bold text-black dark:text-white' to={`/profile/${authContext?.user?._id}`}>
-                            <div className='w-6 h-6 group-hover:scale-110 transition-all duration-300'>
-                                <img loading='lazy' className='w-full h-full rounded-full object-cover' src={`http://localhost:4002/images/profiles/${myInfo?.profilePicture.filename}`} alt="profile" />
-                            </div>
-                            <span className='hidden xl:block'>Profile</span>
-                        </Link>
+                        {isSuccess && (
+                            <Link className='text-base/5 flex items-center justify-center xl:justify-start gap-3 font-bold text-black dark:text-white' to={`/profile/${myInfo?._id}`}>
+                                <div className='w-6 h-6 group-hover:scale-110 transition-all duration-300'>
+                                    <img loading='lazy' className='w-full h-full rounded-full object-cover' src={`http://localhost:4002/images/profiles/${myInfo?.profilePicture.filename}`} alt="profile" />
+                                </div>
+                                <span className='hidden xl:block'>Profile</span>
+                            </Link>
+                        )}
                     </li>
                 </ul>
             </div>
 
             <ShowDialogModal
-            isOpenShowLDialogModal={isShowSearch}
-            setisOpenShowLDialogModal={setIsShowSearch}
-            title="Search title"
-            height="h-auto"
+                isOpenShowLDialogModal={isShowSearch}
+                setisOpenShowLDialogModal={setIsShowSearch}
+                title="Search title"
+                height="h-auto"
             >
                 <div className="flex justify-center items-center border rounded dark:border-gray-300/20 border-gray-300">
                     <SearchBox />
                 </div>
             </ShowDialogModal>
-           
+
         </>
     )
 }

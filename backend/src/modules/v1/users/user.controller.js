@@ -1,6 +1,7 @@
 const userValidator = require("./user.validation");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
+const mongoose = require('mongoose');
 const { systemInfoMiddleware } = require('../../../middlewares/systemInfo');
 const userModel = require("../../../models/v1/user");
 const postModel = require("../../../models/v1/post");
@@ -9,6 +10,7 @@ const commentModel = require("../../../models/v1/comment");
 const messageModel = require("../../../models/v1/message");
 const followToggleModel = require("../../../models/v1/followToggle");
 const storyModel = require("../../../models/v1/story");
+const ticketModel = require("../../../models/v1/ticket");
 const path = require('path');
 const RefreshTokenModel = require("../../../models/v1/refreshToken");
 const {
@@ -371,9 +373,10 @@ exports.userInformation = async (req, res) => {
     // Call the validator with the request
     const user = await userValidator.userInformation(req);
 
-    successResponse(res, 200, { message: "User information retrieved successfully", user });
+    // ارسال مستقیم شیء user به عنوان پاسخ
+    res.status(200).json(user);
   } catch (error) {
-    errorResponse(res, error.statusCode || 500, { message: error.message });
+    res.status(error.statusCode || 500).json({ message: error.message });
   }
 };
 
@@ -538,6 +541,11 @@ exports.userAllData = async (req, res) => {
   try {
     const { userid } = req.params;
 
+    // بررسی اینکه آیا userid یک ObjectId معتبر است یا خیر
+    if (!mongoose.Types.ObjectId.isValid(userid)) {
+      return res.status(400).json({ message: 'Invalid user ID' });
+    }
+
     // پیدا کردن کاربر با توجه به userid
     const user = await userModel.findById(userid).select('-password'); // حذف رمز عبور از اطلاعات برگردانده شده
 
@@ -570,10 +578,9 @@ exports.userAllData = async (req, res) => {
 };
 
 
-
 exports.followToggle = async (req, res) => {
   try {
-    const userIdToFollow = req.params.userId;
+    const { userIdToFollow } = req.body; // Get userId from request body
     const currentUserId = req.user._id;
 
     if (userIdToFollow === currentUserId.toString()) {
@@ -647,6 +654,7 @@ exports.followToggle = async (req, res) => {
     res.status(500).json({ message: "An error occurred.", error: err.message });
   }
 };
+
 
 
 exports.getAllUsersInformation = async (req, res) => {

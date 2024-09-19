@@ -1,9 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, {  useEffect, useState } from 'react'
 import MetaData from '../../Components/MetaData/MetaData'
 import Header from '../../Parts/Header/Header'
 import SideBarLeft from '../../Parts/SideBarLeft/SideBarLeft'
 import SideBarBottom from '../../Parts/SideBarBottom/SideBarBottom'
-import TableLogin from '../../Components/User/TableLogin/TableLogin'
 import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Radio, RadioGroup } from '@mui/material'
 import FilterDate from '../../Components/FilterDate/FilterDate'
 import dayjs, { Dayjs } from 'dayjs';
@@ -11,10 +10,10 @@ import isBetween from 'dayjs/plugin/isBetween';
 import toast from 'react-hot-toast'
 import AddTicket from '../../Components/User/AddTicket/AddTicket'
 import TableTicket from '../../Components/User/TableTicket/TableTicket'
-import { useGetUserTicket } from '../../hooks/ticket/useTicket'
 import { ticketUser } from '../../hooks/ticket/tickets.types'
 import SkeletonTable from '../../Components/SkeletonTable/SkeletonTable'
 import ShowDialogModal from '../../Components/ShowDialogModal/ShowDialogModal'
+import useGetData from '../../hooks/useGetData'
 
 // Enable the 'isBetween' plugin for dayjs
 dayjs.extend(isBetween);
@@ -61,17 +60,13 @@ function Tickets() {
         ticketFilterLocalStorage?.status || ["Open", "Closed", "Answered"]
     );
 
-    const { data: allTicket, isError, isLoading, error, isSuccess } = useGetUserTicket()
+    const { data: allTicket, isLoading, isSuccess } = useGetData<ticketUser[]>(
+        ['getUserTicket'],
+        "ticket/user-tickets"
+    )
 
 
-    useEffect(() => {
-        if (isError) {
-            if (error && (error as any).response) {
-                toast.error((error as any).response.data.error.message
-                )
-            }
-        }
-    }, [isError])
+  
 
     useEffect(() => {
         if (ticketFilterLocalStorage) {
@@ -154,8 +149,24 @@ function Tickets() {
                     <AddTicket />
 
                     {isSuccess && allTicket?.length > 0 && (
-                        <div className='mb-3 px-3'>
+                        <div className='mb-3 px-3 flex items-center gap-3'>
                             <Button onClick={() => setIsShowOpenFilter(true)} variant="outlined">Filter</Button>
+                            <Button
+                                onClick={() => {
+                                    setFromPicker(null)
+                                    setUntilPicker(null)
+                                    setOrderTicket("NTO")
+                                    setAllPriority(["Low", "Medium", "High"])
+                                    setAllStatus(["Open", "Closed", "Answered"])
+                                    localStorage.removeItem("ticketFilter")
+                                    setFilteredData(allTicket)
+                                }
+                                }
+                                variant="outlined"
+                                sx={{ borderColor: '#c6415ed8', color: '#c6415ed8', '&:hover': { borderColor: '#f8587bf5', color: '#f8587bf5' } }}
+                            >
+                                Reset Filter
+                            </Button>
                         </div>
                     )}
                     {isLoading ? (
@@ -170,11 +181,11 @@ function Tickets() {
                 </div>
 
             </div>
-            <ShowDialogModal 
-            isOpenShowLDialogModal= {isShowOpenFilter}
-            setisOpenShowLDialogModal= {setIsShowOpenFilter}
-            title="Filter Tickets"
-            height= 'h-90'
+            <ShowDialogModal
+                isOpenShowLDialogModal={isShowOpenFilter}
+                setisOpenShowLDialogModal={setIsShowOpenFilter}
+                title="Filter Tickets"
+                height='h-90'
             >
                 <FilterDate
                     filterDateHandler={filterDateHandler}

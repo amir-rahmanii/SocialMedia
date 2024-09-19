@@ -1,15 +1,16 @@
 import { Dialog, TextField } from '@mui/material'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
-import { closeIcon, emojiIcon } from '../../SvgIcon/SvgIcon';
+import { emojiIcon } from '../../SvgIcon/SvgIcon';
 import EmojiPicker from '@emoji-mart/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import newPostSchema from '../../../Validation/newPost';
 import { usePostCreatePost } from '../../../hooks/post/usePost';
 import IsLoaderBtn from '../../IsLoaderBtn/IsLoaderBtn';
-import { AuthContext } from '../../../Context/AuthContext';
 import DialogHeader from '../../ShowDialogModal/DialogHeader/DialogHeader';
+import useGetData from '../../../hooks/useGetData';
+import { userInformation } from '../../../hooks/user/user.types';
 
 
 type NewPostProps = {
@@ -28,7 +29,12 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
     const [showEmojis, setShowEmojis] = useState(false);
     const [dragged, setDragged] = useState(false);
 
-    const authContext = useContext(AuthContext);
+    const { data: myInfo, isSuccess: isSuccessMyInfo } = useGetData<userInformation>(
+        ["getMyUserInfo"],
+        "users/user-information"
+    );
+
+
 
     const { mutate: addNewPost, isLoading, isError, error, isSuccess } = usePostCreatePost();
 
@@ -164,10 +170,12 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
 
                     <div className="flex flex-col border-l dark:border-gray-300/20 border-gray-300 sm:h-[80vh] w-full bg-white dark:bg-black">
 
-                        <div className="flex gap-3 px-3 py-2 items-center">
-                            <img draggable="false" className="w-11 h-11 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${authContext?.user?.profilePicture.filename}`} alt="avatar" />
-                            <span className="text-black dark:text-white text-sm font-semibold">{authContext?.user?.username}</span>
-                        </div>
+                        {isSuccessMyInfo && (
+                            <div className="flex gap-3 px-3 py-2 items-center">
+                                <img draggable="false" className="w-11 h-11 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${myInfo?.profilePicture.filename}`} alt="avatar" />
+                                <span className="text-black dark:text-white text-sm font-semibold">{myInfo?.username}</span>
+                            </div>
+                        )}
 
 
                         <div className="p-3 w-full border-b dark:border-gray-300/20 border-gray-300 relative">

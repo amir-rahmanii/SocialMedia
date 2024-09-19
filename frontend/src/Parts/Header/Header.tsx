@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, {useState } from 'react'
 import { Link } from 'react-router-dom'
 import { postUploadOutline } from '../../Components/SvgIcon/SvgIcon';
 import NewPost from '../../Components/Home/NewPost/NewPost';
-import { AuthContext } from '../../Context/AuthContext';
 import { FormControlLabel } from '@mui/material';
 import { MaterialUISwitch } from '../../Components/MaterialUISwitch/MaterialUISwitch';
 import { useThemeContext } from '../../Context/ThemeContext';
@@ -15,7 +14,6 @@ export default function Header() {
         localStorage.getItem("theme") === "dark" ? true : false
     );
     const [newPost, setNewPost] = useState(false);
-    const authContext = useContext(AuthContext);
     const { toggleTheme, themeMode } = useThemeContext();
 
 

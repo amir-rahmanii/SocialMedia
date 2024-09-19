@@ -8,13 +8,15 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import DateConverter from '../../../utils/DateConverter';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useState } from 'react';
 import { ticketUser } from '../../../hooks/ticket/tickets.types';
 import ShowDialogModal from '../../ShowDialogModal/ShowDialogModal';
-import { useGetMyUsersInfo } from '../../../hooks/user/useUser';
 import toast from 'react-hot-toast';
-import { usePutNewMessageTicket, usePutNewRating } from '../../../hooks/ticket/useTicket';
 import { Rating } from '@mui/material';
+import useGetData from '../../../hooks/useGetData';
+import { userInformation } from '../../../hooks/user/user.types';
+import usePostData from '../../../hooks/usePostData';
+import { useQueryClient } from 'react-query';
 
 export type allTicketUserProps = {
     allTicketUser: ticketUser[]
@@ -46,7 +48,6 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
     const [infoMessageUser, setInfoMessageUser] = useState<infoMessage | null>(null)
     const [isShowAnswer, setisShowAnswer] = useState(false);
     const [answerInfo, setAnswerInfo] = useState<response[] | null>(null);
-    const { data: myInfo } = useGetMyUsersInfo();
     const [message, setMessage] = useState('');
     const [rating, setRating] = useState<number | undefined>(undefined);
 
@@ -59,13 +60,36 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
         setPage(0);
     };
 
-    const { mutate: addNewMessage, isError: isErrorAddNewMessage, error: errorNewMessage, isSuccess: isSuccessAddNewMessage } = usePutNewMessageTicket();
-    const { mutate: addRating, isError: isErrorAddRating, error: errorAddRating, isSuccess: isSuccessAddRating } = usePutNewRating();
+
+    const queryClient = useQueryClient();
+
+    const { data: myInfo, isSuccess: isSuccessMyInfo } = useGetData<userInformation>(
+        ["getMyUserInfo"],
+        "users/user-information"
+    );
+
+    const { mutate: addNewMessage} = usePostData(
+        `ticket/respond-ticket`,
+        "Message send successfuly",
+        true,
+        () => {
+            setMessage("")
+            queryClient.invalidateQueries(["getUserTicket"])
+        }
+    );
+
+    const { mutate: addRating} = usePostData(
+        'ticket//add-rating',
+        "Rating send successfuly",
+        true ,
+        () => {
+            queryClient.invalidateQueries(["getUserTicket"])
+        }
+    );
 
     // send ticket message
     const sendMessageHandler = () => {
         if (message.trim().length >= 5 && message.trim().length <= 60) {
-            console.log(message);
             if (infoMessageUser?._id) {
                 let newObjectSendMessage = {
                     ticketId: infoMessageUser?._id,
@@ -73,11 +97,11 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
                 }
                 addNewMessage(newObjectSendMessage)
 
-                if (myInfo) {
+                if (myInfo && isSuccessMyInfo) {
                     setAnswerInfo((prev) => [
                         ...(prev || []),
                         {
-                            senderId: myInfo._id,  
+                            senderId: myInfo._id,
                             senderUsername: myInfo.username,
                             message: message,
                             responseDate: new Date(),
@@ -93,40 +117,6 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
             toast.error("The description must be at least 20 characters and most 60 characters.")
         }
     }
-
-    // is success and is error send message
-    useEffect(() => {
-        if (isErrorAddNewMessage) {
-            if (errorNewMessage && (errorNewMessage as any).response) {
-                toast.error((errorNewMessage as any).response.data.error.message
-                )
-            }
-        }
-
-        if (isSuccessAddNewMessage) {
-            toast.success("Message send successfuly",
-                
-            )
-            setMessage("")
-        }
-    }, [isErrorAddNewMessage, isSuccessAddNewMessage])
-
-    // is success and is error rating
-    useEffect(() => {
-        if (isErrorAddRating) {
-            if (errorAddRating && (errorAddRating as any).response) {
-                toast.error((errorAddRating as any).response.data.error.message
-                )
-            }
-        }
-
-        if (isSuccessAddRating) {
-            toast.success("Rating send successfuly",
-                
-            )
-            setMessage("")
-        }
-    }, [isErrorAddRating, isSuccessAddRating])
 
 
 
@@ -300,13 +290,13 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
                                         This ticket is closed, but please rate the admins' response. 😩</span>
                                     <Rating
                                         name="simple-controlled"
-                                        value={ rating || +infoMessageUser.rating || 0} // Provide a default value if infoMessageUser.rating is undefined
+                                        value={rating || +infoMessageUser.rating || 0} // Provide a default value if infoMessageUser.rating is undefined
                                         onChange={(event, newValue) => {
                                             setRating(newValue || 0); // Provide a default value if newValue is undefined
                                             if (infoMessageUser?._id && newValue !== null) {
                                                 let newObjectAddRating = {
                                                     ticketId: infoMessageUser._id,
-                                                    rating: +newValue // Ensure newValue is a number
+                                                    rating: newValue.toString() // Ensure newValue is a number
                                                 };
                                                 addRating(newObjectAddRating);
                                             }

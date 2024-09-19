@@ -5,32 +5,19 @@ import TextField from '@mui/material/TextField';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import loginSchema from '../../Validation/login';
-import { usePostUserLogin } from '../../hooks/user/useUser';
 import IsLoaderBtn from '../../Components/IsLoaderBtn/IsLoaderBtn';
-import toast from 'react-hot-toast';
+import usePostData from '../../hooks/usePostData';
 
 
 function Login() {
 
     const navigate = useNavigate();
-    const { mutate: loginUser, isLoading, isError, error, isSuccess } = usePostUserLogin();
-
-
-    useEffect(() => {
-        if (isError) {
-            if (error && (error as any).response) {
-                toast.error((error as any).response.data.error.message
-                )
-            }
-        }
-
-        if (isSuccess) {
-            toast.success("User login successfuly",
-                
-            )
+    const { mutate: loginUser, isLoading } = usePostData('users/login',
+        "User login successfuly",
+        false,
+        () => {
             navigate("/")
-        }
-    }, [isError, isSuccess])
+        });
 
 
 

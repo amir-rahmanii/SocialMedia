@@ -62,7 +62,7 @@ exports.getUserTicket = async (req, res) => {
 
 exports.respondTicket = async (req, res) => {
   try {
-    const { ticketId } = req.params;
+    const { ticketId } = req.body;
     const { message } = req.body;
 
     // بررسی خالی نبودن message
@@ -112,7 +112,7 @@ exports.respondTicket = async (req, res) => {
 
 exports.updateRating = async (req, res) => {
   try {
-      const { ticketId } = req.params;
+      const { ticketId } = req.body;
       const { rating } = req.body;
 
       // بررسی وجود rating و نوع داده صحیح

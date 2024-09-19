@@ -1,18 +1,17 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, {  useState } from 'react'
 import { Link } from 'react-router-dom'
-import { exploreOutline, homeFill, likeIconOutline, logOutIcon, messageOutline, postUploadOutline, reelsIcon, searchIcon, ticketIcon } from '../../Components/SvgIcon/SvgIcon'
-import { AuthContext } from '../../Context/AuthContext';
+import { exploreOutline, homeFill, likeIconOutline, logOutIcon, messageOutline, postUploadOutline, searchIcon, ticketIcon } from '../../Components/SvgIcon/SvgIcon'
 import NewPost from '../../Components/Home/NewPost/NewPost';
 import { FormControlLabel } from '@mui/material';
 import { MaterialUISwitch } from '../../Components/MaterialUISwitch/MaterialUISwitch';
 import { useThemeContext } from '../../Context/ThemeContext';
-import toast from 'react-hot-toast';
-import { useGetMyUsersInfo } from '../../hooks/user/useUser';
 import ShowDialogModal from '../../Components/ShowDialogModal/ShowDialogModal';
 import SearchBox from '../../Components/Header/SearchBox/SearchBox';
+import useGetData from '../../hooks/useGetData';
+import { userInformation } from '../../hooks/user/user.types';
 
 function SideBarLeft() {
-    const authContext = useContext(AuthContext);
+
     const [newPost, setNewPost] = useState(false);
     const [isShowSearch, setIsShowSearch] = useState(false);
     const [theme, setTheme] = useState(
@@ -20,14 +19,11 @@ function SideBarLeft() {
     );
     const { toggleTheme, themeMode } = useThemeContext();
 
-    const { data: myInfo, isSuccess : isSuccessErrormyinfo, isError : isErrorMyInfo } = useGetMyUsersInfo();
-    useEffect(() => {
-        if (isSuccessErrormyinfo) {
-            authContext?.setUser(myInfo);
-        } else if (isErrorMyInfo) {
-            toast.error("please try again later 😩")
-        }
-    }, [isSuccessErrormyinfo, isErrorMyInfo]);
+    const { data: myInfo , isSuccess} = useGetData<userInformation>(
+        ["getMyUserInfo"],
+        "users/user-information"
+    );
+
 
 
     return (
@@ -87,14 +83,18 @@ function SideBarLeft() {
                         </Link>
                     </li>
 
+          
                     <li className='p-3 rounded-md hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 group'>
-                        <Link className='text-base/5 flex items-center justify-center xl:justify-start gap-3 font-bold text-black dark:text-white' to={`/profile/${authContext?.user?._id}`}>
+                        <Link className='text-base/5 flex items-center justify-center xl:justify-start gap-3 font-bold text-black dark:text-white' to={`/profile/${myInfo?._id}`}>
                             <div className='w-6 h-6 group-hover:scale-110 transition-all duration-300'>
-                                <img loading='lazy' className='w-full h-full rounded-full object-cover' src={`http://localhost:4002/images/profiles/${myInfo?.profilePicture.filename}`} alt="profile" />
+                                {isSuccess && (
+                                    <img loading='lazy' className='w-full h-full rounded-full object-cover' src={`http://localhost:4002/images/profiles/${myInfo?.profilePicture.filename}`} alt="profile" />
+                                )}
                             </div>
                             <span className='hidden xl:block'>Profile</span>
                         </Link>
                     </li>
+              
                     <li onClick={() => { setNewPost(true) }} className='p-3 flex items-center justify-center xl:justify-start  rounded-md hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 group'>
                         <button className='text-base/5 gap-3 font-bold text-black flex items-center justify-start dark:text-white'>
                             <div className='w-6 h-6 group-hover:scale-110 transition-all duration-300'>
@@ -155,10 +155,10 @@ function SideBarLeft() {
             <NewPost newPost={newPost} setNewPost={setNewPost} />
 
             <ShowDialogModal
-            isOpenShowLDialogModal={isShowSearch}
-            setisOpenShowLDialogModal={setIsShowSearch}
-            title="Search title"
-            height="h-auto"
+                isOpenShowLDialogModal={isShowSearch}
+                setisOpenShowLDialogModal={setIsShowSearch}
+                title="Search title"
+                height="h-auto"
             >
                 <div className="flex justify-center items-center border rounded dark:border-gray-300/20 border-gray-300">
                     <SearchBox />

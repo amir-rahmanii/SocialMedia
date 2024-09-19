@@ -16,7 +16,7 @@ import Tickets from "./Page/Tickets/Tickets";
 
 const routes = [
     { path: "/", element: <PrivateRoutes><Home /></PrivateRoutes> },
-    { path: "/profile/:userid", element: <PrivateRoutes><Profile /></PrivateRoutes> },
+    { path: "/profile/:userId", element: <PrivateRoutes><Profile /></PrivateRoutes> },
     { path: "/search/:title", element: <PrivateRoutes><SearchPosts /></PrivateRoutes> },
     { path: "/direct", element: <PrivateRoutes><Inbox /></PrivateRoutes> },
     { path: "/login-info", element: <PrivateRoutes><LoginInfo /></PrivateRoutes> },

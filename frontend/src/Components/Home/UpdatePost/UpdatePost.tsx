@@ -1,16 +1,17 @@
 import { Dialog, TextField } from '@mui/material'
-import React, { useContext, useEffect, useState } from 'react'
-import { AuthContext } from '../../../Context/AuthContext'
+import React, { useEffect, useState } from 'react'
 import { PostItemProps } from '../PostsContainer/PostsContainer'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import newPostSchema from '../../../Validation/newPost'
 import EmojiPicker from '@emoji-mart/react'
 import toast from 'react-hot-toast'
-import { closeIcon, emojiIcon } from '../../SvgIcon/SvgIcon'
+import { emojiIcon } from '../../SvgIcon/SvgIcon'
 import { usePutUpdatePost } from '../../../hooks/post/usePost'
 import IsLoaderBtn from '../../IsLoaderBtn/IsLoaderBtn'
 import DialogHeader from '../../ShowDialogModal/DialogHeader/DialogHeader'
+import useGetData from '../../../hooks/useGetData'
+import { userInformation } from '../../../hooks/user/user.types'
 
 
 
@@ -25,7 +26,6 @@ type UpdatePostProps = {
 
 function UpdatePost({ postInfo, updatePost, setUpdatePost }: UpdatePostProps) {
 
-    const authContext = useContext(AuthContext);
     const [postImage, setPostImage] = useState<File[]>([]);
     const [postPreview, setPostPreview] = useState<string[]>([]);
     const [description, setdescription] = useState(postInfo.description);
@@ -33,6 +33,12 @@ function UpdatePost({ postInfo, updatePost, setUpdatePost }: UpdatePostProps) {
     // const [dragged, setDragged] = useState(false);
 
     const { mutate: updatedPost, isLoading, isError, error, isSuccess } = usePutUpdatePost();
+
+    const { data: myInfo, isSuccess: isSuccessMyInfo } = useGetData<userInformation>(
+        ["getMyUserInfo"],
+        "users/user-information"
+    );
+
 
     useEffect(() => {
         if (isError) {
@@ -128,7 +134,7 @@ function UpdatePost({ postInfo, updatePost, setUpdatePost }: UpdatePostProps) {
 
 
     return (
-        <Dialog open={updatePost} onClose={() => {setUpdatePost(false) }} maxWidth='xl'>
+        <Dialog open={updatePost} onClose={() => { setUpdatePost(false) }} maxWidth='xl'>
             <div className="flex flex-col xl:w-screen max-w-4xl border">
                 <DialogHeader
                     title="Uppdate Post"
@@ -161,10 +167,12 @@ function UpdatePost({ postInfo, updatePost, setUpdatePost }: UpdatePostProps) {
 
                     <div className="flex flex-col border-l sm:h-[80vh] w-full bg-white dark:bg-black">
 
-                        <div className="flex gap-3 px-3 py-2 items-center">
-                            <img draggable="false" className="w-11 h-11 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${authContext?.user?.profilePicture.filename}`} alt="avatar" />
-                            <span className="text-black dark:text-white text-sm font-semibold">{authContext?.user?.username}</span>
-                        </div>
+                        {isSuccessMyInfo && (
+                            <div className="flex gap-3 px-3 py-2 items-center">
+                                <img draggable="false" className="w-11 h-11 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${myInfo?.profilePicture.filename}`} alt="avatar" />
+                                <span className="text-black dark:text-white text-sm font-semibold">{myInfo?.username}</span>
+                            </div>
+                        )}
 
 
                         <div className="p-3 w-full border-b dark:border-gray-300/20 border-gray-300 relative">

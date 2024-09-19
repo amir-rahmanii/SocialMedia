@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import MetaData from '../../Components/MetaData/MetaData'
 import Header from '../../Parts/Header/Header'
 import SideBarLeft from '../../Parts/SideBarLeft/SideBarLeft'
@@ -10,9 +10,10 @@ import dayjs, { Dayjs } from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import toast from 'react-hot-toast'
 import { androidIcon, windowsIcon } from '../../Components/SvgIcon/SvgIcon'
-import { useGetMyUsersInfo } from '../../hooks/user/useUser'
 import SkeletonTable from '../../Components/SkeletonTable/SkeletonTable'
 import ShowDialogModal from '../../Components/ShowDialogModal/ShowDialogModal'
+import useGetData from '../../hooks/useGetData'
+import { userInformation } from '../../hooks/user/user.types'
 
 // Enable the 'isBetween' plugin for dayjs
 dayjs.extend(isBetween);
@@ -45,7 +46,10 @@ function LoginInfo() {
     )
 
 
-    const { data: myInfo, isLoading, isSuccess } = useGetMyUsersInfo();
+    const { data: myInfo, isLoading: isLoadingMyInfo, isSuccess: isSuccessMyInfo } = useGetData<userInformation>(
+        ["getMyUserInfo"],
+        "users/user-information"
+    );
 
     const [isShowOpenFilter, setIsShowOpenFilter] = useState(false);
     // State to hold the filtered data
@@ -160,13 +164,31 @@ function LoginInfo() {
             <div>
                 <div className='w-full md:w-4/6 md:ml-44 mt-16 lg:ml-60 xl:ml-72 mb-5'>
                     <h3 className='text-2xl text-center my-7 font-medium text-black dark:text-white'>User Login info</h3>
-                    <div className='mb-3 px-3'>
+                    <div className='mb-3 px-3 flex items-center gap-3'>
                         <Button onClick={() => setIsShowOpenFilter(true)} variant="outlined">Filter</Button>
+                        <Button
+                            onClick={() => {
+                                setFromPicker(null)
+                                setUntilPicker(null)
+                                setOrderSystemInfo("NTO")
+                                setAllBrowser(["Chrome", "Firefox", "Safari", "Opera", "Edge", "Other"])
+                                setAllOs(["Windows", "Android", "Other"])
+                                localStorage.removeItem("loginInfoFilter")
+                                if (myInfo) {
+                                    setFilteredData(myInfo?.systemInfos)
+                                }
+                            }
+                            }
+                            variant="outlined"
+                            sx={{ borderColor: '#c6415ed8', color: '#c6415ed8', '&:hover': { borderColor: '#f8587bf5', color: '#f8587bf5' } }}
+                        >
+                            Reset Filter
+                        </Button>
                     </div>
-                    {isLoading ? (
+                    {isLoadingMyInfo ? (
                         <SkeletonTable />
                     ) : (
-                        isSuccess && (
+                        isSuccessMyInfo && (
                             <div className='px-3'>
                                 <TableLogin loginInformation={filteredData || myInfo?.systemInfos} />
                             </div>

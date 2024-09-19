@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { commentIcon, deleteIcon, editPostIcon, emojiIcon, likeIconOutline, moreIcons, saveIconFill, saveIconOutline, shareIcon } from '../../SvgIcon/SvgIcon'
 import { likeFill } from '../../SvgIcon/SvgIcon';
@@ -9,27 +9,17 @@ import { useDeleteComment, useDeletePost, usePostAddComment, usePostLikeToggle, 
 import toast from 'react-hot-toast';
 import Slider from "react-slick";
 import ShowDialogModal from '../../ShowDialogModal/ShowDialogModal';
-import { useGetMyUsersInfo, usePostFollowToggle } from '../../../hooks/user/useUser';
 import UpdatePost from '../UpdatePost/UpdatePost';
-import { AuthContext } from '../../../Context/AuthContext';
-
-
-type likesProps = {
-    createdAt: Date;
-    postid: string;
-    updatedAt: Date;
-    username: string;
-    userid: string;
-    _id: string;
-    userPicture: {
-        path: string;
-        filename: string;
-    };
-}[]
+import { useQueryClient } from 'react-query';
+import usePostData from '../../../hooks/usePostData';
+import useGetData from '../../../hooks/useGetData';
+import { userInformation } from '../../../hooks/user/user.types';
 
 
 
-function PostItem(props: PostItemProps) {
+
+const PostItem: React.FC<PostItemProps> = (props) => {
+
     const commentInput = useRef<HTMLInputElement>(null);
     const [liked, setLiked] = useState(false);
     const [saved, setSaved] = useState(false);
@@ -41,28 +31,32 @@ function PostItem(props: PostItemProps) {
     const [isOpenShowLiked, setIsOpenShowLiked] = useState(false);
     const [postDatailsToggle, setPostDetailsToggle] = useState(false);
     const [updatePost, setUpdatePost] = useState(false)
-    const { mutate: followToggle, isSuccess: isSuccessFollowToggle, isError: isErrorFollowToggle, error: errorFollow, data: dataFollow } = usePostFollowToggle();
     const [followedListUser, setFollowedListUser] = useState<string[]>([])
-    const [listUserLiked, setListUserLiked] = useState<likesProps>(props.likes);
-    const [listUserSaved, setListUserSaved] = useState<string[]>(props.saved);
+
+
+    const queryClient = useQueryClient();
+    const { mutate: followToggle } = usePostData("users/followToggle"
+        , "User Followed/UnFollowed succesfuly!",
+        false,
+        () => {
+            queryClient.invalidateQueries(["getMyUserInfo"]);
+        }
+    );
 
 
 
     const { mutate: addPostLikeToggle } = usePostLikeToggle();
     const { mutate: addPostSaveToggle } = usePostSavePostToggle();
-    const { mutate: addComment, isSuccess: isSuccessAddComment, isError: isErrorAddComment, error } = usePostAddComment();
+    const { mutate: addComment, isSuccess: isSuccessAddComment, isError: isErrorAddComment, error } = usePostAddComment(props.user.id);
     const { mutate: deleteComment, isSuccess: isSuccessDeleteComment, isError: isErroeDeleteComment, error: errorDeleteComment } = useDeleteComment();
     const { mutate: deletePost, isSuccess: isSuccessDeletePost, isError: isErrorDeletePost, error: errorDeletePost } = useDeletePost();
-    const authContext = useContext(AuthContext);
-    const { data: myInfo , isSuccess : isSuccessMyInfo , isError : isErrorMyInfo} = useGetMyUsersInfo();
+  
+    const { data: myInfo , isLoading : isLoadingMyInfo , isSuccess : isSuccessMyInfo} = useGetData<userInformation>(
+        ["getMyUserInfo"],
+        "users/user-information"
+    );
 
-    useEffect(() => {
-        if (isSuccessMyInfo) {
-            authContext?.setUser(myInfo);
-        } else if (isErrorMyInfo) {
-            toast.error("please try again later 😩")
-        }
-    }, [isSuccessMyInfo, isErrorMyInfo]);
+
 
     const deletePostHandler = (postId: string) => {
         let newObj = {
@@ -92,7 +86,7 @@ function PostItem(props: PostItemProps) {
         setTimeout(() => {
             setLikeEffect(false)
         }, 500)
-        if (listUserLiked.some(id => props.user.id === id.userid)) {
+        if (props.likes.some(id => props.user.id === id.userid)) {
             return;
         }
         handleLike(postid);
@@ -102,33 +96,8 @@ function PostItem(props: PostItemProps) {
         let newObjLikeToggle = {
             postid
         }
+        setLiked(prev => !prev)
         addPostLikeToggle(newObjLikeToggle)
-
-        if (authContext?.user) {
-            const newObjUpdateUserLiked = {
-                createdAt: new Date(),
-                postid: postid,
-                updatedAt: new Date(),
-                username: authContext?.user?.username,
-                userid: authContext?.user?._id,
-                _id: crypto.randomUUID(),
-                userPicture: {
-                    path: authContext?.user?.profilePicture.path,
-                    filename: authContext?.user?.profilePicture.filename
-                }
-            };
-
-
-            if (liked) {
-                let listUserLikedNew = [...listUserLiked]
-                let listUserLikedNewFilter = listUserLikedNew.filter(data => data.username !== authContext?.user?.username);
-                setListUserLiked(listUserLikedNewFilter)
-            } else {
-                setListUserLiked(prev => [...prev, newObjUpdateUserLiked])
-            }
-        } else {
-            toast.error("please try again 😩")
-        }
 
     }
 
@@ -138,40 +107,24 @@ function PostItem(props: PostItemProps) {
         let newObjSaveToggle = {
             postid
         }
+        setSaved(prev => !prev)
         addPostSaveToggle(newObjSaveToggle)
-        if (authContext?.user) {
-            if (saved) {
-                let listUserSavedNew = [...listUserSaved]
-                let listUserSavedNewFilter = listUserSavedNew.filter(data => data !== authContext?.user?._id);
-                setListUserSaved(listUserSavedNewFilter)
-            } else {
-                setListUserSaved(prev => [...prev, authContext?.user?._id || ''])
-            }
-        }
-        else {
-            toast.error("please try again 😩")
-        }
     }
 
     //for show liked
     useEffect(() => {
-        if (authContext?.user) {
-            let isLiked = listUserLiked.some(data => authContext?.user?.username === data.username);
+        if (isSuccessMyInfo && myInfo) {
+            let isLiked = props.likes.some(data => myInfo?._id === data.userid);
             setLiked(isLiked);
-        } else {
-            toast.error("please try again 😩")
-        }
-    }, [listUserLiked])
-
-    useEffect(() => {
-        if (authContext?.user) {
-            let isPosted = listUserSaved.some(data => authContext?.user?._id === data);
+            let isPosted = props.saved.some(data => myInfo?._id === data);
             setSaved(isPosted);
-        } else {
-            toast.error("please try again 😩")
         }
-    }, [listUserSaved])
+    }, [myInfo, isSuccessMyInfo])
 
+
+
+
+    // setting react slick
     const settings = {
         dots: true,
         infinite: false,
@@ -187,18 +140,17 @@ function PostItem(props: PostItemProps) {
         setComment(comment + emoji.native)
     }
 
-    const submitComment = (postid: string) => {
-        if(authContext?.user){
-            let newObjAddComment = {
-                postid,
-                title: "title",
-                content: comment
-            }
-    
-            addComment(newObjAddComment);
-        }
-        setComment('')
-    }
+    const submitComment = async (postid: string) => {
+        let newObjAddComment = {
+            postid,
+            title: "title",
+            content: comment
+        };
+        addComment(newObjAddComment);
+        setComment('');
+
+    };
+
 
     useEffect(() => {
         if (isErrorAddComment) {
@@ -231,20 +183,6 @@ function PostItem(props: PostItemProps) {
         }
     }, [isErroeDeleteComment, isSuccessDeleteComment])
 
-    useEffect(() => {
-        if (isErrorFollowToggle) {
-            if (errorFollow && (errorFollow as any).response) {
-                toast.error((errorFollow as any).response.data.error.message
-                )
-            }
-        }
-
-        if (isSuccessFollowToggle) {
-            toast.success(dataFollow.data.message,
-
-            )
-        }
-    }, [isErrorFollowToggle, isSuccessFollowToggle, dataFollow])
 
 
     // Check if the user is followed
@@ -265,7 +203,7 @@ function PostItem(props: PostItemProps) {
                     <Link to={`/profile/${props.user.id}`}><img draggable="false" className="w-10 h-10 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${props.user.userPicture.filename}`} alt="avatar" /></Link>
                     <Link to={`/profile/${props.user.id}`} className="text-black dark:text-white text-sm font-semibold">{props.user.username}</Link>
                 </div>
-                {authContext?.user?._id === props.user.id && (
+                {myInfo?._id === props.user.id && (
                     <button onClick={() => setPostDetailsToggle(true)} className="cursor-pointer text-black dark:text-white">{moreIcons}</button>
                 )}
             </div>
@@ -278,7 +216,7 @@ function PostItem(props: PostItemProps) {
                     height='h-auto'
                 >
                     <div className="flex flex-col w-full overflow-hidden rounded">
-                        {(authContext?.user?._id === props.user.id) && (
+                        {(myInfo?._id === props.user.id) && (
                             <button onClick={() => deletePostHandler(props._id)} className="flex bg-red-500 text-white items-center justify-between p-2.5 text-sm pl-4 cursor-pointer font-semibold hover:bg-red-400 duration-300 transition-all">
                                 Delete
                                 <div className='w-5 h-5'>
@@ -286,8 +224,11 @@ function PostItem(props: PostItemProps) {
                                 </div>
                             </button>
                         )}
-                        {authContext?.user?._id === props.user.id && (
-                            <button onClick={() => setUpdatePost(true)} className="flex text-black dark:text-white items-center justify-between p-2.5 text-sm pl-4 cursor-pointer bg-white dark:bg-black hover:bg-[#00376b1a] dark:hover:bg-gray-600 duration-300 transition-all">
+                        {myInfo?._id === props.user.id && (
+                            <button onClick={() => {
+                                setPostDetailsToggle(false)
+                                setUpdatePost(true)
+                            }} className="flex text-black dark:text-white items-center justify-between p-2.5 text-sm pl-4 cursor-pointer bg-white dark:bg-black hover:bg-[#00376b1a] dark:hover:bg-gray-600 duration-300 transition-all">
                                 Edit
                                 <div className='w-5 h-5 text-black dark:text-white'>
                                     {editPostIcon}
@@ -353,7 +294,7 @@ function PostItem(props: PostItemProps) {
                         </div>
 
                         {/* likes  */}
-                        <button onClick={() => setIsOpenShowLiked(true)} className="font-semibold text-sm cursor-pointer text-left text-black dark:text-white">{listUserLiked.length} likes</button>
+                        <button onClick={() => setIsOpenShowLiked(true)} className="font-semibold text-sm cursor-pointer text-left text-black dark:text-white">{props.likes.length} likes</button>
 
                         {/* comment */}
                         <div className="flex flex-auto items-center space-x-1 text-black dark:text-white">
@@ -393,7 +334,7 @@ function PostItem(props: PostItemProps) {
                                                 <p className="text-sm line-clamp-3">{c.content}</p>
                                                 <span className="text-xs text-gray-500">{<DateConverter date={c.createdAt} />}</span>
                                             </div>
-                                            {(props.user.id === authContext?.user?._id || c.userid === authContext?.user?._id) && (
+                                            {(props.user.id === myInfo?._id || c.userid === myInfo?._id) && (
                                                 <button onClick={() => {
                                                     let objDeleteComment = {
                                                         commentid: c._id
@@ -462,9 +403,9 @@ function PostItem(props: PostItemProps) {
                 title="List User Liked"
                 height='h-72'
             >
-                {listUserLiked.length > 0 ? (
+                {props.likes.length > 0 ? (
                     <div className='py-3 px-4 flex flex-col'>
-                        {listUserLiked.map((data, index) => (
+                        {props.likes.map((data, index) => (
                             <div key={index} className='flex items-center justify-between border-b dark:border-gray-300/20 border-gray-300 p-2'>
                                 <div className='flex items-center gap-2'>
                                     <Link className='shrink-0' to={`/profile/${data.userid}`}>
@@ -476,10 +417,13 @@ function PostItem(props: PostItemProps) {
                                     </div>
                                 </div>
                                 <div className='ml-5'>
-                                    {authContext?.user?._id !== data.userid && (
+                                    {myInfo?._id !== data.userid && (
                                         <button
                                             onClick={() => {
-                                                followToggle(data.userid);
+                                                const objFollow = {
+                                                    userIdToFollow : data.userid
+                                                }
+                                                followToggle(objFollow);
                                             }}
                                             className="font-medium transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow rounded px-2 md:px-6 py-1.5"
                                         >
