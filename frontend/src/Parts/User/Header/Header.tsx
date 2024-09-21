@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { likeIconOutline, logOutIcon, metaballsMenu, postUploadOutline, searchIcon } from '../../Components/SvgIcon/SvgIcon';
-import NewPost from '../../Components/Home/NewPost/NewPost';
+import { likeIconOutline, logOutIcon, metaballsMenu, postUploadOutline, searchIcon } from '../../../Components/SvgIcon/SvgIcon';
+import NewPost from '../../../Components/Home/NewPost/NewPost';
 import { FormControlLabel } from '@mui/material';
-import { MaterialUISwitch } from '../../Components/MaterialUISwitch/MaterialUISwitch';
-import { useThemeContext } from '../../Context/ThemeContext';
-import ShowDialogModal from '../../Components/ShowDialogModal/ShowDialogModal';
-import SearchBox from '../../Components/Header/SearchBox/SearchBox';
+import { MaterialUISwitch } from '../../../Components/MaterialUISwitch/MaterialUISwitch';
+import { useThemeContext } from '../../../Context/ThemeContext';
+import ShowDialogModal from '../../../Components/ShowDialogModal/ShowDialogModal';
+import SearchBox from '../../../Components/Header/SearchBox/SearchBox';
 import Cookies from "js-cookie";
 
 

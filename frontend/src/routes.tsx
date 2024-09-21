@@ -10,8 +10,8 @@ import Register from "./Page/Register/Register";
 import ResetPassword from "./Page/ResetPassword/ResetPassword";
 import SearchPosts from "./Page/SearchPosts/SearchPosts";
 import UpdatePassword from "./Page/UpdatePassword/UpdatePassword";
-import AdminPanel from "./Page/AdminPanel/AdminPanel";
 import Tickets from "./Page/Tickets/Tickets";
+import Dashboard from "./Page/Dashboard/Dashboard";
 
 
 const routes = [
@@ -23,7 +23,7 @@ const routes = [
     { path: "/tickets", element: <PrivateRoutes><Tickets /></PrivateRoutes> },
 
 
-    { path: "/dashboard", element: <PrivateRoutes><AdminPanel /></PrivateRoutes> },
+    { path: "/dashboard", element: <PrivateRoutes><Dashboard /></PrivateRoutes> },
 
     { path: "/login", element: <Login /> },
     { path: "/register", element: <Register /> },

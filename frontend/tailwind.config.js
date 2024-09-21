@@ -54,6 +54,12 @@ export default {
         },
         error : {
           red : '#EF4056'
+        },
+        admin : {
+          navy : "#24303F",
+          black : "#1A222C",
+          low : "#dee4ee",
+          High: "#8a99af",
         }
       }
     },

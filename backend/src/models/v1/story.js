@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const schema = new mongoose.Schema(
   {
-    media: [{ type: mongoose.Schema.Types.ObjectId, ref: "mediaStory" }],
+    media: [{ type: mongoose.Schema.Types.ObjectId, ref: "mediaStory" }], // ارتباط با mediaStory
     user: {
       id: {
         type: mongoose.Schema.Types.ObjectId,
@@ -18,6 +18,11 @@ const schema = new mongoose.Schema(
         path: { type: String, required: true },
         filename: { type: String, required: true }
       }
+    },
+    expiresAt: {
+      type: Date,
+      default: () => Date.now() + 24 * 60 * 60 * 1000, // ۲۴ ساعت بعد از زمان ایجاد
+      index: { expires: '24h' }, // TTL index برای حذف خودکار بعد از ۲۴ ساعت
     },
   },
   {

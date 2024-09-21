@@ -4,13 +4,13 @@ import EmojiPicker from '@emoji-mart/react';
 import Message from '../../Components/Chats/Message/Message';
 import io, { Socket } from 'socket.io-client';
 import toast from 'react-hot-toast';
-import Header from '../../Parts/Header/Header';
-import SideBarLeft from '../../Parts/SideBarLeft/SideBarLeft';
 import { emojiIcon } from '../../Components/SvgIcon/SvgIcon';
 import useGetData from '../../hooks/useGetData';
 import { userInformation } from '../../hooks/user/user.types';
 import SpinLoader from '../../Components/SpinLoader/SpinLoader';
-import SideBarBottom from '../../Parts/SideBarBottom/SideBarBottom';
+import SideBarLeft from '../../Parts/User/SideBarLeft/SideBarLeft'
+import Header from '../../Parts/User/Header/Header'
+import SideBarBottom from '../../Parts/User/SideBarBottom/SideBarBottom'
 
 
 
@@ -248,7 +248,7 @@ function Inbox() {
                         <div className="flex py-3 px-6 border-b dark:border-gray-300/20 border-gray-300 items-center justify-between">
                             <div className="flex gap-2 items-center">
                                 <div className="w-8 h-8 relative">
-                                    <img draggable="false" className="w-7 h-7 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${myInfo?.profilePicture.filename}`} alt="profile" />
+                                    <img draggable="false" className="w-7 h-7 rounded-full object-cover" src={`src/assets/images/group.jpg`} alt="profile" />
 
                                     {/* {onlineUsers[informationUserData.user._id] && (
                                             <div className="absolute -right-0.5 -bottom-0.5 h-3 w-3 bg-green-500 rounded-full"></div>

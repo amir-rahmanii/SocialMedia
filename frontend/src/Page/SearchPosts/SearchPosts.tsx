@@ -1,13 +1,13 @@
 import React, {  useEffect } from 'react'
 import SpinLoader from '../../Components/SpinLoader/SpinLoader'
 import MetaData from '../../Components/MetaData/MetaData'
-import Header from '../../Parts/Header/Header'
 import { useParams } from 'react-router-dom'
 import PostContainerUser from '../../Components/User/PostContainerUser/PostContainerUser'
-import SideBarLeft from '../../Parts/SideBarLeft/SideBarLeft'
-import SideBarBottom from '../../Parts/SideBarBottom/SideBarBottom'
 import useGetData from '../../hooks/useGetData'
 import { Post } from '../../hooks/post/post.types'
+import SideBarLeft from '../../Parts/User/SideBarLeft/SideBarLeft'
+import Header from '../../Parts/User/Header/Header'
+import SideBarBottom from '../../Parts/User/SideBarBottom/SideBarBottom'
 
 function SearchPosts() {
   const { title } = useParams()

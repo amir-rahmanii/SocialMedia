@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import MetaData from '../../Components/MetaData/MetaData'
-import Header from '../../Parts/Header/Header'
-import SideBarLeft from '../../Parts/SideBarLeft/SideBarLeft'
-import SideBarBottom from '../../Parts/SideBarBottom/SideBarBottom'
 import TableLogin from '../../Components/User/TableLogin/TableLogin'
 import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Radio, RadioGroup } from '@mui/material'
 import FilterDate from '../../Components/FilterDate/FilterDate'
@@ -14,6 +11,9 @@ import SkeletonTable from '../../Components/SkeletonTable/SkeletonTable'
 import ShowDialogModal from '../../Components/ShowDialogModal/ShowDialogModal'
 import useGetData from '../../hooks/useGetData'
 import { userInformation } from '../../hooks/user/user.types'
+import SideBarLeft from '../../Parts/User/SideBarLeft/SideBarLeft'
+import Header from '../../Parts/User/Header/Header'
+import SideBarBottom from '../../Parts/User/SideBarBottom/SideBarBottom'
 
 // Enable the 'isBetween' plugin for dayjs
 dayjs.extend(isBetween);

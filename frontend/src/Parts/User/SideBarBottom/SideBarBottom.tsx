@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { exploreOutline, homeFill, messageOutline, ticketIcon } from '../../Components/SvgIcon/SvgIcon'
-import useGetData from '../../hooks/useGetData';
-import { userInformation } from '../../hooks/user/user.types';
+import { exploreOutline, homeFill, messageOutline, ticketIcon } from '../../../Components/SvgIcon/SvgIcon'
+import useGetData from '../../../hooks/useGetData';
+import { userInformation } from '../../../hooks/user/user.types';
 
 function SideBarBottom() {
 
