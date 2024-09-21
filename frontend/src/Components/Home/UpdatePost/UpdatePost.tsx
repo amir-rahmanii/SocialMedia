@@ -149,7 +149,7 @@ function UpdatePost({ postInfo, updatePost, setUpdatePost }: UpdatePostProps) {
                     )}
 
 
-                    <div className="flex flex-col border-l sm:h-[80vh] w-full bg-white dark:bg-black">
+                    <div className="flex flex-col border-l md:h-[80vh] w-full bg-white dark:bg-black">
 
                         {isSuccessMyInfo && (
                             <div className="flex gap-3 px-3 py-2 items-center">

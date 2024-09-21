@@ -1,5 +1,5 @@
-import React, {  useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { exploreOutline, homeFill, likeIconOutline, logOutIcon, messageOutline, postUploadOutline, searchIcon, ticketIcon } from '../../Components/SvgIcon/SvgIcon'
 import NewPost from '../../Components/Home/NewPost/NewPost';
 import { FormControlLabel } from '@mui/material';
@@ -9,6 +9,8 @@ import ShowDialogModal from '../../Components/ShowDialogModal/ShowDialogModal';
 import SearchBox from '../../Components/Header/SearchBox/SearchBox';
 import useGetData from '../../hooks/useGetData';
 import { userInformation } from '../../hooks/user/user.types';
+import Cookies from "js-cookie";
+
 
 function SideBarLeft() {
 
@@ -17,12 +19,20 @@ function SideBarLeft() {
     const [theme, setTheme] = useState(
         localStorage.getItem("theme") === "dark" ? true : false
     );
+    const navigate = useNavigate();
     const { toggleTheme, themeMode } = useThemeContext();
 
-    const { data: myInfo , isSuccess} = useGetData<userInformation>(
+    const { data: myInfo, isSuccess } = useGetData<userInformation>(
         ["getMyUserInfo"],
         "users/user-information"
     );
+
+
+    const logOutHandler = () => {
+        Cookies.remove("access-token");
+        Cookies.remove("refresh-token");
+        navigate("/login")
+    }
 
 
 
@@ -83,7 +93,7 @@ function SideBarLeft() {
                         </Link>
                     </li>
 
-          
+
                     <li className='p-3 rounded-md hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 group'>
                         <Link className='text-base/5 flex items-center justify-center xl:justify-start gap-3 font-bold text-black dark:text-white' to={`/profile/${myInfo?._id}`}>
                             <div className='w-6 h-6 group-hover:scale-110 transition-all duration-300'>
@@ -94,7 +104,7 @@ function SideBarLeft() {
                             <span className='hidden xl:block'>Profile</span>
                         </Link>
                     </li>
-              
+
                     <li onClick={() => { setNewPost(true) }} className='p-3 flex items-center justify-center xl:justify-start  rounded-md hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 group'>
                         <button className='text-base/5 gap-3 font-bold text-black flex items-center justify-start dark:text-white'>
                             <div className='w-6 h-6 group-hover:scale-110 transition-all duration-300'>
@@ -142,12 +152,12 @@ function SideBarLeft() {
 
                 </li>
                 <li className='p-3 rounded-md hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 group'>
-                    <Link className='text-base/5 flex items-center gap-3 justify-center xl:justify-start font-bold text-black dark:text-white' to='/'>
+                    <button onClick={logOutHandler} className='text-base/5 flex items-center gap-3 justify-center xl:justify-start font-bold text-black dark:text-white'>
                         <div className='w-6 h-6 group-hover:scale-110 transition-all duration-300'>
                             {logOutIcon}
                         </div>
                         <span className='hidden xl:block'>Log out</span>
-                    </Link>
+                    </button>
                 </li>
             </ul>
 

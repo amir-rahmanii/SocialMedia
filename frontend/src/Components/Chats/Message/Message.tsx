@@ -142,14 +142,7 @@ const Message = (props: MessageProps) => {
                 </div>
             </ShowDialogModal>
 
-            {/* {showEditMessageBox && (
-                <MessageEdited
-                    handleEditMessage={props.handleEditMessage}
-                    msgId={props.message._id}
-                    msgContent={props.message.content}
-                    showEditMessageBox={showEditMessageBox}
-                    setShowEditMessageBox={setShowEditMessageBox} />
-            )} */}
+    
             {/* editMessage */}
             <ShowDialogModal
                 isOpenShowLDialogModal={showEditMessageBox}
@@ -157,12 +150,12 @@ const Message = (props: MessageProps) => {
                 title="Edit Message Box"
                 height="h-auto"
             >
-                <form onSubmit={e => e.preventDefault()} className='flex flex-col gap-2 px-4'>
+                <form onSubmit={e => e.preventDefault()} className='flex mt-3 flex-col gap-2 px-4'>
                     <TextField
                         label="New Message"
                         name="New Message"
                         inputRef={textAreaRef}
-                        className='border border-gray-500 p-3 font-medium rounded text-gray-500'
+                        className='border border-gray-500  font-medium rounded text-gray-500'
                         placeholder='Write...'
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}>

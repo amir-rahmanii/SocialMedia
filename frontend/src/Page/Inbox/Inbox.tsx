@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState } from 'react'
 import MetaData from '../../Components/MetaData/MetaData'
 import EmojiPicker from '@emoji-mart/react';
-import SpinLoader from '../../Components/SpinLoader/SpinLoader';
 import Message from '../../Components/Chats/Message/Message';
 import io, { Socket } from 'socket.io-client';
 import toast from 'react-hot-toast';
@@ -10,6 +9,8 @@ import SideBarLeft from '../../Parts/SideBarLeft/SideBarLeft';
 import { emojiIcon } from '../../Components/SvgIcon/SvgIcon';
 import useGetData from '../../hooks/useGetData';
 import { userInformation } from '../../hooks/user/user.types';
+import SpinLoader from '../../Components/SpinLoader/SpinLoader';
+import SideBarBottom from '../../Parts/SideBarBottom/SideBarBottom';
 
 
 
@@ -54,12 +55,9 @@ function Inbox() {
     const scrollRef = useRef<HTMLDivElement>(null);
     const [typingUsers, setTypingUsers] = useState<string[]>([]);
     const [countUsersOnline, setCountUsersOnline] = useState(0)
-    const [backgroundColorChat, setBackgroundColorChat] = useState(
-        localStorage.getItem("chatBg") || "#FFFFFF"
-    )
     const [showEmojis, setShowEmojis] = useState(false);
 
-    const { data: myInfo , isLoading : isLoadingMyInfo , isSuccess : isSuccessMyInfo} = useGetData<userInformation>(
+    const { data: myInfo } = useGetData<userInformation>(
         ["getMyUserInfo"],
         "users/user-information"
     );
@@ -135,13 +133,6 @@ function Inbox() {
         return () => {
             newSocket.disconnect();
             newSocket.off("connect");
-            newSocket.off("initial messages");
-            newSocket.off("chat message");
-            newSocket.off('typing users');
-            newSocket.off("online users");
-            newSocket.off("message liked");
-            newSocket.off("message deleted");
-            newSocket.off("message edited");
         };
     }, []);
 
@@ -249,34 +240,8 @@ function Inbox() {
             <MetaData title="Instagram • Direct" />
             <Header />
             <SideBarLeft />
-            <div className="mt-14 xl:mr-32 pb-4 rounded h-[90vh] md:w-4/6 mx-auto bg-white dark:bg-black">
+            <div className="mt-14 xl:mr-32 pb-4 rounded h-[calc(100vh-100px)] md:w-4/6 mx-auto bg-white dark:bg-black">
                 <div className={`flex border dark:border-gray-300/20 border-gray-300 h-full rounded w-full`}>
-                    {/* <div className="flex flex-col w-full sm:w-4/6 gap-2 border-2">
-                        {isLoadingInformationAllUser ? (
-                            Array(5).fill("").map((el, i) => (<SkeletonUserItem key={i} />))
-                        ) : (
-                            <div className='flex flex-col gap-1 p-2'>
-                                {informationAllUser?.response?.users?.map((data) => (
-                                    <div key={data._id}>
-                                        {myInfo?._id  !== data._id && (
-                                            <div onClick={() => toUserIdHandler(data._id)} className='flex items-center justify-between border-b pb-2.5'>
-                                                <div className='flex items-center gap-2'>
-                                                    <Link to={`/profile/${data._id}`}>
-                                                        <img draggable="false" className="h-8 w-8 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/images/profiles/${data.profilePicture.filename}`} alt="avatar" />
-                                                    </Link>
-                                                    <div className='flex flex-col'>
-                                                        <Link to={`/profile/${data._id}`} className="text-sm font-semibold hover:underline">{data.username}</Link>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div> */}
-
-
                     <div className="flex flex-col justify-between w-full">
 
                         {/* header */}
@@ -301,18 +266,10 @@ function Inbox() {
 
                                 </div>
                             </div>
-                            <div className='flex items-center gap-1'>
-                                <input className='rounded' onChange={(e) => {
-                                    setBackgroundColorChat(e.target.value)
-                                    localStorage.setItem("chatBg", e.target.value)
-                                }} type="color" id="head" name="head" value={backgroundColorChat} />
-                                <label className='hidden text-black dark:text-white sm:block font-medium cursor-pointer' htmlFor='head'>Change BackGround</label>
-                            </div>
                         </div>
 
                         {/* messages */}
-                        <div className="w-full flex-1 flex flex-col gap-1.5 overflow-y-auto overflow-x-hidden p-4" style={{ backgroundColor: backgroundColorChat }}>
-
+                        <div className="w-full flex-1 flex flex-col gap-1.5 overflow-y-auto overflow-x-hidden p-4">
                             {allMessages.length > 0 ? (
                                 allMessages?.map((m) => (
                                     <React.Fragment key={m._id}>
@@ -322,19 +279,10 @@ function Inbox() {
                                     </React.Fragment>
                                 ))
                             ) : (
-                                <div className='text-2xl'>
-                                    Sorry, no messages have been registered yet 😩 
+                                <div>
+                                    <SpinLoader />
                                 </div>
                             )}
-                            {/* {isTyping &&
-                            <>
-                                <div className="flex items-center gap-3 max-w-xs">
-                                    <img draggable="false" loading="lazy" className="w-7 h-7 rounded-full object-cover" src={friend.avatar} alt="avatar" />
-                                    <span className="text-sm text-gray-500">typing...</span>
-                                </div>
-                                <div ref={scrollRef}></div>
-                            </>
-                        } */}
                         </div>
 
                         {/* message input */}
@@ -381,6 +329,7 @@ function Inbox() {
                 {/* <SearchModal open={showSearch} onClose={handleModalClose} /> */}
 
             </div>
+            <SideBarBottom/>
         </>
     )
 }
