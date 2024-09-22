@@ -2,8 +2,8 @@
 import { DatePicker } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
 import { PropsWithChildren } from 'react';
-import { userInformation } from '../../hooks/user/user.types';
 import useGetData from '../../hooks/useGetData';
+import { userInformation } from '../../hooks/user/user.types';
 
 
 
@@ -35,7 +35,7 @@ const FilterDate: React.FC<PropsWithChildren<FilterDateProps>> = ({
         setUntilPicker(newValueDate);
     };
 
-    const { data: myInfo } = useGetData<userInformation>(
+    const { data: myInfo, isSuccess: isSuccessMyInfo } = useGetData<userInformation>(
         ["getMyUserInfo"],
         "users/user-information"
     );

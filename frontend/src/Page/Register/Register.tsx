@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import Auth from '../../LayOut/Auth/Auth'
 import { TextField } from '@mui/material'
 import { Link, useNavigate } from 'react-router-dom'
@@ -12,6 +12,7 @@ import usePostData from '../../hooks/usePostData';
 function Register() {
 
     const navigate = useNavigate();
+
     const { mutate: registerUser, isLoading } = usePostData('users/register',
         'User created successfuly!',
         false,

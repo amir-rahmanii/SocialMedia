@@ -12,7 +12,6 @@ import useGetData from '../../../hooks/useGetData';
 import { userInformation } from '../../../hooks/user/user.types';
 import usePostData from '../../../hooks/usePostData';
 import { useQueryClient } from 'react-query';
-import { useParams } from 'react-router-dom';
 
 
 type NewPostProps = {
@@ -35,7 +34,9 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
         ["getMyUserInfo"],
         "users/user-information"
     );
-    const { userId } = useParams<string>();
+
+
+    // const { userId } = useParams<string>();
 
     const queryClient = useQueryClient();
     const { mutate: addNewPost, isLoading } = usePostData(
@@ -43,12 +44,12 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
         'Post Created successfuly',
         false,
         () => {
+            reset();
             setPostImage([])
             setPostPreview([])
             setdescription('')
             setNewPost(false)
-            reset();
-            queryClient.invalidateQueries(["getUserData" , userId]);
+            queryClient.invalidateQueries(["getUserData"]);
             queryClient.invalidateQueries(["AllPostAllUsers"]);
         },
         true
@@ -157,6 +158,8 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
                                 <span className="text-black dark:text-white text-sm font-semibold">{myInfo?.username}</span>
                             </div>
                         )}
+
+
 
 
                         <div className="p-3 w-full border-b dark:border-gray-300/20 border-gray-300 relative">

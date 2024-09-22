@@ -7,47 +7,6 @@ import { postUploadOutline } from '../../SvgIcon/SvgIcon';
 import useGetData from '../../../hooks/useGetData';
 import { Post } from '../../../hooks/post/post.types';
 
-// export type PostItemProps = {
-//     _id: string,
-//     saved: string[],
-//     comments: {
-//         title: string,
-//         content: string,
-//         createdAt: Date,
-//         postid: string,
-//         updatedAt: Date,
-//         userid: string,
-//         username: string,
-//         _id: string,
-//         userPicture: { path: string, filename: string }
-//     }[],
-//     description: string,
-//     hashtags: string,
-//     likes: {
-//         createdAt: Date,
-//         postid: string,
-//         updatedAt: Date,
-//         username: string,
-//         userid: string,
-//         _id: string,
-//         userPicture: { path: string, filename: string }
-//     }[],
-//     media: { _id: string, path: string, filename: string }[],
-//     title: string,
-//     user: {
-//         email: string,
-//         id: string,
-//         isban: boolean,
-//         name: string,
-//         role: "ADMIN" | "USER",
-//         username: string,
-//         userPicture: { path: string, filename: string }
-//     },
-//     createdAt: Date,
-//     updatedAt: Date,
-//     isSaved: boolean
-// }
-
 
 
 function PostsContainer() {

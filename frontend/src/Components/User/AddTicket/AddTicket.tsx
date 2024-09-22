@@ -1,14 +1,15 @@
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, } from '@mui/material'
-import React, {  useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import newTicketSchema from '../../../Validation/newTicket';
 import IsLoaderBtn from '../../IsLoaderBtn/IsLoaderBtn';
-import toast from 'react-hot-toast';
 import useGetData from '../../../hooks/useGetData';
 import { userInformation } from '../../../hooks/user/user.types';
 import usePostData from '../../../hooks/usePostData';
 import { useQueryClient } from 'react-query';
+import toast from 'react-hot-toast';
+
 
 function AddTicket() {
 
@@ -39,6 +40,8 @@ function AddTicket() {
         ["getMyUserInfo"],
         "users/user-information"
     );
+
+  
 
 
 
@@ -126,7 +129,7 @@ function AddTicket() {
                         department: departement,
                         description: data.description,
                         title: data.title,
-                        userId: myInfo._id,
+                        userId: myInfo?._id,
                         priority: priority,
                     }
                     

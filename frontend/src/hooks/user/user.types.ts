@@ -1,4 +1,5 @@
-import { PostItemProps } from "../../Components/Home/PostsContainer/PostsContainer"
+
+import { Post } from "../post/post.types"
 import { story } from "../story/story.types"
 
 export type userRegister = {
@@ -37,7 +38,7 @@ export type updatePassword = {
 export type profile =
     {
         user: userInformation,
-        posts: PostItemProps[],
+        posts: Post[],
         stories : story[]
     }
 

@@ -11,7 +11,7 @@ import DateConverter from '../../../utils/DateConverter';
 import { svgIconBrowser, svgIconOs } from '../../../utils/systemInfoConverterSvg';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useThemeContext } from '../../../Context/ThemeContext';
+import { useThemeContext } from '../../../Global/ThemeContext';
 
 export type TableLoginProps = {
     loginInformation?: {

@@ -1,13 +1,17 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { likeIconOutline, logOutIcon, metaballsMenu, postUploadOutline, searchIcon } from '../../../Components/SvgIcon/SvgIcon';
+import { dashboardIcon, logOutIcon, metaballsMenu, postUploadOutline, searchIcon } from '../../../Components/SvgIcon/SvgIcon';
 import NewPost from '../../../Components/Home/NewPost/NewPost';
 import { FormControlLabel } from '@mui/material';
 import { MaterialUISwitch } from '../../../Components/MaterialUISwitch/MaterialUISwitch';
-import { useThemeContext } from '../../../Context/ThemeContext';
+import { useThemeContext } from '../../../Global/ThemeContext';
 import ShowDialogModal from '../../../Components/ShowDialogModal/ShowDialogModal';
-import SearchBox from '../../../Components/Header/SearchBox/SearchBox';
+import SearchBox from '../../../Components/User/SearchBox/SearchBox';
 import Cookies from "js-cookie";
+import useGetData from '../../../hooks/useGetData';
+import { userInformation } from '../../../hooks/user/user.types';
+
+
 
 
 export default function Header() {
@@ -15,6 +19,8 @@ export default function Header() {
     const [theme, setTheme] = useState(
         localStorage.getItem("theme") === "dark" ? true : false
     );
+
+
     const [newPost, setNewPost] = useState(false);
     const { toggleTheme, themeMode } = useThemeContext();
 
@@ -28,6 +34,13 @@ export default function Header() {
         Cookies.remove("refresh-token");
         navigate("/login")
     }
+
+    const { data: myInfo, isSuccess: isSuccessMyInfo } = useGetData<userInformation>(
+        ["getMyUserInfo"],
+        "users/user-information"
+    );
+
+
 
 
 
@@ -114,14 +127,16 @@ export default function Header() {
                             </div>
                         </div>
                     </li>
+                    {myInfo?.role === "ADMIN" && (
                     <li className='p-3 hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 group border-b dark:border-gray-300/20 border-gray-300'>
                         <Link className='text-base/5 flex items-center justify-center  gap-3 font-bold text-black dark:text-white' to='/'>
                             <span className=''>Dashboard</span>
                             <div className='w-6 h-6 group-hover:scale-110 transition-all duration-300'>
-                                {likeIconOutline}
+                                {dashboardIcon}
                             </div>
                         </Link>
                     </li>
+                    )}
                     <li className='p-3 flex items-center justify-center  border-b dark:border-gray-300/20 border-gray-300  hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 group'>
                         <button onClick={logOutHandler} className='text-base/5 flex items-center gap-3 justify-center  font-bold text-black dark:text-white'>
                             <span>Log out</span>

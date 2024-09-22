@@ -615,7 +615,23 @@ exports.followToggle = async (req, res) => {
       await currentUser.save();
       await userToFollow.save();
 
-      return res.status(200).json({ message: "Unfollowed successfully." });
+      return res.status(200).json({
+        message: "Unfollowed successfully.",
+        user: {
+          currentUser: {
+            id: currentUser._id,
+            username: currentUser.username,
+            profilePicture: currentUser.profilePicture,
+            following: currentUser.following // تعداد افرادی که کاربر دنبال می‌کند
+          },
+          userToFollow: {
+            id: userToFollow._id,
+            username: userToFollow.username,
+            profilePicture: userToFollow.profilePicture,
+            followers: userToFollow.followers // تعداد دنبال‌کنندگان
+          }
+        }
+      });
     } else {
       // Follow
       const newFollow = new followToggleModel({
@@ -642,10 +658,18 @@ exports.followToggle = async (req, res) => {
       return res.status(200).json({
         message: "Followed successfully.",
         user: {
-          id: userToFollow._id,
-          username: userToFollow.username,
-          profilePicture: userToFollow.profilePicture,
-          followedAt: newFollow.followedAt
+          currentUser: {
+            id: currentUser._id,
+            username: currentUser.username,
+            profilePicture: currentUser.profilePicture,
+            following: currentUser.following, // تعداد افرادی که کاربر دنبال می‌کند
+          },
+          userToFollow: {
+            id: userToFollow._id,
+            username: userToFollow.username,
+            profilePicture: userToFollow.profilePicture,
+            followers: userToFollow.followers // تعداد دنبال‌کنندگان
+          }
         }
       });
     }
@@ -654,6 +678,7 @@ exports.followToggle = async (req, res) => {
     res.status(500).json({ message: "An error occurred.", error: err.message });
   }
 };
+
 
 
 

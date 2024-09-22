@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import SkeletonUserItem from '../../User/SkeletonUserItem/SkeletonUserItem';
 import { Link } from 'react-router-dom';
 import usePostData from '../../../hooks/usePostData';
-import { useQueryClient } from 'react-query';
 import useGetData from '../../../hooks/useGetData';
-import { userInformation, userInformationAll } from '../../../hooks/user/user.types';
+import {  userInformation, userInformationAll } from '../../../hooks/user/user.types';
+import { useQueryClient } from 'react-query';
 
 
 
@@ -16,19 +16,18 @@ function Sidebar() {
         "users/all-users"
     );
 
-    const { data: myInfo  , isLoading : isLoadingMyInfo} = useGetData<userInformation>(
+
+    const { data: myInfo, isSuccess: isSuccessMyInfo } = useGetData<userInformation>(
         ["getMyUserInfo"],
         "users/user-information"
     );
 
-
     const queryClient = useQueryClient();
-
     const { mutate: followToggle } = usePostData("users/followToggle"
         , "User Followed/UnFollowed succesfuly!",
         false,
         () => {
-            queryClient.invalidateQueries(["getMyUserInfo"]);
+            queryClient.invalidateQueries(['getMyUserInfo'])
         }
     );
 
@@ -54,7 +53,7 @@ function Sidebar() {
     return (
         <div className="fixed lg:right-[0px] hidden w-fit h-full lg:flex flex-col flex-auto m-8 xl:pr-8 -z-1">
             <div className="xl:ml-10 mt-4 flex flex-col lg:p-1 xl:p-4 rounded">
-                {isLoading && isLoadingMyInfo ? (
+                {isLoading ? (
                     Array(5).fill("").map((el, i) => (<SkeletonUserItem key={i} />))
                 ) : (
                     <div className='flex flex-col px-1 gap-1 overflow-y-auto h-72'>

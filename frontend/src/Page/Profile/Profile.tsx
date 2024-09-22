@@ -55,8 +55,8 @@ function Profile() {
   );
 
   //this is for all users data
-  const { data: informationUserData, isLoading: isLoadingUserData, isSuccess: isSucessGetUserData, isError } = useGetData<profile>(
-    ['getUserData', userId as string],
+  const { data: informationUserData, isLoading: isLoadingUserData, isSuccess: isSucessGetUserData, isError , refetch } = useGetData<profile>(
+    ['getUserData'],
     `users/user-allData/${userId}`,
   );
 
@@ -85,6 +85,7 @@ function Profile() {
       setSavedTab(false);
       setIsShowFollowers(false);
       setIsShowFollowing(false);
+      refetch()
     }
   }, [userId]);
 

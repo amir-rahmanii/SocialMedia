@@ -1,15 +1,16 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { exploreOutline, homeFill, likeIconOutline, logOutIcon, messageOutline, postUploadOutline, searchIcon, ticketIcon } from '../../../Components/SvgIcon/SvgIcon'
+import { dashboardIcon, exploreOutline, homeFill, logOutIcon, messageOutline, postUploadOutline, searchIcon, ticketIcon } from '../../../Components/SvgIcon/SvgIcon'
 import NewPost from '../../../Components/Home/NewPost/NewPost';
 import { FormControlLabel } from '@mui/material';
 import { MaterialUISwitch } from '../../../Components/MaterialUISwitch/MaterialUISwitch';
-import { useThemeContext } from '../../../Context/ThemeContext';
+import { useThemeContext } from '../../../Global/ThemeContext';
 import ShowDialogModal from '../../../Components/ShowDialogModal/ShowDialogModal';
-import SearchBox from '../../../Components/Header/SearchBox/SearchBox';
+import Cookies from "js-cookie";
+import SearchBox from '../../../Components/User/SearchBox/SearchBox';
 import useGetData from '../../../hooks/useGetData';
 import { userInformation } from '../../../hooks/user/user.types';
-import Cookies from "js-cookie";
+
 
 
 function SideBarLeft() {
@@ -22,10 +23,6 @@ function SideBarLeft() {
     const navigate = useNavigate();
     const { toggleTheme, themeMode } = useThemeContext();
 
-    const { data: myInfo, isSuccess } = useGetData<userInformation>(
-        ["getMyUserInfo"],
-        "users/user-information"
-    );
 
 
     const logOutHandler = () => {
@@ -33,6 +30,11 @@ function SideBarLeft() {
         Cookies.remove("refresh-token");
         navigate("/login")
     }
+
+    const { data: myInfo, isSuccess: isSuccessMyInfo } = useGetData<userInformation>(
+        ["getMyUserInfo"],
+        "users/user-information"
+    );
 
 
 
@@ -97,9 +99,8 @@ function SideBarLeft() {
                     <li className='p-3 rounded-md hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 group'>
                         <Link className='text-base/5 flex items-center justify-center xl:justify-start gap-3 font-bold text-black dark:text-white' to={`/profile/${myInfo?._id}`}>
                             <div className='w-6 h-6 group-hover:scale-110 transition-all duration-300'>
-                                {isSuccess && (
                                     <img loading='lazy' className='w-full h-full rounded-full object-cover' src={`http://localhost:4002/images/profiles/${myInfo?.profilePicture.filename}`} alt="profile" />
-                                )}
+
                             </div>
                             <span className='hidden xl:block'>Profile</span>
                         </Link>
@@ -113,14 +114,16 @@ function SideBarLeft() {
                             <span className='hidden xl:block'>Create</span>
                         </button>
                     </li>
+                    {myInfo?.role === "ADMIN" && (
                     <li className='p-3 rounded-md hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 group'>
                         <Link className='text-base/5 flex items-center justify-center xl:justify-start gap-3 font-bold text-black dark:text-white' to='/dashboard'>
                             <div className='w-6 h-6 group-hover:scale-110 transition-all duration-300'>
-                                {likeIconOutline}
+                                {dashboardIcon}
                             </div>
                             <span className='hidden xl:block'>Dashboard</span>
                         </Link>
                     </li>
+                    )}
                 </ul>
             </div>
 

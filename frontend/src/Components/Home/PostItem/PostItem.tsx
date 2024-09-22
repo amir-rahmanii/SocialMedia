@@ -41,7 +41,7 @@ const PostItem: React.FC<Post> = (props) => {
     const [updatePost, setUpdatePost] = useState(false)
     const [followedListUser, setFollowedListUser] = useState<string[]>([])
 
-    const { userId } = useParams<string>();
+    // const { userId } = useParams<string>();
 
     const queryClient = useQueryClient();
     const { mutate: followToggle } = usePostData("users/followToggle"
@@ -59,7 +59,7 @@ const PostItem: React.FC<Post> = (props) => {
         "post liked/unLiked successfuly!",
         false,
         () => {
-            queryClient.invalidateQueries(["getUserData" , userId]);
+            queryClient.invalidateQueries(["getUserData"]);
             queryClient.invalidateQueries(["AllPostAllUsers"]);
             queryClient.invalidateQueries(["mySavedPost"]);
             queryClient.invalidateQueries(["searchPosts"]);
@@ -71,7 +71,7 @@ const PostItem: React.FC<Post> = (props) => {
         "post saved/unSaved successfuly!",
         false,
         () => {
-            queryClient.invalidateQueries(["getUserData" , userId]);
+            queryClient.invalidateQueries(["getUserData"]);
             queryClient.invalidateQueries(["mySavedPost"]);
         }
     );
@@ -83,7 +83,7 @@ const PostItem: React.FC<Post> = (props) => {
         false,
         () => {
             setComment('');
-            queryClient.invalidateQueries(["getUserData" , userId]);
+            queryClient.invalidateQueries(["getUserData"]);
             queryClient.invalidateQueries(["AllPostAllUsers"]);
             queryClient.invalidateQueries(["mySavedPost"]);
             queryClient.invalidateQueries(["searchPosts"]);
@@ -95,7 +95,7 @@ const PostItem: React.FC<Post> = (props) => {
         `posts/delete-comment`,
         "Comment Deleted successfully",
         () => {
-            queryClient.invalidateQueries(["getUserData" , userId]);
+            queryClient.invalidateQueries(["getUserData"]);
             queryClient.invalidateQueries(["AllPostAllUsers"]);
             queryClient.invalidateQueries(["mySavedPost"]);
             queryClient.invalidateQueries(["searchPosts"]);
@@ -106,7 +106,7 @@ const PostItem: React.FC<Post> = (props) => {
         `posts/delete-post`,
         "Post Deleted successfully",
         () => {
-            queryClient.invalidateQueries(["getUserData" , userId]);
+            queryClient.invalidateQueries(["getUserData"]);
             queryClient.invalidateQueries(["AllPostAllUsers"]);
             queryClient.invalidateQueries(["mySavedPost"]);
             queryClient.invalidateQueries(["searchPosts"]);

@@ -13,7 +13,6 @@ import { userInformation } from '../../../hooks/user/user.types'
 import usePostData from '../../../hooks/usePostData'
 import { useQueryClient } from 'react-query'
 import { Post } from '../../../hooks/post/post.types'
-import { useParams } from 'react-router-dom'
 
 
 
@@ -33,7 +32,7 @@ function UpdatePost({ postInfo, updatePost, setUpdatePost }: UpdatePostProps) {
     const [description, setdescription] = useState(postInfo.description);
     const [showEmojis, setShowEmojis] = useState(false);
     // const [dragged, setDragged] = useState(false);
-    const { userId } = useParams<string>();
+    // const { userId } = useParams<string>();
     const queryClient = useQueryClient();
     const { mutate: updatedPost, isLoading} = usePostData(
         'posts/update-post',
@@ -45,7 +44,7 @@ function UpdatePost({ postInfo, updatePost, setUpdatePost }: UpdatePostProps) {
             setdescription('')
             setUpdatePost(false)
             reset();
-            queryClient.invalidateQueries(["getUserData" , userId]);
+            queryClient.invalidateQueries(["getUserData"]);
             queryClient.invalidateQueries(["AllPostAllUsers"]);
             queryClient.invalidateQueries(["mySavedPost"]);
             queryClient.invalidateQueries(["searchPosts"]);

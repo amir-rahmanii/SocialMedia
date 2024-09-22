@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState } from 'react'
 import MetaData from '../../Components/MetaData/MetaData'
 import EmojiPicker from '@emoji-mart/react';
-import Message from '../../Components/Chats/Message/Message';
+import Message from '../../Components/User/Message/Message';
 import io, { Socket } from 'socket.io-client';
 import toast from 'react-hot-toast';
 import { emojiIcon } from '../../Components/SvgIcon/SvgIcon';

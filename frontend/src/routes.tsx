@@ -12,6 +12,8 @@ import SearchPosts from "./Page/SearchPosts/SearchPosts";
 import UpdatePassword from "./Page/UpdatePassword/UpdatePassword";
 import Tickets from "./Page/Tickets/Tickets";
 import Dashboard from "./Page/Dashboard/Dashboard";
+import NotFound from "./Page/NotFound/NotFound";
+import Index from "./Page/Dashboard/Index";
 
 
 const routes = [
@@ -23,14 +25,18 @@ const routes = [
     { path: "/tickets", element: <PrivateRoutes><Tickets /></PrivateRoutes> },
 
 
-    { path: "/dashboard", element: <PrivateRoutes><Dashboard /></PrivateRoutes> },
+    {
+        path: "/dashboard", element: <PrivateRoutes><Dashboard /></PrivateRoutes>, children: [
+            { path: "", element: <Index /> },
+        ]
+    },
 
     { path: "/login", element: <Login /> },
     { path: "/register", element: <Register /> },
     { path: "/forget-password", element: <ForgetPassword /> },
     { path: "/reset-password", element: <ResetPassword /> },
     { path: "/update-password", element: <PrivateRoutes><UpdatePassword /></PrivateRoutes> },
-    { path: "*", element: <p>Not found</p> },
+    { path: "*", element: <NotFound /> },
 ]
 
 

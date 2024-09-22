@@ -5,13 +5,18 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import Toast from './Components/Toast/Toast'
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { ThemeProviderContext } from './Context/ThemeContext'
+import { ThemeProviderContext } from './Global/ThemeContext'
+
+import Cookies from 'js-cookie'
 import apiRequest from './Services/axios'
 
 
 function App() {
 
   const route = useRoutes(routes);
+
+  
+
 
 
 
@@ -21,11 +26,11 @@ function App() {
         staleTime: 0, // always consider data stale
         cacheTime: 1000 * 60 * 10,
         refetchOnWindowFocus: true,
-        retry : 1,
+        retry: 1,
       },
     }
   });
-  
+
 
   //change theme
   useEffect(() => {

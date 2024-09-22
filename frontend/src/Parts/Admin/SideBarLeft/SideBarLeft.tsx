@@ -9,7 +9,7 @@ function SideBarLeft() {
 
 
     return (
-        <div className='absolute font-medium bottom-0 top-0 left-0 w-[290px] bg-admin-navy py-4 px-6 overflow-auto'>
+        <div className='font-medium w-[290px] h-screen bg-admin-navy py-4 px-6 overflow-auto'>
             {/* header */}
             <div className='flex justify-center items-center pt-2 pb-6'>
                 <Link className='block' to='/'>
