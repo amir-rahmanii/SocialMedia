@@ -7,6 +7,7 @@ const userRouter = require("./modules/v1/users/user.routes");
 const postRouter = require("./modules/v1/posts/post.routes");
 const storyRouter = require("./modules/v1/story/story.routes");
 const ticketRouter = require("./modules/v1/ticket/ticket.routes");
+const countRouter = require("./modules/v1/count/count.routes");
 const errorHandler = require("./middlewares/errorHandler");
 const convertToTrim = require("./middlewares/convertToTrim");
 const systemInfoMiddleware = require("./middlewares/systemInfo");
@@ -28,7 +29,7 @@ app.use(cookieParser());
 app.use(cors({
   origin: "http://localhost:5173",
   credentials: true
-})); 
+}));
 
 app.use(setHeaders);
 
@@ -48,6 +49,7 @@ app.use("/users", userRouter);
 app.use("/posts", postRouter);
 app.use("/story", storyRouter);
 app.use("/ticket", ticketRouter);
+app.use("/count", countRouter);
 
 // 404 err handler
 app.use((req, res) => {
@@ -58,7 +60,7 @@ app.use((req, res) => {
 });
 
 // err handler
-app.use(errorHandler); 
+app.use(errorHandler);
 
 //export
 module.exports = app;

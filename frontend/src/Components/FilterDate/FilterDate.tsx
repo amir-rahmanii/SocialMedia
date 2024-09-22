@@ -68,7 +68,7 @@ const FilterDate: React.FC<PropsWithChildren<FilterDateProps>> = ({
                     <button
                         onClick={filterDateHandler}
                         type="submit"
-                        className={`font-medium py-2 rounded text-white w-full duration-300 transition-all bg-primary-blue`}
+                        className={`font-sans py-2 rounded text-white w-full duration-300 transition-all bg-primary-blue`}
                     >
                         Submit
                     </button>

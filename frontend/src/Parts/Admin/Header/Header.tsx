@@ -13,7 +13,7 @@ function Header() {
     );
 
     return (
-        <div className='font-medium top-0 px-11 py-4 flex items-center bg-admin-navy'>
+        <div className='font-sans fixed top-0 right-0 w-[calc(100%-290px)] left-[290px] px-11 py-4 flex items-center bg-admin-navy'>
             <div className='flex w-full items-center justify-between'>
                 <div className='flex items-center gap-4'>
                     <div className='text-admin-High w-5 h-5'>

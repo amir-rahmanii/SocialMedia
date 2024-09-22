@@ -96,7 +96,7 @@ function Sidebar() {
                                                         }
                                                         followToggle(objFollow);
                                                     }}
-                                                    className="font-medium transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow rounded px-6 py-1.5"
+                                                    className="font-sans transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow rounded px-6 py-1.5"
                                                 >
                                                     {followed.includes(data._id) ? "UnFollow" : "Follow"}
                                                 </button>

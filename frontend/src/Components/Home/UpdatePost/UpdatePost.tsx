@@ -248,7 +248,7 @@ function UpdatePost({ postInfo, updatePost, setUpdatePost }: UpdatePostProps) {
                                     updatedPost(formData)
 
 
-                                })} disabled={isLoading} type="submit" className={`font-medium py-2 rounded text-white w-full  duration-300 transition-all ${isLoading ? "bg-primaryLoading-blue" : "bg-primary-blue hover:bg-primaryhover-blue"}`}>
+                                })} disabled={isLoading} type="submit" className={`font-sans py-2 rounded text-white w-full  duration-300 transition-all ${isLoading ? "bg-primaryLoading-blue" : "bg-primary-blue hover:bg-primaryhover-blue"}`}>
                                     {isLoading ? <IsLoaderBtn /> : "Submit"}
                                 </button>
                             </div>

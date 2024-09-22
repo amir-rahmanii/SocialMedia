@@ -33,7 +33,7 @@ function SearchBox() {
                     type="search"
                     placeholder="Search Title"
                 />
-                <button className='flex bg-primary-blue hover:bg-primaryhover-blue font-medium py-2 rounded text-white w-full md:w-fit px-2 duration-300 transition-all items-center gap-1 justify-center' onClick={() => {
+                <button className='flex bg-primary-blue hover:bg-primaryhover-blue font-sans py-2 rounded text-white w-full md:w-fit px-2 duration-300 transition-all items-center gap-1 justify-center' onClick={() => {
                     if (searchTerm.trim()) {
                         navigate(`/search/${searchTerm}`)
                     }

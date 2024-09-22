@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { homeFill, logOutIcon, messageOutline, plusIcon, profileIcon, ticketIcon } from '../../../Components/SvgIcon/SvgIcon'
+import { homeFill, logOutIcon, messageOutline, plusIcon, postsIconFill, profileIcon, ticketIcon } from '../../../Components/SvgIcon/SvgIcon'
 
 
 function SideBarLeft() {
@@ -9,7 +9,7 @@ function SideBarLeft() {
 
 
     return (
-        <div className='font-medium w-[290px] h-screen bg-admin-navy py-4 px-6 overflow-auto'>
+        <div className='font-sans w-[290px] fixed  z-20 left-0 top-0 bottom-0 bg-admin-navy py-4 px-6 overflow-auto'>
             {/* header */}
             <div className='flex justify-center items-center pt-2 pb-6'>
                 <Link className='block' to='/'>
@@ -50,7 +50,7 @@ function SideBarLeft() {
                     <li>
                         <NavLink className={`flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300`} to='Home'>
                             <div className='w-6 h-6'>
-                                {plusIcon}
+                                {postsIconFill}
                             </div>
                             <span className='text-base'>Posts</span>
                         </NavLink>

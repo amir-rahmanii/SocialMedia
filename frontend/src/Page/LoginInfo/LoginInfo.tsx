@@ -163,7 +163,7 @@ function LoginInfo() {
             <Header />
             <div>
                 <div className='w-full md:w-4/6 md:ml-44 mt-16 lg:ml-60 xl:ml-72 mb-5'>
-                    <h3 className='text-2xl text-center my-7 font-medium text-black dark:text-white'>User Login info</h3>
+                    <h3 className='text-2xl text-center my-7 font-sans text-black dark:text-white'>User Login info</h3>
                     <div className='mb-3 px-3 flex items-center gap-3'>
                         <Button onClick={() => setIsShowOpenFilter(true)} variant="outlined">Filter</Button>
                         <Button
@@ -210,7 +210,7 @@ function LoginInfo() {
                     setUntilPicker={setUntilPicker}
                 >
                     <div className='flex flex-col gap-1'>
-                        <FormLabel className='font-medium text-base'>Browser</FormLabel>
+                        <FormLabel className='font-sans text-base'>Browser</FormLabel>
                         <FormGroup>
                             <div className='flex flex-wrap gap-3'>
                                 <FormControlLabel
@@ -267,7 +267,7 @@ function LoginInfo() {
 
 
                     <div className='flex flex-col gap-1'>
-                        <FormLabel className='font-medium text-base'>OS</FormLabel>
+                        <FormLabel className='font-sans text-base'>OS</FormLabel>
                         <FormGroup>
                             <div className='flex flex-wrap gap-3'>
                                 <FormControlLabel

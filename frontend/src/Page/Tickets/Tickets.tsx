@@ -145,7 +145,7 @@ function Tickets() {
             <div>
 
                 <div className='w-full md:w-4/6 md:ml-44 mt-16 lg:ml-60 xl:ml-72 mb-5'>
-                    <h3 className='text-2xl text-center my-7 font-medium text-black dark:text-white'>Add New Ticket</h3>
+                    <h3 className='text-2xl text-center my-7 font-sans text-black dark:text-white'>Add New Ticket</h3>
                     <AddTicket />
 
                     {isSuccess && allTicket?.length > 0 && (
@@ -195,7 +195,7 @@ function Tickets() {
                     setUntilPicker={setUntilPicker}
                 >
                     <div className='flex flex-col gap-1'>
-                        <FormLabel className='font-medium text-base'>Priority</FormLabel>
+                        <FormLabel className='font-sans text-base'>Priority</FormLabel>
                         <FormGroup>
                             <div className='flex flex-wrap gap-3'>
                                 <FormControlLabel
@@ -228,7 +228,7 @@ function Tickets() {
                     </div>
 
                     <div className='flex flex-col gap-1'>
-                        <FormLabel className='font-medium text-base'>Status</FormLabel>
+                        <FormLabel className='font-sans text-base'>Status</FormLabel>
                         <FormGroup>
                             <div className='flex flex-wrap gap-3'>
                                 <FormControlLabel

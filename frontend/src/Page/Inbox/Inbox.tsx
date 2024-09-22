@@ -255,12 +255,12 @@ function Inbox() {
                                         )} */}
                                 </div>
                                 <div className='flex flex-col'>
-                                    <span className="font-medium cursor-pointer text-black dark:text-white">Group Instagram</span>
+                                    <span className="font-sans cursor-pointer text-black dark:text-white">Group Instagram</span>
                                     {myInfo && (
                                         (typingUsers.length > 0 && !typingUsers.includes(myInfo.username)) ? (
-                                            <span className="font-medium cursor-pointer text-xs text-gray-500">{typingUsers.join(', ')} is Typing...</span>
+                                            <span className="font-sans cursor-pointer text-xs text-gray-500">{typingUsers.join(', ')} is Typing...</span>
                                         ) : (
-                                            <span className="font-medium cursor-pointer text-xs text-gray-500">{countUsersOnline} Users Online</span>
+                                            <span className="font-sans cursor-pointer text-xs text-gray-500">{countUsersOnline} Users Online</span>
                                         )
                                     )}
 
@@ -311,7 +311,7 @@ function Inbox() {
                                 required
                             />
                             {message.trim().length > 0 ?
-                                <button onClick={sendMessageHandler} className="text-primary-blue font-medium text-sm">Send</button>
+                                <button onClick={sendMessageHandler} className="text-primary-blue font-sans text-sm">Send</button>
                                 :
                                 <div className='text-black dark:text-white flex gap-2'>
                                     <svg className="cursor-pointer" aria-label="Add Photo or Video" color="currentColor" fill="currentColor" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M6.549 5.013A1.557 1.557 0 108.106 6.57a1.557 1.557 0 00-1.557-1.557z" fillRule="evenodd"></path><path d="M2 18.605l3.901-3.9a.908.908 0 011.284 0l2.807 2.806a.908.908 0 001.283 0l5.534-5.534a.908.908 0 011.283 0l3.905 3.905" fill="none" stroke="currentColor" strokeLinejoin="round" strokeWidth="2"></path><path d="M18.44 2.004A3.56 3.56 0 0122 5.564h0v12.873a3.56 3.56 0 01-3.56 3.56H5.568a3.56 3.56 0 01-3.56-3.56V5.563a3.56 3.56 0 013.56-3.56z" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"></path></svg>

@@ -102,7 +102,7 @@ export default function TableLogin({ loginInformation }: TableLoginProps) {
                     )}
                 </>
             ) : (
-                <p className='font-medium text-lg text-center py-4'>No data found with this filter 😩</p>
+                <p className='font-sans text-lg text-center py-4'>No data found with this filter 😩</p>
             )}
         </Paper>
     );

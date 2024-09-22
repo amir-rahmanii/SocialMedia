@@ -209,7 +209,7 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
                         )}
                     </>
                 ) : (
-                    <p className='font-medium  text-lg text-center py-4'>
+                    <p className='font-sans  text-lg text-center py-4'>
                         You have not registered a ticket yet or no ticket was found with this filter 😩</p>
                 )}
             </Paper>
@@ -224,7 +224,7 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
                 <div className="self-end flex flex-col p-2">
                     <div className="flex justify-between items-start text-white bg-violet-600 rounded-3xl max-w-[260px] px-4  py-3 overflow-hidden">
                         <div className=" flex  flex-col gap-1.5 text-sm ">
-                            <span className='text-sm font-medium text-wrap'>{infoMessageUser?.description}</span>
+                            <span className='text-sm font-sans text-wrap'>{infoMessageUser?.description}</span>
                             <div className="flex justify-between items-center mt-1">
                                 <span className="text-xs"><DateConverter date={infoMessageUser?.createdAt} /></span>
                             </div>
@@ -237,7 +237,7 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
                             <div className="self-end flex flex-col p-2">
                                 <div className="flex justify-between items-start text-white bg-violet-600 rounded-3xl max-w-[260px] px-4 py-3 overflow-hidden">
                                     <div className=" flex flex-col gap-1.5 text-sm">
-                                        <p className='text-sm font-medium text-wrap'>{data.message}</p>
+                                        <p className='text-sm font-sans text-wrap'>{data.message}</p>
                                         <div className="flex justify-between items-center mt-1">
                                             <span className="text-xs"><DateConverter date={data.responseDate} /></span>
                                         </div>
@@ -251,7 +251,7 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
                                     <span className="text-xs text-gray-500 px-3 py-1">{data.senderUsername} ( {infoMessageUser?.department} )</span>
                                     <div className="flex flex-col">
                                         <div className="px-4  flex flex-col gap-1.5 py-3 text-sm bg-gray-200 rounded-3xl max-w-[260px] overflow-hidden">
-                                            <span className="text-black text-sm font-medium text-wrap">{data.message}</span>
+                                            <span className="text-black text-sm font-sans text-wrap">{data.message}</span>
                                             <div className="flex justify-between items-center mt-1">
                                                 <span className="text-xs text-gray-500"><DateConverter date={data.responseDate} /></span>
                                             </div>
@@ -275,7 +275,7 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
                             required
                         />
                         {message.trim().length > 0 &&
-                            <button onClick={sendMessageHandler} className="text-primary-blue font-medium text-sm">Send</button>
+                            <button onClick={sendMessageHandler} className="text-primary-blue font-sans text-sm">Send</button>
                         }
                     </form>
                 ) : (
@@ -286,7 +286,7 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
                         <div className="flex flex-col ">
                             <div className="flex flex-col">
                                 <div className="px-4  flex flex-col gap-1.5 py-3 text-sm bg-red-400/30 rounded-3xl max-w-xs overflow-hidden">
-                                    <span className="dark:text-gray-200 text-slate-600 text-sm font-medium text-wrap">
+                                    <span className="dark:text-gray-200 text-slate-600 text-sm font-sans text-wrap">
                                         This ticket is closed, but please rate the admins' response. 😩</span>
                                     <Rating
                                         name="simple-controlled"

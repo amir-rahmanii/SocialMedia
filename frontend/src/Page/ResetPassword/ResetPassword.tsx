@@ -57,11 +57,11 @@ function ResetPassword() {
                             </div>
                             <button onClick={handleSubmit((data) => {
                                 resetPassword({ token: token, new_password: data.password })
-                            })} disabled={isLoading} type="submit" className={`font-medium py-2 rounded text-white w-full  duration-300 transition-all ${isLoading ? "bg-primaryLoading-blue" : "bg-primary-blue hover:bg-primaryhover-blue"}`}>
+                            })} disabled={isLoading} type="submit" className={`font-sans py-2 rounded text-white w-full  duration-300 transition-all ${isLoading ? "bg-primaryLoading-blue" : "bg-primary-blue hover:bg-primaryhover-blue"}`}>
                                 {isLoading ? <IsLoaderBtn /> : "Submit"}
                             </button>
                             <span className="my-3 text-gray-700">OR</span>
-                            <Link to="/forget-password" className="text-sm font-medium text-blue-800">Forgot password?</Link>
+                            <Link to="/forget-password" className="text-sm font-sans text-blue-800">Forgot password?</Link>
                         </form>
                     </div>
 

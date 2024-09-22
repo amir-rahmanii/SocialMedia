@@ -60,6 +60,8 @@ export default {
           black : "#1A222C",
           low : "#dee4ee",
           High: "#8a99af",
+          plus: "#10B981",
+          minus: "#259AE6",
         }
       }
     },

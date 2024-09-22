@@ -218,7 +218,7 @@ function Profile() {
 
                   {myInfo?._id === informationUserData?.user._id && (
                     <div>
-                      <Link to="/update-password" className="text-black dark:text-white border flex gap-2 items-center font-medium hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 text-sm rounded px-2 py-1">Change Password {settingsIcon}</Link>
+                      <Link to="/update-password" className="text-black dark:text-white border flex gap-2 items-center font-sans hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 text-sm rounded px-2 py-1">Change Password {settingsIcon}</Link>
                     </div>
                   )}
 
@@ -265,7 +265,7 @@ function Profile() {
                                           }
                                           followToggle(objFollow);
                                         }}
-                                        className="font-medium transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow rounded px-6 py-1.5"
+                                        className="font-sans transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow rounded px-6 py-1.5"
                                       >
                                         {followedList.includes(data.userId) ? "UnFollow" : "Follow"}
                                       </button>
@@ -317,7 +317,7 @@ function Profile() {
                                           }
                                           followToggle(objFollow);
                                         }}
-                                        className="font-medium transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow rounded px-6 py-1.5"
+                                        className="font-sans transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow rounded px-6 py-1.5"
                                       >
                                         {followedList.includes(data.userId) ? "UnFollow" : "Follow"}
                                       </button>
@@ -340,10 +340,10 @@ function Profile() {
 
                 {/* bio */}
                 <div className="max-w-full text-black dark:text-white">
-                  <p className="font-medium">{informationUserData?.user.name}</p>
+                  <p className="font-sans">{informationUserData?.user.name}</p>
                   <p className="whitespace-pre-line">Lorem ipsum</p>
 
-                  <a href={"https://chatgpt.com/"} target="_blank" className="text-blue-900 font-medium">{new URL("https://chatgpt.com/c/b972c579-d4f1-4075-8a2c-c5a11bbbc486").hostname}</a>
+                  <a href={"https://chatgpt.com/"} target="_blank" className="text-blue-900 font-sans">{new URL("https://chatgpt.com/c/b972c579-d4f1-4075-8a2c-c5a11bbbc486").hostname}</a>
 
                 </div>
 
@@ -354,7 +354,7 @@ function Profile() {
                       userIdToFollow: informationUserData?.user._id
                     }
                     followToggle(objFollow);
-                  }} className=" sm:max-w-[21.5rem] font-medium transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow rounded py-1.5">{followed ? "UnFollow" : "Follow"}</button>
+                  }} className=" sm:max-w-[21.5rem] font-sans transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow rounded py-1.5">{followed ? "UnFollow" : "Follow"}</button>
                 )}
               </div>
 
@@ -368,22 +368,22 @@ function Profile() {
               <div className="flex gap-12 justify-center text-black dark:text-white">
                 <span onClick={() => {
                   setSavedTab(false)
-                }} className={`${savedTab ? 'text-gray-400' : 'border-t border-black dark:border-white'} py-3 cursor-pointer  flex items-center text-[13px] uppercase gap-3 tracking-[1px] font-medium`}>
+                }} className={`${savedTab ? 'text-gray-400' : 'border-t border-black dark:border-white'} py-3 cursor-pointer  flex items-center text-[13px] uppercase gap-3 tracking-[1px] font-sans`}>
                   {savedTab ? postsIconOutline : postsIconFill} posts</span>
 
                 {myInfo?._id === informationUserData?.user._id && (
                   <span onClick={() => {
                     setSavedTab(true)
-                  }} className={`${savedTab ? 'border-t border-black dark:border-white' : 'text-gray-400'} py-3 cursor-pointer flex items-center text-[13px] uppercase gap-3 tracking-[1px] font-medium`}>
+                  }} className={`${savedTab ? 'border-t border-black dark:border-white' : 'text-gray-400'} py-3 cursor-pointer flex items-center text-[13px] uppercase gap-3 tracking-[1px] font-sans`}>
                     {savedTab ? savedIconFill : savedIconOutline} saved</span>
                 )}
 
-                <span className="py-3 flex items-center text-gray-400 text-[13px] uppercase gap-3 tracking-[1px] font-medium">
+                <span className="py-3 flex items-center text-gray-400 text-[13px] uppercase gap-3 tracking-[1px] font-sans">
                   <div className='w-4 h-4 text-gray-400'>
                     {reelsIcon}
                   </div>
                   reels</span>
-                <span className="py-3 hidden sm:flex items-center text-gray-400 text-[13px] uppercase gap-3 tracking-[1px] font-medium">
+                <span className="py-3 hidden sm:flex items-center text-gray-400 text-[13px] uppercase gap-3 tracking-[1px] font-sans">
                   {taggedIcon} tagged</span>
               </div>
 
@@ -445,7 +445,7 @@ function Profile() {
 
               </div>
               <div className="mx-auto flex flex-col items-center">
-                <h4 className="font-medium text-lg sm:text-xl">Start capturing and sharing your moments.</h4>
+                <h4 className="font-sans text-lg sm:text-xl">Start capturing and sharing your moments.</h4>
                 <p>Get the app to share your first photo or video.</p>
               </div>
 

@@ -20,11 +20,11 @@ function Dashboard() {
     <>
       {isSuccess && (
         myInfo?.role === "ADMIN" ? (
-          <div className='bg-admin-black font-medium'>
-            <div className='flex'>
-              <SideBarLeft />
-              <div className='flex flex-col w-full'>
-                <Header />
+          <div className='bg-admin-black font-sans min-h-screen'>
+            <SideBarLeft />
+            <Header />
+            <div className="ml-64 mt-16 p-4">
+              <div className="flex gap-2 h-full w-full pt-3">
                 <Outlet />
               </div>
             </div>

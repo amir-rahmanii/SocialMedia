@@ -73,8 +73,8 @@ function AddNewStory({ showAddStory, setShowAddStory }: AddNewStoryProps) {
         <Dialog open={showAddStory} onClose={() => setShowAddStory(false)} maxWidth='xl'>
             <div className="flex flex-col max-w-4xl border dark:border-gray-300/20 border-gray-300 ">
                 <div className="bg-white dark:bg-black py-3 border-b dark:border-gray-300/20 border-gray-300  px-4 flex justify-between w-full">
-                    <span className="font-medium text-black dark:text-white ">Create new Story</span>
-                    <button onClick={() => setShowAddStory(false)} className="text-black dark:text-white  font-medium ml-5 w-5 h-5">{closeIcon}</button>
+                    <span className="font-sans text-black dark:text-white ">Create new Story</span>
+                    <button onClick={() => setShowAddStory(false)} className="text-black dark:text-white  font-sans ml-5 w-5 h-5">{closeIcon}</button>
                 </div>
 
                 <div className="flex items-center bg-white dark:bg-black flex-col w-full">
@@ -110,7 +110,7 @@ function AddNewStory({ showAddStory, setShowAddStory }: AddNewStoryProps) {
                                     setPostImage(null);
                                     setPostPreview(null);
                                     handleStartCamera()
-                                }} className="text-white font-medium p-2 gap-1 rounded   flex items-center bg-red-500 mt-2">
+                                }} className="text-white font-sans p-2 gap-1 rounded   flex items-center bg-red-500 mt-2">
                                     Remove Photo
                                     <div className='w-5 h-5'>
                                         {deleteIcon}
@@ -140,7 +140,7 @@ function AddNewStory({ showAddStory, setShowAddStory }: AddNewStoryProps) {
 
 
 
-                                })} disabled={isLoading} type="submit" className={`font-medium py-2 px-4 rounded text-white w-full  duration-300 transition-all ${isLoading ? "bg-primaryLoading-blue" : "bg-primary-blue hover:bg-primaryhover-blue"}`}>
+                                })} disabled={isLoading} type="submit" className={`font-sans py-2 px-4 rounded text-white w-full  duration-300 transition-all ${isLoading ? "bg-primaryLoading-blue" : "bg-primary-blue hover:bg-primaryhover-blue"}`}>
                                     {isLoading ? <IsLoaderBtn /> : "Upload"}
                                 </button>
                             </div>

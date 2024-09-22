@@ -155,12 +155,12 @@ const Message = (props: MessageProps) => {
                         label="New Message"
                         name="New Message"
                         inputRef={textAreaRef}
-                        className='border border-gray-500  font-medium rounded text-gray-500'
+                        className='border border-gray-500  font-sans rounded text-gray-500'
                         placeholder='Write...'
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}>
                     </TextField>
-                    <button onClick={submitHandler} className='font-medium py-2 rounded text-white w-full  duration-300 transition-all bg-primary-blue hover:bg-primaryhover-blue'>
+                    <button onClick={submitHandler} className='font-sans py-2 rounded text-white w-full  duration-300 transition-all bg-primary-blue hover:bg-primaryhover-blue'>
                         Submit
                     </button>
                 </form>

@@ -15,6 +15,8 @@
     "@emotion/styled": "^11.13.0",
     "@hookform/resolvers": "^3.9.0",
     "@mui/material": "^5.16.7",
+    "@mui/styled-engine-sc": "^6.1.1",
+    "@mui/x-data-grid": "^7.18.0",
     "@mui/x-date-pickers": "^7.16.0",
     "@types/js-cookie": "^3.0.6",
     "axios": "^1.7.4",
@@ -30,11 +32,11 @@
     "react-query": "^3.39.3",
     "react-router-dom": "^6.26.1",
     "react-slick": "^0.30.2",
+    "recharts": "^2.12.7",
     "slick-carousel": "^1.8.1",
     "socket.io-client": "^4.7.5",
-    "swiper": "^11.1.12",
-    "yup": "^1.4.0",
-    "zustand": "^5.0.0-rc.2"
+    "styled-components": "^6.1.13",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
