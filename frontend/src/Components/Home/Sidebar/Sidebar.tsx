@@ -3,7 +3,7 @@ import SkeletonUserItem from '../../User/SkeletonUserItem/SkeletonUserItem';
 import { Link } from 'react-router-dom';
 import usePostData from '../../../hooks/usePostData';
 import useGetData from '../../../hooks/useGetData';
-import {  userInformation, userInformationAll } from '../../../hooks/user/user.types';
+import {  userInformation } from '../../../hooks/user/user.types';
 import { useQueryClient } from 'react-query';
 
 
@@ -11,8 +11,8 @@ import { useQueryClient } from 'react-query';
 function Sidebar() {
     const [followed, setFollowed] = useState<string[]>([])
 
-    const { data: informationAllUser, isLoading } = useGetData<userInformationAll>(
-        ['getAllUserData'],
+    const { data: informationAllUser, isLoading } = useGetData<userInformation[]>(
+        ['getAllUserInfo'],
         "users/all-users"
     );
 
@@ -74,7 +74,7 @@ function Sidebar() {
                         <div className='py-3'>
                             <p className='text-gray-500 text-sm font-bold'>Suggested for you</p>
                         </div>
-                        {informationAllUser?.response?.users?.map((data) => (
+                        {informationAllUser?.map((data) => (
                             <div className='' key={data._id}>
                                 {myInfo?._id !== data._id && (
                                     <div className='flex items-center justify-between pb-2'>

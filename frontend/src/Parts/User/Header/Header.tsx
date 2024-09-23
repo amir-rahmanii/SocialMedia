@@ -129,7 +129,7 @@ export default function Header() {
                     </li>
                     {myInfo?.role === "ADMIN" && (
                     <li className='p-3 hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 group border-b dark:border-gray-300/20 border-gray-300'>
-                        <Link className='text-base/5 flex items-center justify-center  gap-3 font-bold text-black dark:text-white' to='/'>
+                        <Link className='text-base/5 flex items-center justify-center  gap-3 font-bold text-black dark:text-white' to='/dashboard/panel'>
                             <span className=''>Dashboard</span>
                             <div className='w-6 h-6 group-hover:scale-110 transition-all duration-300'>
                                 {dashboardIcon}

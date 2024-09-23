@@ -23,7 +23,7 @@ function BoxHome(props: BoxHomeProps) {
         <p className='font-bold text-2xl/[30px] font-sans'>{props.count?.toLocaleString()}</p>
         <div className='text-sm flex justify-between items-center'>
           <p className='text-admin-High'>Total {props.title}</p>
-          <div className={`${props.growth > 0 ? "text-admin-plus" : "text-admin-minus"} flex`}>{props.growth} %
+          <div className={`${props.growth > 0 ? "text-admin-plus" : "text-admin-minus"} flex`}>{props.growth.toFixed(2)} %
             <div className={`${props.growth > 0 ? "rotate-180" : "rotate-0"}`}>
               <ArrowDropDownIcon />
             </div>

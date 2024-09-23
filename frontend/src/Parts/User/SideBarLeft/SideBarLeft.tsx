@@ -116,7 +116,7 @@ function SideBarLeft() {
                     </li>
                     {myInfo?.role === "ADMIN" && (
                     <li className='p-3 rounded-md hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 group'>
-                        <Link className='text-base/5 flex items-center justify-center xl:justify-start gap-3 font-bold text-black dark:text-white' to='/dashboard'>
+                        <Link className='text-base/5 flex items-center justify-center xl:justify-start gap-3 font-bold text-black dark:text-white' to='/dashboard/panel'>
                             <div className='w-6 h-6 group-hover:scale-110 transition-all duration-300'>
                                 {dashboardIcon}
                             </div>

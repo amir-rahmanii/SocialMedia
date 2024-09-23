@@ -79,11 +79,6 @@ export type userInformation = {
     }[]
 }
 
-export type userInformationAll = {
-    response: {
-        users: userInformation[]
-    }
-}
 
 export type user = {
     response: {

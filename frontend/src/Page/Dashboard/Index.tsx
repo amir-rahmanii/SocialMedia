@@ -2,7 +2,7 @@ import React from 'react'
 import BoxHome from '../../Components/Admin/BoxHome/BoxHome'
 import useGetData from '../../hooks/useGetData'
 import SpinLoader from '../../Components/SpinLoader/SpinLoader';
-import { messageOutline, postsIconFill, profileIcon, ticketIcon } from '../../Components/SvgIcon/SvgIcon';
+import { messageOutline, postsIconFill, ticketIcon, usersIcon } from '../../Components/SvgIcon/SvgIcon';
 import OperatingSystemChart from '../../Components/Admin/OperatingSystemChart/OperatingSystemChart';
 import MessagesByMonthChart from '../../Components/Admin/MessageByMonthChart/MessageByMonthChart';
 
@@ -47,8 +47,6 @@ function Index() {
     "count/total-message-count"
   )
 
-  console.log(totalMessageCount);
-
 
 
   return (
@@ -56,22 +54,22 @@ function Index() {
       {isLoading ? (
         <SpinLoader />
       ) : (
-        <div className='font-sans grid gap-8 w-full p-10'>
+        <div className='font-sans grid gap-8 w-full'>
           <div className='grid grid-cols-4 gap-8'>
-            <BoxHome svg={profileIcon} title="Users" count={countModel?.users.count || 0} growth={countModel?.users.growth || 0} />
+            <BoxHome svg={usersIcon} title="Users" count={countModel?.users.count || 0} growth={countModel?.users.growth || 0} />
             <BoxHome svg={ticketIcon} title="Tickets" count={countModel?.tickets.count || 0} growth={countModel?.tickets.growth || 0} />
             <BoxHome svg={messageOutline} title="Messages" count={countModel?.messages.count || 0} growth={countModel?.messages.growth || 0} />
             <BoxHome svg={postsIconFill} title="Posts" count={countModel?.posts.count || 0} growth={countModel?.posts.growth || 0} />
           </div>
 
           <div className='grid grid-cols-3 gap-8'>
-            <div className='bg-admin-navy p-[30px]'>
+            <div className='bg-admin-navy p-[30px] rounded'>
               <p className='text-xl'>Operating System Chart</p>
               {isSuccessTotalOsCount && (
                 <OperatingSystemChart totalOsCount={totalOsCount} />
               )}
             </div>
-            <div className='bg-admin-navy p-[30px] col-span-2'>
+            <div className='bg-admin-navy p-[30px] col-span-2 rounded'>
               <p className='text-xl'>Messages By Month Chart</p>
               {isSuccessTotalMessageCount && (
                 <MessagesByMonthChart totalMessageCount={totalMessageCount} />

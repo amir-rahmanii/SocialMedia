@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { homeFill, logOutIcon, messageOutline, plusIcon, postsIconFill, profileIcon, ticketIcon } from '../../../Components/SvgIcon/SvgIcon'
+import { homeFill, logOutIcon, messageOutline, postsIconFill, profileIcon, ticketIcon, usersIcon } from '../../../Components/SvgIcon/SvgIcon'
 
 
 function SideBarLeft() {
@@ -24,7 +24,9 @@ function SideBarLeft() {
                 <p className='text-admin-High px-6 mb-2 text-sm'>MENU</p>
                 <ul className='flex flex-col gap-3'>
                     <li>
-                        <NavLink className={`flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300`} to='Home'>
+                        <NavLink to='panel' className={({ isActive }) =>
+                            isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300"
+                        }>
                             <div className='w-6 h-6'>
                                 {homeFill}
                             </div>
@@ -32,15 +34,29 @@ function SideBarLeft() {
                         </NavLink>
                     </li>
                     <li>
-                        <NavLink className={`flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300`} to='Home'>
+                        <NavLink to='profile' className={({ isActive }) =>
+                            isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300"
+                        }>
                             <div className='w-6 h-6'>
                                 {profileIcon}
+                            </div>
+                            <span className='text-base'>Profile</span>
+                        </NavLink>
+                    </li>
+                    <li>
+                        <NavLink to='users' className={({ isActive }) =>
+                            isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300"
+                        }>
+                            <div className='w-6 h-6'>
+                                {usersIcon}
                             </div>
                             <span className='text-base'>Users</span>
                         </NavLink>
                     </li>
                     <li>
-                        <NavLink className={`flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300`} to='Home'>
+                        <NavLink to='tickets' className={({ isActive }) =>
+                            isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300"
+                        }>
                             <div className='w-6 h-6'>
                                 {ticketIcon}
                             </div>
@@ -48,7 +64,9 @@ function SideBarLeft() {
                         </NavLink>
                     </li>
                     <li>
-                        <NavLink className={`flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300`} to='Home'>
+                        <NavLink to='posts' className={({ isActive }) =>
+                            isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300"
+                        }>
                             <div className='w-6 h-6'>
                                 {postsIconFill}
                             </div>
@@ -56,7 +74,9 @@ function SideBarLeft() {
                         </NavLink>
                     </li>
                     <li>
-                        <NavLink className={`flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300`} to='Home'>
+                        <NavLink to='messages' className={({ isActive }) =>
+                            isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300"
+                        }>
                             <div className='w-6 h-6'>
                                 {messageOutline}
                             </div>
@@ -64,7 +84,9 @@ function SideBarLeft() {
                         </NavLink>
                     </li>
                     <li>
-                        <NavLink className={`flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300`} to='Home'>
+                        <NavLink to='/' className={({ isActive }) =>
+                            isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300"
+                        }>
                             <div className='w-6 h-6'>
                                 {logOutIcon}
                             </div>

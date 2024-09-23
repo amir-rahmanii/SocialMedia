@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const { systemInfoMiddleware } = require('../../../middlewares/systemInfo');
 const userModel = require("../../../models/v1/user");
 const postModel = require("../../../models/v1/post");
+const saveModel = require("../../../models/v1/savePost");
 const likeToggleModel = require("../../../models/v1/likeToggle");
 const commentModel = require("../../../models/v1/comment");
 const messageModel = require("../../../models/v1/message");
@@ -13,6 +14,7 @@ const storyModel = require("../../../models/v1/story");
 const ticketModel = require("../../../models/v1/ticket");
 const path = require('path');
 const RefreshTokenModel = require("../../../models/v1/refreshToken");
+
 const {
   successResponse,
   errorResponse,
@@ -109,18 +111,24 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   const { identity, password } = req.body;
   const systemInfo = req.systemInfo || {}; // اطلاعات سیستم را از میدلویر بگیرید
-
   try {
     await userValidator.logInUserValidator.validate({ identity, password });
     const user = await userModel
       .findOne({ $or: [{ email: identity }, { username: identity }] })
       .lean();
+      
     if (!user) {
-      throwError("user not found", 404);
+      throwError("User not found", 404);
     }
+
+    // بررسی وضعیت isban
+    if (user.isban) {
+      throwError("User is banned", 403); // یا هر کد خطای مناسب دیگر
+    }
+
     const isPasswordMatch = await bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {
-      throwError("email or password is not true", 401);
+      throwError("Email or password is incorrect", 401);
     }
 
     const accessToken = accessTokenCreator(user, "30s");
@@ -155,7 +163,7 @@ exports.login = async (req, res) => {
     });
 
     return successResponse(res, 200, {
-      message: "User login successfully :))",
+      message: "User logged in successfully :))",
       data: { ...user, password: undefined, accessToken },
     });
   } catch (error) {
@@ -687,7 +695,7 @@ exports.getAllUsersInformation = async (req, res) => {
     // Retrieve all users' information from the database
     const users = await userModel.find({}, '-password'); // Exclude the password field
 
-    successResponse(res, 200, { message: "All users' information retrieved successfully", users });
+    return res.status(200).json(users);
   } catch (error) {
     errorResponse(res, error.statusCode || 500, { message: error.message });
   }
@@ -695,6 +703,92 @@ exports.getAllUsersInformation = async (req, res) => {
 
 
 
+
+exports.changeRole = async (req, res) => {
+  const { userId } = req.body;
+  try {
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // Toggle role between USER and ADMIN
+    if (user.role === "ADMIN") {
+      user.role = "USER";
+    } else if (user.role === "USER") {
+      user.role = "ADMIN";
+    }
+
+    await user.save();
+
+    return res.status(200).json({ message: `User role successfully changed to ${user.role}`, user });
+  } catch (err) {
+    return res.status(500).json({ message: "Server error.", error: err.message });
+  }
+}
+
+
+exports.deleteUser = async (req, res) => {
+  const { userId } = req.body;
+
+  try {
+    // یافتن و حذف کاربر
+    const user = await userModel.findByIdAndDelete(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    await userModel.updateMany(
+      { 
+        $or: [
+          { "followers.userId": userId },
+          { "following.userId": userId }
+        ]
+      },
+      {
+        $pull: {
+          followers: { userId: userId },
+          following: { userId: userId }
+        }
+      }
+    );
+
+    // حذف تمام پست‌های کاربر
+    await postModel.deleteMany({ 'user.id': userId });
+
+    // حذف تمام پیام‌های کاربر
+    await messageModel.deleteMany({ 'sender._id': userId });
+
+    // حذف تمام استوری‌های کاربر
+    await storyModel.deleteMany({ 'user.id': userId });
+
+    // حذف تمام تیکت‌های کاربر
+    await ticketModel.deleteMany({ "user.userId": userId });
+
+    await commentModel.deleteMany({ userid: userId });
+
+
+    await saveModel.deleteMany({ userid: userId });
+
+    await likeToggleModel.deleteMany({ userid: userId });
+
+ 
+    await followToggleModel.deleteMany({ 
+      $or: [
+        { userId: userId },    // حذف کاربر از دنبال‌شونده‌ها
+        { followedBy: userId } // حذف کاربر از دنبال‌کننده‌ها
+      ]
+    });
+
+    await forgetPasswordModel.deleteMany({ user: userId });
+
+    await RefreshTokenModel.deleteMany({ user: userId });
+
+    return res.status(200).json({ message: "User and related data deleted successfully." });
+  } catch (err) {
+    return res.status(500).json({ message: "Server error.", error: err.message });
+  }
+};
 
 
 

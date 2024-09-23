@@ -25,7 +25,8 @@ const MessagesByMonthChart = ({ totalMessageCount }: MessagesByMonthChartProps) 
                     label={{ value: 'Month', position: 'insideBottomRight', offset: -5 }}
                     tickFormatter={(month) => monthNames[month - 1]}
                 />
-                <YAxis label={{ value: 'Messages', angle: -90, position: 'insideLeft' }} />
+                <YAxis
+                    label={{ value: 'Messages', angle: -90, position: 'insideLeft' }} />
                 <Tooltip />
                 <Legend />
                 <Line type="monotone" dataKey="count" stroke="#8884d8" activeDot={{ r: 8 }} />

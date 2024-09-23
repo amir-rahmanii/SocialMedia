@@ -1,6 +1,7 @@
 const express = require("express");
 const controller = require("./user.controller");
 const auth = require("../../../middlewares/v1/auth");
+const isAdmin = require("../../../middlewares/checkAdmin");
 const router = express.Router();
 const { multerStorage } = require("../../../middlewares/uploaderConfigs");
 const upload = multerStorage(
@@ -29,5 +30,7 @@ router
   .route("/update-profile-picture")
   .put(auth, upload.single("profilePicture"), controller.updateUserProfile);
 
+router.route("/change-role").put(auth, isAdmin, controller.changeRole);
+router.route("/delete-user").delete(auth, isAdmin, controller.deleteUser);
 
 module.exports = router;

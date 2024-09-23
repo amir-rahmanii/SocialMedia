@@ -198,14 +198,80 @@ viewBox="0 0 24 24"
 export const dashboardIcon =
 <svg
 xmlns="http://www.w3.org/2000/svg"
-fill="none"
+fill="currentColor"
+className="icon glyph"
 viewBox="0 0 24 24"
-strokeWidth={1.5}
-stroke="currentColor"
+>
+<rect width="9" height="11" x="2" y="2" rx="2"></rect>
+<rect width="9" height="7" x="13" y="2" rx="2"></rect>
+<rect width="9" height="7" x="2" y="15" rx="2"></rect>
+<rect width="9" height="11" x="13" y="11" rx="2"></rect>
+</svg>
+
+
+
+export const changeRoleIcon = 
+      <svg fill="currentColor" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
+          <path d="m27.3 37.6c-3-1.2-3.5-2.3-3.5-3.5 0-1.2 0.8-2.3 1.8-3.2 1.8-1.5 2.6-3.9 2.6-6.4 0-4.7-2.9-8.5-8.3-8.5s-8.3 3.8-8.3 8.5c0 2.5 0.8 4.9 2.6 6.4 1 0.9 1.8 2 1.8 3.2 0 1.2-0.5 2.3-3.5 3.5-4.4 1.8-8.6 3.8-8.7 7.6 0.2 2.6 2.2 4.8 4.7 4.8h23c2.5 0 4.5-2.2 4.5-4.7-0.1-3.8-4.3-5.9-8.7-7.7z m17.2-18.6c0-7.4-6.1-13.5-13.5-13.5v-3.5l-6.8 5.5c-0.3 0.3-0.2 0.8 0.1 1.1l6.7 5.4v-3.5c4.7 0 8.5 3.8 8.5 8.5h-3.5l5.5 6.8c0.3 0.3 0.8 0.3 1.1 0l5.4-6.8h-3.5z"></path>
+      </svg>
+
+
+
+export const usersIcon = <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="User / Users_Group">
+  <path
+    id="Vector"
+    d="M17 20C17 18.3431 14.7614 17 12 17C9.23858 17 7 18.3431 7 20M21 17.0004C21 15.7702 19.7659 14.7129 18 14.25M3 17.0004C3 15.7702 4.2341 14.7129 6 14.25M18 10.2361C18.6137 9.68679 19 8.8885 19 8C19 6.34315 17.6569 5 16 5C15.2316 5 14.5308 5.28885 14 5.76389M6 10.2361C5.38625 9.68679 5 8.8885 5 8C5 6.34315 6.34315 5 8 5C8.76835 5 9.46924 5.28885 10 5.76389M12 14C10.3431 14 9 12.6569 9 11C9 9.34315 10.3431 8 12 8C13.6569 8 15 9.34315 15 11C15 12.6569 13.6569 14 12 14Z"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  />
+</g>
+</svg>
+
+
+export const banUser = <svg  viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path
+  fillRule="evenodd"
+  clipRule="evenodd"
+  d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm6.32-5.094A8 8 0 0 0 7.094 5.68L18.32 16.905zm-1.414 1.414L5.68 7.094A8 8 0 0 0 16.906 18.32z"
+  fill="currentColor"
+/>
+</svg>
+
+export const unBanUser = <svg
+viewBox="0 0 24 24"
+fill="none"
+xmlns="http://www.w3.org/2000/svg"
 >
 <path
+  d="M20 6L9 17L4 12"
+  stroke="currentColor"
+  strokeWidth="2"
   strokeLinecap="round"
   strokeLinejoin="round"
-  d="M3.75 3v9.75h6.75V3H3.75zm10.5 0v18h6.75V3h-6.75zm-10.5 13.5v4.5h6.75v-4.5H3.75z"
+/>
+</svg>
+
+
+export const eyeIcon = <svg
+viewBox="0 0 24 24"
+fill="none"
+xmlns="http://www.w3.org/2000/svg"
+>
+<path
+  d="M15.0007 12C15.0007 13.6569 13.6576 15 12.0007 15C10.3439 15 9.00073 13.6569 9.00073 12C9.00073 10.3431 10.3439 9 12.0007 9C13.6576 9 15.0007 10.3431 15.0007 12Z"
+  stroke="currentColor"
+  strokeWidth="2"
+  strokeLinecap="round"
+  strokeLinejoin="round"
+/>
+<path
+  d="M12.0012 5C7.52354 5 3.73326 7.94288 2.45898 12C3.73324 16.0571 7.52354 19 12.0012 19C16.4788 19 20.2691 16.0571 21.5434 12C20.2691 7.94291 16.4788 5 12.0012 5Z"
+  stroke="currentColor"
+  strokeWidth="2"
+  strokeLinecap="round"
+  strokeLinejoin="round"
 />
 </svg>

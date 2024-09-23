@@ -13,14 +13,15 @@ function Header() {
     );
 
     return (
-        <div className='font-sans fixed top-0 right-0 w-[calc(100%-290px)] left-[290px] px-11 py-4 flex items-center bg-admin-navy'>
+        <div className='font-sans z-40 fixed top-0 right-0 w-[calc(100%-290px)] left-[290px] px-11 py-4 flex items-center bg-admin-navy'>
             <div className='flex w-full items-center justify-between'>
-                <div className='flex items-center gap-4'>
+                {/* <div className='flex items-center gap-4'>
                     <div className='text-admin-High w-5 h-5'>
                         {searchIcon}
                     </div>
                     <input className='bg-transparent text-white outline-none' placeholder='type to search...' type="text" />
-                </div>
+                </div> */}
+                <p>Welcome to the Dashboard ❤️</p>
 
                 {/* profile */}
                 <div className='flex items-center gap-5'>

@@ -14,6 +14,8 @@ import Tickets from "./Page/Tickets/Tickets";
 import Dashboard from "./Page/Dashboard/Dashboard";
 import NotFound from "./Page/NotFound/NotFound";
 import Index from "./Page/Dashboard/Index";
+import Users from "./Page/Dashboard/Users";
+import ProfileAdmin from "./Page/Dashboard/ProfileAdmin";
 
 
 const routes = [
@@ -27,7 +29,9 @@ const routes = [
 
     {
         path: "/dashboard", element: <PrivateRoutes><Dashboard /></PrivateRoutes>, children: [
-            { path: "", element: <Index /> },
+            { path: "panel", element: <Index /> },
+            { path: "users", element: <Users /> },
+            { path: "profile", element: <ProfileAdmin /> },
         ]
     },
 
