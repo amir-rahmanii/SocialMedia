@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
-import StoriesContainer from '../StoriesContainer/StoriesContainer'
 import SkeletonPost from '../../SkeletonPost/SkeletonPost'
 import PostItem from '../PostItem/PostItem';
-import NewPost from '../NewPost/NewPost';
 import { postUploadOutline } from '../../SvgIcon/SvgIcon';
 import useGetData from '../../../hooks/useGetData';
 import { Post } from '../../../hooks/post/post.types';
+import StoriesContainer from '../StoriesContainer/StoriesContainer';
+import NewPost from '../NewPost/NewPost';
 
 
 

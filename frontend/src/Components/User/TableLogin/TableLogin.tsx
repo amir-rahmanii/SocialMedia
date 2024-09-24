@@ -9,9 +9,7 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import DateConverter from '../../../utils/DateConverter';
 import { svgIconBrowser, svgIconOs } from '../../../utils/systemInfoConverterSvg';
-import { createTheme, ThemeProvider } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { useThemeContext } from '../../../Global/ThemeContext';
+import { useState } from 'react';
 
 export type TableLoginProps = {
     loginInformation?: {

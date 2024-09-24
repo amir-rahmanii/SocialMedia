@@ -162,7 +162,7 @@ function LoginInfo() {
             <MetaData title="login-info" />
             <Header />
             <div>
-                <div className='w-full md:w-4/6 md:ml-44 mt-16 lg:ml-60 xl:ml-72 mb-5'>
+                <div className='w-full mt-14 xl:mr-32 md:w-4/6 mx-auto mb-5'>
                     <h3 className='text-2xl text-center my-7 font-sans text-black dark:text-white'>User Login info</h3>
                     <div className='mb-3 px-3 flex items-center gap-3'>
                         <Button onClick={() => setIsShowOpenFilter(true)} variant="outlined">Filter</Button>

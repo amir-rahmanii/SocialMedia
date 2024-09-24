@@ -12,6 +12,7 @@ interface UserTableProps {
     setIsShowInfoUser: (value: boolean) => void;
     setIsInfoUser: (user: userInformation) => void;
     setUserId: (id: string) => void;
+    setUserName: (username: string) => void
 }
 
 
@@ -23,7 +24,8 @@ function UserTable({
     setIsShowDeleteUser,
     setIsShowBanUser,
     setIsShowInfoUser,
-    setIsInfoUser
+    setIsInfoUser,
+    setUserName
 }: UserTableProps) {
 
     const { data: myInfo } = useGetData<userInformation>(
@@ -58,26 +60,29 @@ function UserTable({
                                 setIsInfoUser(data)
                                 setIsShowInfoUser(true)
                             }} className={`w-4 h-4 text-admin-High hover:scale-110 hover:text-yellow-400 transition-all duration-300`}>{eyeIcon}</button>
-                           
+
                             {(myInfo?._id !== data._id && data.username !== "Amirreza") && (
                                 <button onClick={() => {
                                     setUserId(data._id)
+                                    setUserName(data.username)
                                     setIsShowChangeRole(true)
                                 }} className='text-admin-High w-4 h-4  hover:scale-110 transition-all duration-300 hover:text-admin-low'>
                                     {changeRoleIcon}
                                 </button>
                             )}
-                            
+
                             {(myInfo?._id !== data._id && data.username !== "Amirreza") && (
                                 <button onClick={() => {
                                     setUserId(data._id)
+                                    setUserName(data.username)
                                     setIsShowBanUser(true)
                                 }} className={`w-4 h-4 text-admin-High hover:scale-110 ${data.isban ? "hover:text-green-400" : "hover:text-orange-400"} transition-all duration-300`}>{data.isban ? unBanUser : banUser}</button>
                             )}
-                            
+
                             {(myInfo?._id !== data._id && data.username !== "Amirreza") && (
                                 <button onClick={() => {
                                     setUserId(data._id)
+                                    setUserName(data.username)
                                     setIsShowDeleteUser(true)
                                 }} className='w-4 h-4 text-admin-High hover:scale-110 hover:text-error-red transition-all duration-300'>{deleteIcon}</button>
                             )}

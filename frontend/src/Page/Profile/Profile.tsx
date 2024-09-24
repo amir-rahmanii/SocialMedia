@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import MetaData from '../../Components/MetaData/MetaData'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { changeProfilePicture, postsIconFill, postsIconOutline, postUploadOutline, reelsIcon, savedIconFill, savedIconOutline, settingsIcon, taggedIcon } from '../../Components/SvgIcon/SvgIcon'
+import { photoIcon, postsIconOutline, postUploadOutline, reelsIcon, savedIconFill, postsIconFill, savedIconOutline, settingsIcon, taggedIcon, photosIcon } from '../../Components/SvgIcon/SvgIcon'
 import PostContainerUser from '../../Components/User/PostContainerUser/PostContainerUser'
 import SpinLoader from '../../Components/SpinLoader/SpinLoader'
-import NewPost from '../../Components/Home/NewPost/NewPost'
-import ChangeProfile from '../../Components/User/ChangeProfile/ChangeProfile'
 import { Dialog } from '@mui/material'
-import StoryContent from '../../Components/Home/StoriesContainer/StoryContent'
 import ShowDialogModal from '../../Components/ShowDialogModal/ShowDialogModal'
 import { useQueryClient } from 'react-query'
 import usePostData from '../../hooks/usePostData'
@@ -17,6 +14,9 @@ import { Post } from '../../hooks/post/post.types'
 import SideBarLeft from '../../Parts/User/SideBarLeft/SideBarLeft'
 import Header from '../../Parts/User/Header/Header'
 import SideBarBottom from '../../Parts/User/SideBarBottom/SideBarBottom'
+import StoryContent from '../../Components/User/StoriesContainer/StoryContent'
+import NewPost from '../../Components/User/NewPost/NewPost'
+import resizeImage from '../../utils/resizeImage'
 
 
 
@@ -55,7 +55,7 @@ function Profile() {
   );
 
   //this is for all users data
-  const { data: informationUserData, isLoading: isLoadingUserData, isSuccess: isSucessGetUserData, isError , refetch } = useGetData<profile>(
+  const { data: informationUserData, isLoading: isLoadingUserData, isSuccess: isSucessGetUserData, isError, refetch } = useGetData<profile>(
     ['getUserData'],
     `users/user-allData/${userId}`,
   );
@@ -65,6 +65,16 @@ function Profile() {
     ["getMyUserInfo"],
     "users/user-information"
   );
+
+  const { mutate: updateProfilePicture } = usePostData('users/update-profile-picture'
+    , 'Profile picture updated successfuly!'
+    , true,
+    () => {
+      queryClient.invalidateQueries(["getMyUserInfo"]);
+      queryClient.invalidateQueries(["getUserData"]);
+    }, true);
+
+
 
   const navigate = useNavigate(); // Initialize useNavigate
 
@@ -118,6 +128,7 @@ function Profile() {
 
 
 
+
   useEffect(() => {
     const tab = localStorage.getItem("tab");
     if (tab === "mySavedPosts") {
@@ -127,6 +138,23 @@ function Profile() {
     }
 
   }, [])
+
+
+
+  const fileChangeHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const imgFile = e.target.files[0];
+      
+      try {
+        const resizedImage = await resizeImage(imgFile, 300, 300); // Resizing to 300x300
+        const formData = new FormData();
+        formData.append('profilePicture', resizedImage);
+        updateProfilePicture(formData);
+      } catch (error) {
+        console.error('Error resizing image:', error);
+      }
+    }
+  };
 
 
 
@@ -157,10 +185,10 @@ function Profile() {
             <MetaData title={`@${myInfo?.username} • Instagram photos and videos`} />
 
 
-            <div className="sm:flex w-full sm:py-8 rounded-t">
+            <div className="flex flex-col gap-6 sm:gap-0 items-center sm:items-stretch sm:flex-row w-full py-6 sm:py-8 rounded-t">
 
               {/* profile picture */}
-              <div className="sm:w-1/3 pt-3 md:pt-0 flex justify-center mx-auto sm:mx-0">
+              <div className="relative shrink-0 mx-16 flex justify-center">
                 <img
                   onClick={() => {
                     if (informationUserData && informationUserData?.stories.length > 0) {
@@ -179,17 +207,14 @@ function Profile() {
 
                 {myInfo?._id === informationUserData?.user._id && (
                   <>
-                    <button onClick={() => setIsShowChangeProfile(true)} className=' flex flex-col items-center group self-end cursor-pointer'>
-                      <div className='flex flex-col items-center'>
-                        <div className='w-10 h-10 text-black dark:text-white hover:w-12 hover-h-12 transition-all duration-300'>
-                          {changeProfilePicture}
+                    <button onClick={() => setIsShowChangeProfile(true)} className='absolute bottom-0 sm:bottom-14 md:bottom-16 lg:bottom-9 right-0'>
+                      <label htmlFor="profile" className="absolute bottom-0 right-0 flex h-8.5 w-8.5 cursor-pointer items-center justify-center rounded-full bg-primary text-white hover:bg-opacity-90 sm:bottom-2 sm:right-2">
+                        <div className='bg-[#4E60E2] hover:scale-110 transition-all duration-300 rounded-full w-[34px] h-[34px] flex items-center justify-center'>
+                          {photosIcon}
                         </div>
-                      </div>
+                        <input onChange={fileChangeHandler} type="file" name="profile" id="profile" className="sr-only" />
+                      </label>
                     </button>
-
-                    {isShowChangeProfile && (
-                      <ChangeProfile isShowChangeProfile={isShowChangeProfile} setIsShowChangeProfile={setIsShowChangeProfile} />
-                    )}
                   </>
                 )}
               </div>
@@ -211,14 +236,14 @@ function Profile() {
 
 
               {/* profile details */}
-              <div className="flex flex-col gap-6 p-4 sm:w-2/3 sm:p-1">
-                <div className="flex items-end gap-8 sm:justify-start justify-between">
+              <div className="flex flex-col gap-6 sm:w-2/3 sm:p-1">
+                <div className="flex items-start gap-8 sm:justify-start justify-between">
 
                   <h2 className="text-2xl sm:text-3xl font-thin text-black dark:text-white">{informationUserData?.user.username}</h2>
 
                   {myInfo?._id === informationUserData?.user._id && (
                     <div>
-                      <Link to="/update-password" className="text-black dark:text-white border flex gap-2 items-center font-sans hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 text-sm rounded px-2 py-1">Change Password {settingsIcon}</Link>
+                      <Link to="/update-password" className="text-black dark:text-white border flex gap-2 items-center font-sans hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 text-sm rounded px-2 py-2">Change Password {settingsIcon}</Link>
                     </div>
                   )}
 

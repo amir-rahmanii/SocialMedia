@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { dashboardIcon, exploreOutline, homeFill, logOutIcon, messageOutline, postUploadOutline, searchIcon, ticketIcon } from '../../../Components/SvgIcon/SvgIcon'
-import NewPost from '../../../Components/Home/NewPost/NewPost';
 import { FormControlLabel } from '@mui/material';
-import { MaterialUISwitch } from '../../../Components/MaterialUISwitch/MaterialUISwitch';
+import { MaterialUISwitch } from '../../../Components/User/MaterialUISwitch/MaterialUISwitch';
 import { useThemeContext } from '../../../Global/ThemeContext';
 import ShowDialogModal from '../../../Components/ShowDialogModal/ShowDialogModal';
 import Cookies from "js-cookie";
 import SearchBox from '../../../Components/User/SearchBox/SearchBox';
 import useGetData from '../../../hooks/useGetData';
 import { userInformation } from '../../../hooks/user/user.types';
+import NewPost from '../../../Components/User/NewPost/NewPost';
 
 
 
@@ -35,6 +35,9 @@ function SideBarLeft() {
         ["getMyUserInfo"],
         "users/user-information"
     );
+
+
+    
 
 
 
@@ -181,4 +184,4 @@ function SideBarLeft() {
     )
 }
 
-export default SideBarLeft
+export default React.memo(SideBarLeft) 

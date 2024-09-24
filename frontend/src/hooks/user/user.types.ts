@@ -49,6 +49,7 @@ export type userInformation = {
         filename: string
     },
     _id: string,
+    postCount : number,
     name: string,
     username: string,
     following: {

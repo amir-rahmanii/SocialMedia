@@ -2,7 +2,7 @@ import Slider from "react-slick";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useState } from "react";
-import AddNewStory from "../AddNewStory/AddNewStory";
+import AddNewStory from "../../User/AddNewStory/AddNewStory";
 import { plusIcon } from "../../SvgIcon/SvgIcon";
 import StoryContent from "./StoryContent";
 import { useNavigate } from "react-router-dom"; // Import useNavigate

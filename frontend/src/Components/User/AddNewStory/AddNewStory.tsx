@@ -1,10 +1,10 @@
 import React, {  useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Dialog } from '@mui/material';
-import { closeIcon, deleteIcon, photoIcon } from '../../SvgIcon/SvgIcon';
 import IsLoaderBtn from '../../IsLoaderBtn/IsLoaderBtn';
 import usePostData from '../../../hooks/usePostData';
 import { useQueryClient } from 'react-query';
+import { closeIcon, deleteIcon, photoIcon } from '../../SvgIcon/SvgIcon';
 
 type AddNewStoryProps = {
     showAddStory: boolean;

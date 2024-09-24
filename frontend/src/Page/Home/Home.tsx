@@ -1,10 +1,10 @@
 import React from 'react'
 import MetaData from '../../Components/MetaData/MetaData'
-import PostsContainer from '../../Components/Home/PostsContainer/PostsContainer'
-import Sidebar from '../../Components/Home/Sidebar/Sidebar'
+import PostsContainer from '../../Components/User/PostsContainer/PostsContainer'
 import SideBarLeft from '../../Parts/User/SideBarLeft/SideBarLeft'
 import Header from '../../Parts/User/Header/Header'
 import SideBarBottom from '../../Parts/User/SideBarBottom/SideBarBottom'
+import Sidebar from '../../Components/User/Sidebar/Sidebar'
 
 function Home() {
 

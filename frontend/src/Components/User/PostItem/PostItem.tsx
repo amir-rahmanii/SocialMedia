@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { commentIcon, deleteIcon, editPostIcon, emojiIcon, likeIconOutline, moreIcons, saveIconFill, saveIconOutline, shareIcon } from '../../SvgIcon/SvgIcon'
 import { likeFill } from '../../SvgIcon/SvgIcon';
 import EmojiPicker from '@emoji-mart/react';

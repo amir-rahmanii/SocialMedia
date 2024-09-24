@@ -116,7 +116,7 @@ exports.login = async (req, res) => {
     const user = await userModel
       .findOne({ $or: [{ email: identity }, { username: identity }] })
       .lean();
-      
+
     if (!user) {
       throwError("User not found", 404);
     }
@@ -372,18 +372,27 @@ exports.userBanToggle = async (req, res) => {
 
 exports.userInformation = async (req, res) => {
   try {
-    // Assume that the user ID is available in req.user (decoded from JWT)
     const userId = req.user._id;
-
-    // Attach the userId to req.body for validation if necessary
     req.body.userid = userId;
 
-    // Call the validator with the request
     const user = await userValidator.userInformation(req);
 
-    // ارسال مستقیم شیء user به عنوان پاسخ
-    res.status(200).json(user);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const postCount = await postModel.countDocuments({ 'user.id': userId });
+    console.log(`Post count for user ${userId}:`, postCount);
+
+    const newUser = {
+      ...user.toObject(), // تبدیل به شیء جاوا اسکریپت
+      postCount,
+    }
+
+
+    res.status(200).json(newUser);
   } catch (error) {
+    console.error('Error retrieving user information:', error);
     res.status(error.statusCode || 500).json({ message: error.message });
   }
 };
@@ -695,11 +704,21 @@ exports.getAllUsersInformation = async (req, res) => {
     // Retrieve all users' information from the database
     const users = await userModel.find({}, '-password'); // Exclude the password field
 
-    return res.status(200).json(users);
+    // برای هر کاربر تعداد پست‌های مربوط به او را دریافت کنید
+    const usersWithPostCount = await Promise.all(users.map(async (user) => {
+      const postCount = await postModel.countDocuments({ 'user.id': user._id }) || 0; // اگر تعداد پست‌ها صفر باشد
+      return {
+        ...user.toObject(), // تبدیل به شیء جاوا اسکریپت
+        postCount, // اضافه کردن تعداد پست‌ها
+      };
+    }));
+
+    return res.status(200).json(usersWithPostCount);
   } catch (error) {
     errorResponse(res, error.statusCode || 500, { message: error.message });
   }
 };
+
 
 
 
@@ -739,7 +758,7 @@ exports.deleteUser = async (req, res) => {
     }
 
     await userModel.updateMany(
-      { 
+      {
         $or: [
           { "followers.userId": userId },
           { "following.userId": userId }
@@ -772,8 +791,8 @@ exports.deleteUser = async (req, res) => {
 
     await likeToggleModel.deleteMany({ userid: userId });
 
- 
-    await followToggleModel.deleteMany({ 
+
+    await followToggleModel.deleteMany({
       $or: [
         { userId: userId },    // حذف کاربر از دنبال‌شونده‌ها
         { followedBy: userId } // حذف کاربر از دنبال‌کننده‌ها

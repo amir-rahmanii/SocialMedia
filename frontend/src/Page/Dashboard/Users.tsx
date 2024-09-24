@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import useGetData from '../../hooks/useGetData';
 import { userInformation } from '../../hooks/user/user.types';
-import DateConverter from '../../utils/DateConverter';
 import SkeletonTable from '../../Components/SkeletonTable/SkeletonTable';
 import Table from '../../Components/Admin/Table/Table';
-import { banUser, changeRoleIcon, deleteIcon, eyeIcon, searchIcon, unBanUser } from '../../Components/SvgIcon/SvgIcon';
+import { searchIcon } from '../../Components/SvgIcon/SvgIcon';
 import ShowDialogModal from '../../Components/ShowDialogModal/ShowDialogModal';
 import Modal from '../../Components/Admin/Modal/Modal';
 import usePostData from '../../hooks/usePostData';
@@ -32,6 +31,7 @@ export default function Users() {
     const [isShowInfoUser, setIsShowInfoUser] = useState(false)
     const [infoUser, setIsInfoUser] = useState<userInformation | null>(null)
     const [userId, setUserId] = useState("")
+    const [userName, setUserName] = useState("")
     const [searchValue, setSearchValue] = useState("")
     const [filteredData, setFilteredData] = useState<userInformation[] | null>(null)
 
@@ -40,6 +40,7 @@ export default function Users() {
         ["getAllUserInfo"],
         "users/all-users"
     );
+
 
 
 
@@ -91,6 +92,10 @@ export default function Users() {
         banUserToggle({ userid: userId })
     }
 
+    useEffect(() => {
+        serchUsernameFilterHandler();
+    }, [searchValue])
+
 
     const serchUsernameFilterHandler = () => {
         if (searchValue.trim()) {
@@ -108,19 +113,19 @@ export default function Users() {
 
     return (
         <>
-            <div className="font-sans grid gap-8 w-full">
+            <div className="font-sans grid w-full">
                 {isLoading ? (
                     <SkeletonTable />
                 ) : (
                     <div className='bg-admin-navy rounded'>
                         <div className='px-6 pt-6 flex justify-between items-center'>
                             <h3 className='text-xl mb-6'>Users</h3>
-                                <form className='flex items-center gap-4' onSubmit={e => e.preventDefault()}>
-                                    <button onClick={serchUsernameFilterHandler} className='text-admin-High w-5 h-5'>
-                                        {searchIcon}
-                                    </button>
-                                    <input value={searchValue} onChange={(e) => setSearchValue(e.target.value)} className='bg-transparent text-white outline-none' placeholder='search...' type="text" />
-                                </form>
+                            <form className='flex items-center gap-4' onSubmit={e => e.preventDefault()}>
+                                <button onClick={serchUsernameFilterHandler} className='text-admin-High w-5 h-5'>
+                                    {searchIcon}
+                                </button>
+                                <input value={searchValue} onChange={(e) => setSearchValue(e.target.value)} className='bg-transparent text-white outline-none' placeholder='search...' type="text" />
+                            </form>
                         </div>
                         <Table columns={columns}>
                             <UserTable
@@ -131,6 +136,7 @@ export default function Users() {
                                 setIsShowInfoUser={setIsShowInfoUser}
                                 setIsInfoUser={setIsInfoUser}
                                 setUserId={setUserId}
+                                setUserName={setUserName}
                             />
                         </Table>
                     </div>
@@ -138,47 +144,52 @@ export default function Users() {
             </div>
 
             {/* change role */}
-            <ShowDialogModal
-                isOpenShowLDialogModal={isShowChangeRole}
-                setisOpenShowLDialogModal={setIsShowChangeRole}
-                title="Change Role"
-                height="h-auto"
-            >
-                <Modal title='Are you sure you want to change the user role (Admin / User) ?' setisOpenModal={setIsShowChangeRole} submitHandler={changeRoleHandler} />
-            </ShowDialogModal>
+            <Modal
+                isYesOrNo={true}
+                title={`Are you sure you want to change ${userName} role (Admin / User) ?`}
+                setisOpenModal={setIsShowChangeRole}
+                isOpenModal={isShowChangeRole}
+                btnNoTitle="keep the roll"
+                btnYesTitle={`Change ${userName} role`}
+                isAttention={false}
+                submitHandler={changeRoleHandler} />
+
 
             {/* Delete User */}
-            <ShowDialogModal
-                isOpenShowLDialogModal={isShowDeleteUser}
-                setisOpenShowLDialogModal={setIsShowDeleteUser}
-                title="Delete User"
-                height="h-auto"
-            >
-                <Modal title='Are you sure you want to Delete the user ?' setisOpenModal={setIsShowDeleteUser} submitHandler={deleteUserHandler} />
-            </ShowDialogModal>
+            <Modal
+                isYesOrNo={true}
+                title={`Are you sure you want to Delete ${userName} ?`}
+                setisOpenModal={setIsShowDeleteUser}
+                isOpenModal={isShowDeleteUser}
+                btnNoTitle={`keep the ${userName}`}
+                btnYesTitle={`Delete ${userName}`}
+                isAttention={true}
+                submitHandler={deleteUserHandler} />
 
             {/* Ban and unBan User */}
-            <ShowDialogModal
-                isOpenShowLDialogModal={isShowBanUser}
-                setisOpenShowLDialogModal={setIsShowBanUser}
-                title="Ban/UnBan User"
-                height="h-auto"
-            >
-                <Modal title='Are you sure you want to Ban/UnBan the user ?' setisOpenModal={setIsShowBanUser} submitHandler={banUserHandler} />
-            </ShowDialogModal>
+
+            <Modal
+                isYesOrNo={true}
+                title={`Are you sure you want to Ban/unBan ${userName} ?`}
+                setisOpenModal={setIsShowBanUser}
+                isOpenModal={isShowBanUser}
+                btnYesTitle={`Ban/Unban ${userName}`}
+                isAttention={false}
+                submitHandler={banUserHandler} />
+
 
             {/* Info User */}
-            <ShowDialogModal
-                isOpenShowLDialogModal={isShowInfoUser}
-                setisOpenShowLDialogModal={setIsShowInfoUser}
-                title="info User"
-                height="h-auto"
+            <Modal
+                isYesOrNo={false}
+                isOpenModal={isShowInfoUser}
+                setisOpenModal={setIsShowInfoUser}
             >
-                <div className='p-3 flex text-xl gap-6 justify-center my-3'>
-                    <p>Followers : <span className='text-admin-High'>{infoUser?.followers ? infoUser?.followers.length.toLocaleString() : 0}</span></p>
-                    <p>Following : <span className='text-admin-High'>{infoUser?.following ? infoUser?.following.length.toLocaleString() : 0}</span></p>
+                <div className='bg-[#37404F] my-4 border border-[#2E3A47] flex justify-center rounded-md divide-x divide-[#2E3A47] p-2.5'>
+                    <p className='text-admin-low text-sm flex gap-1 items-center px-6'><span className='text-white font-bold text-base'>{infoUser?.postCount}</span>Posts</p>
+                    <p className='text-admin-low text-sm flex gap-1 items-center px-6'><span className='text-white font-bold text-base'>{infoUser?.followers.length.toLocaleString()}</span>Followers</p>
+                    <p className='text-admin-low text-sm flex gap-1 items-center px-6'><span className='text-white font-bold text-base'>{infoUser?.following.length.toLocaleString()}</span>Following</p>
                 </div>
-            </ShowDialogModal>
+            </Modal>
         </>
     );
 }
