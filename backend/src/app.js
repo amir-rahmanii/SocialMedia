@@ -53,7 +53,6 @@ app.use("/count", countRouter);
 
 // 404 err handler
 app.use((req, res) => {
-  console.log("this path is not found", req.path);
   return res
     .status(404)
     .json({ msg: "this path is not found, check method or path" });

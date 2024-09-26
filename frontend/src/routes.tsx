@@ -16,6 +16,7 @@ import NotFound from "./Page/NotFound/NotFound";
 import Index from "./Page/Dashboard/Index";
 import Users from "./Page/Dashboard/Users";
 import ProfileAdmin from "./Page/Dashboard/ProfileAdmin";
+import TicketsAdmin from "./Page/Dashboard/TicketsAdmin";
 
 
 const routes = [
@@ -32,6 +33,7 @@ const routes = [
             { path: "panel", element: <Index /> },
             { path: "users", element: <Users /> },
             { path: "profile", element: <ProfileAdmin /> },
+            { path: "tickets", element: <TicketsAdmin /> },
         ]
     },
 

@@ -5,14 +5,12 @@ import { banUser, changeRoleIcon, deleteIcon, eyeIcon, unBanUser } from '../../S
 import DateConverter from '../../../utils/DateConverter';
 
 interface UserTableProps {
-    information: userInformation[]; // آرایه‌ای از کاربران
+    information: userInformation[]; 
     setIsShowChangeRole: (value: boolean) => void;
     setIsShowDeleteUser: (value: boolean) => void;
     setIsShowBanUser: (value: boolean) => void;
     setIsShowInfoUser: (value: boolean) => void;
     setIsInfoUser: (user: userInformation) => void;
-    setUserId: (id: string) => void;
-    setUserName: (username: string) => void
 }
 
 
@@ -20,12 +18,10 @@ interface UserTableProps {
 function UserTable({
     information,
     setIsShowChangeRole,
-    setUserId,
     setIsShowDeleteUser,
     setIsShowBanUser,
     setIsShowInfoUser,
     setIsInfoUser,
-    setUserName
 }: UserTableProps) {
 
     const { data: myInfo } = useGetData<userInformation>(
@@ -47,12 +43,7 @@ function UserTable({
                     </td>
                     <td className='py-[18px]  px-2 lg:px-1'>{data.email}</td>
                     <td className='py-[18px]  px-2 lg:px-1'>{data.name}</td>
-                    <td className='py-[18px]  px-2 lg:px-1'>
-                        <div className='flex items-end justify-center gap-1.5'>
-                            <span>{data.role}</span>
-
-                        </div>
-                    </td>
+                    <td className='py-[18px]  px-2 lg:px-1'>{data.role}</td>
                     <td className='py-[18px]  px-2 lg:px-1'><DateConverter date={data.createdAt} /></td>
                     <td className='py-[18px]  px-2 lg:px-1'>
                         <div className='flex items-center justify-center gap-2'>
@@ -63,8 +54,7 @@ function UserTable({
 
                             {(myInfo?._id !== data._id && data.username !== "Amirreza") && (
                                 <button onClick={() => {
-                                    setUserId(data._id)
-                                    setUserName(data.username)
+                                    setIsInfoUser(data)
                                     setIsShowChangeRole(true)
                                 }} className='text-admin-High w-4 h-4  hover:scale-110 transition-all duration-300 hover:text-admin-low'>
                                     {changeRoleIcon}
@@ -73,16 +63,14 @@ function UserTable({
 
                             {(myInfo?._id !== data._id && data.username !== "Amirreza") && (
                                 <button onClick={() => {
-                                    setUserId(data._id)
-                                    setUserName(data.username)
+                                    setIsInfoUser(data)
                                     setIsShowBanUser(true)
                                 }} className={`w-4 h-4 text-admin-High hover:scale-110 ${data.isban ? "hover:text-green-400" : "hover:text-orange-400"} transition-all duration-300`}>{data.isban ? unBanUser : banUser}</button>
                             )}
 
                             {(myInfo?._id !== data._id && data.username !== "Amirreza") && (
                                 <button onClick={() => {
-                                    setUserId(data._id)
-                                    setUserName(data.username)
+                                    setIsInfoUser(data)
                                     setIsShowDeleteUser(true)
                                 }} className='w-4 h-4 text-admin-High hover:scale-110 hover:text-error-red transition-all duration-300'>{deleteIcon}</button>
                             )}

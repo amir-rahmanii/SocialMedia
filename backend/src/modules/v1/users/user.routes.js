@@ -31,6 +31,9 @@ router
   .put(auth, upload.single("profilePicture"), controller.updateUserProfile);
 
 router.route("/change-role").put(auth, isAdmin, controller.changeRole);
+
+
+
 router.route("/delete-user").delete(auth, isAdmin, controller.deleteUser);
 
 module.exports = router;

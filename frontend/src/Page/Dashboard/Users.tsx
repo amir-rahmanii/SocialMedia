@@ -30,13 +30,11 @@ export default function Users() {
     const [isShowBanUser, setIsShowBanUser] = useState(false)
     const [isShowInfoUser, setIsShowInfoUser] = useState(false)
     const [infoUser, setIsInfoUser] = useState<userInformation | null>(null)
-    const [userId, setUserId] = useState("")
-    const [userName, setUserName] = useState("")
     const [searchValue, setSearchValue] = useState("")
     const [filteredData, setFilteredData] = useState<userInformation[] | null>(null)
 
 
-    const { data: informationAllUser, isLoading } = useGetData<userInformation[]>(
+    const { data: informationAllUser, isLoading, isSuccess } = useGetData<userInformation[]>(
         ["getAllUserInfo"],
         "users/all-users"
     );
@@ -79,21 +77,21 @@ export default function Users() {
 
 
     const changeRoleHandler = () => {
-        changeRole({ userId })
+        changeRole({userId : infoUser?._id})
     }
 
 
     const deleteUserHandler = () => {
-        deleteUser({ userId })
+        deleteUser({userId : infoUser?._id})
     }
 
 
     const banUserHandler = () => {
-        banUserToggle({ userid: userId })
+        banUserToggle({userid : infoUser?._id})
     }
 
     useEffect(() => {
-        serchUsernameFilterHandler();
+        isSuccess && serchUsernameFilterHandler();
     }, [searchValue])
 
 
@@ -135,8 +133,6 @@ export default function Users() {
                                 setIsShowBanUser={setIsShowBanUser}
                                 setIsShowInfoUser={setIsShowInfoUser}
                                 setIsInfoUser={setIsInfoUser}
-                                setUserId={setUserId}
-                                setUserName={setUserName}
                             />
                         </Table>
                     </div>
@@ -146,11 +142,11 @@ export default function Users() {
             {/* change role */}
             <Modal
                 isYesOrNo={true}
-                title={`Are you sure you want to change ${userName} role (Admin / User) ?`}
+                title={`Are you sure you want to change ${infoUser?.username} role to ${infoUser?.role === "ADMIN" ? "USER" : "ADMIN"} ?`}
                 setisOpenModal={setIsShowChangeRole}
                 isOpenModal={isShowChangeRole}
                 btnNoTitle="keep the roll"
-                btnYesTitle={`Change ${userName} role`}
+                btnYesTitle={`Change ${infoUser?.username} role`}
                 isAttention={false}
                 submitHandler={changeRoleHandler} />
 
@@ -158,11 +154,11 @@ export default function Users() {
             {/* Delete User */}
             <Modal
                 isYesOrNo={true}
-                title={`Are you sure you want to Delete ${userName} ?`}
+                title={`Are you sure you want to Delete ${infoUser?.username} ?`}
                 setisOpenModal={setIsShowDeleteUser}
                 isOpenModal={isShowDeleteUser}
-                btnNoTitle={`keep the ${userName}`}
-                btnYesTitle={`Delete ${userName}`}
+                btnNoTitle={`keep the ${infoUser?.username}`}
+                btnYesTitle={`Delete ${infoUser?.username}`}
                 isAttention={true}
                 submitHandler={deleteUserHandler} />
 
@@ -170,10 +166,10 @@ export default function Users() {
 
             <Modal
                 isYesOrNo={true}
-                title={`Are you sure you want to Ban/unBan ${userName} ?`}
+                title={`Are you sure you want to ${infoUser?.isban ? "unBan" : "Ban"} ${infoUser?.username} ?`}
                 setisOpenModal={setIsShowBanUser}
                 isOpenModal={isShowBanUser}
-                btnYesTitle={`Ban/Unban ${userName}`}
+                btnYesTitle={`${infoUser?.isban ? "unBan" : "Ban"} ${infoUser?.username}`}
                 isAttention={false}
                 submitHandler={banUserHandler} />
 
@@ -184,6 +180,9 @@ export default function Users() {
                 isOpenModal={isShowInfoUser}
                 setisOpenModal={setIsShowInfoUser}
             >
+                <div>
+                    <p className='text-xl font-bold text-admin-High'>{infoUser?.username} Information :</p>
+                </div>
                 <div className='bg-[#37404F] my-4 border border-[#2E3A47] flex justify-center rounded-md divide-x divide-[#2E3A47] p-2.5'>
                     <p className='text-admin-low text-sm flex gap-1 items-center px-6'><span className='text-white font-bold text-base'>{infoUser?.postCount}</span>Posts</p>
                     <p className='text-admin-low text-sm flex gap-1 items-center px-6'><span className='text-white font-bold text-base'>{infoUser?.followers.length.toLocaleString()}</span>Followers</p>

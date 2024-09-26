@@ -72,8 +72,7 @@ function Inbox() {
         setSocket(newSocket);
         // اطمینان از برقراری اتصال سوکت
         newSocket.on("connect", () => {
-            console.log("Connected to the server");
-
+       
             // دریافت پیام‌های اولیه از سرور
             newSocket.on("initial messages", (initialMessages: IMessage[]) => {
                 setAllMessages(initialMessages);

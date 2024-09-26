@@ -42,8 +42,7 @@ function startServer() {
   const typingUsers = {}; // برای ردیابی کاربران در حال تایپ
 
   io.on("connection", async (socket) => {
-    console.log("A user connected");
-
+  
     // اضافه کردن کاربر به لیست آنلاین
     onlineUsers.add(socket.id);
     io.emit("online users", onlineUsers.size); // ارسال تعداد کاربران آنلاین به تمام کاربران
@@ -179,7 +178,6 @@ function startServer() {
 
     // رویداد قطع اتصال
     socket.on("disconnect", () => {
-      console.log("User disconnected");
       onlineUsers.delete(socket.id); // حذف کاربر از لیست آنلاین
       io.emit("online users", onlineUsers.size); // ارسال تعداد کاربران آنلاین به تمام کاربران
 

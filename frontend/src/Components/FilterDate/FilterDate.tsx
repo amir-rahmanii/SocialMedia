@@ -45,8 +45,8 @@ const FilterDate: React.FC<PropsWithChildren<FilterDateProps>> = ({
 
     return (
         <div>
-            <div className="flex flex-col min-w-60 border rounded bg-white dark:bg-black  dark:border-gray-300/20 border-gray-300">
-                <form onSubmit={e => e.preventDefault()} className='bg-white dark:bg-black flex flex-col my-6 px-3 gap-4'>
+            <div className="flex flex-col min-w-60 rounded">
+                <form onSubmit={e => e.preventDefault()} className=' flex flex-col my-6 px-3 gap-4'>
                     <div className='flex flex-col gap-4  md:flex-row md:justify-between'>
                         <DatePicker
                             label="From this date picker"

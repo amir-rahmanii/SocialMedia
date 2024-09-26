@@ -38,7 +38,6 @@ const usePostData = <T extends object>(
         onError: (error) => {
             const errorMessage = (error as any)?.response?.data?.error?.message || (error as any)?.response?.data?.error || "An unexpected error occurred.";
             toast.error(errorMessage); // Show specific error if available, otherwise a fallback
-            console.error(error); // Log the error for debugging
         }
     });
 

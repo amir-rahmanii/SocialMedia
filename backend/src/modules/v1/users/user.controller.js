@@ -339,7 +339,6 @@ exports.resetPassword = async (req, res) => {
       data: "",
     });
   } catch (error) {
-    console.log(error);
     return errorResponse(res, 409, error, {});
   }
 };
@@ -382,7 +381,7 @@ exports.userInformation = async (req, res) => {
     }
 
     const postCount = await postModel.countDocuments({ 'user.id': userId });
-    console.log(`Post count for user ${userId}:`, postCount);
+
 
     const newUser = {
       ...user.toObject(), // تبدیل به شیء جاوا اسکریپت
@@ -392,7 +391,6 @@ exports.userInformation = async (req, res) => {
 
     res.status(200).json(newUser);
   } catch (error) {
-    console.error('Error retrieving user information:', error);
     res.status(error.statusCode || 500).json({ message: error.message });
   }
 };
@@ -691,7 +689,6 @@ exports.followToggle = async (req, res) => {
       });
     }
   } catch (err) {
-    console.error("Error in followToggle:", err);
     res.status(500).json({ message: "An error occurred.", error: err.message });
   }
 };

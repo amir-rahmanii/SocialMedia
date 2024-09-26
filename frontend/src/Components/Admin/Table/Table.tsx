@@ -9,7 +9,7 @@ type TableProps = {
 const Table: React.FC<PropsWithChildren<TableProps>> = ({ columns, children }) => {
     return (
         <div className='bg-admin-navy  px-6 pb-[30px] pt-[15px] rounded'>
-            <div className='max-h-[500px] overflow-auto'>
+            <div className='max-h-[450px] overflow-auto'>
                 <table className='w-full table-auto '>
                     <thead className='text-admin-High text-center '>
                         <tr className='border-y border-[#2e3a47]'>
