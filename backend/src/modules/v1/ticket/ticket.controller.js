@@ -62,7 +62,7 @@ exports.getUserTicket = async (req, res) => {
 exports.getAllTicket = async (req, res) => {
   try {
     // پیدا کردن تمام تیکت‌ها
-    const tickets = await Ticket.find();
+    const tickets = await Ticket.find().sort({ createdAt: -1 });
     res.status(200).json(tickets);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch tickets', error });

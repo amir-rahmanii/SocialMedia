@@ -1,7 +1,7 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SkeletonTable from '../../Components/SkeletonTable/SkeletonTable'
 import useGetData from '../../hooks/useGetData'
-import { searchIcon } from '../../Components/SvgIcon/SvgIcon';
+import { closeIcon, deleteIcon, editPostIcon, searchIcon } from '../../Components/SvgIcon/SvgIcon';
 import Table from '../../Components/Admin/Table/Table';
 import { ticketUser } from '../../hooks/ticket/tickets.types';
 import useDeleteData from '../../hooks/useDeleteData';
@@ -10,10 +10,10 @@ import { useQueryClient } from 'react-query';
 import { response } from '../../Components/User/TableTicket/TableTicket';
 import ResponseTicket from '../../Components/ResponseTicket/ResponseTicket';
 import usePostData from '../../hooks/usePostData';
-import TicketTableAdmin from '../../Components/Admin/TicketTableAdmin/TicketTableAdmin';
 import { Button } from '@mui/material';
 import FilterTicket from '../../Components/FilterTicket/FilterTicket';
 import dayjs from 'dayjs';
+import DateConverter from '../../utils/DateConverter';
 
 function TicketsAdmin() {
     const columns: string[] = [
@@ -99,7 +99,7 @@ function TicketsAdmin() {
 
     const filterTicketsFromQuery = (allTicket: ticketUser[]) => {
         const query = new URLSearchParams(location.search); // Use location here
-        
+
         const fromPicker = dayjs(query.get('fromDate'));
         const untilPicker = dayjs(query.get('untilDate'));
         const orderTicket = (query.get('order') as "NTO" | "OTN") || "NTO";
@@ -123,7 +123,7 @@ function TicketsAdmin() {
         if (isSuccess && allTicket) {
             filterTicketsFromQuery(allTicket); // Pass allTicket to the function
         }
-    }, [isSuccess, allTicket, location.search]); 
+    }, [isSuccess, allTicket, location.search]);
 
 
 
@@ -140,8 +140,8 @@ function TicketsAdmin() {
                         <div className='px-6 pt-6 flex justify-between items-center'>
                             <h3 className='text-xl mb-6'>Tickets</h3>
                             <div className='gap-4 glex flex items-center'>
-                                <form className='flex items-center gap-1' onSubmit={e => e.preventDefault()}>
-                                    <button className='text-admin-High w-5 h-5'>
+                                <form  className='flex items-center gap-1' onSubmit={e => e.preventDefault()}>
+                                    <button onClick={serchUsernameFilterHandler} className='text-admin-High w-5 h-5'>
                                         {searchIcon}
                                     </button>
                                     <input value={searchValue} onChange={(e) => setSearchValue(e.target.value)} className='bg-transparent text-white outline-none' placeholder='search...' type="text" />
@@ -151,14 +151,74 @@ function TicketsAdmin() {
                             </div>
                         </div>
                         <Table columns={columns}>
-                            <TicketTableAdmin
+                            <tbody className='h-[200px] overflow-auto' >
+                                {filteredData?.map((data, index) => (
+                                    <tr key={data._id} className={`border-y text-sm text-center border-[#2e3a47]`}>
+                                        <td className='py-[18px]  px-2 lg:px-1'>{index + 1}</td>
+                                        <td className='py-[18px]  px-2 lg:px-1'>
+                                            <div className='flex items-center gap-2 justify-center'>
+                                                <img loading='lazy' className='w-8 h-8 rounded-full object-cover' src={`http://localhost:4002/images/profiles/${data.user.profilePicture.filename}`} alt="profile" />
+                                                {data.user.username}
+                                            </div>
+                                        </td>
+                                        <td className='py-[18px]  px-2 lg:px-1'>
+                                            <div className='text-sm bg-cyan-400/30 rounded'>
+                                                {data.title}
+                                            </div>
+                                        </td>
+                                        <td className='py-[18px]  px-2 lg:px-1'>{data.department}</td>
+                                        <td className='py-[18px]  px-2 lg:px-1'>
+                                            <div className={` flex justify-center items-center ${data.priority === "Low" ? "bg-green-400/30" :
+                                                data.priority === "Medium" ? "bg-yellow-400/30" :
+                                                    "bg-red-400/30"
+                                                } rounded px-1 md:px-0`}>
+                                                {data.priority}
+                                            </div>
+                                        </td>
+                                        <td className='py-[18px]  px-2 lg:px-1'>
+                                            <div className={`flex justify-center items-center ${data.status === "Answered" ? "bg-green-400/30" :
+                                                data.status === "Open" ? "bg-yellow-400/30" :
+                                                    "bg-red-400/30"
+                                                } rounded px-1 md:px-0`}>
+                                                {data.status}
+                                            </div>
+                                        </td>
+
+                                        <td className='py-[18px]  px-2 lg:px-1'><DateConverter date={data.createdAt} /></td>
+                                        <td className='py-[18px]  px-2 lg:px-1'>
+                                            <div className='flex items-center justify-center gap-2'>
+                                                <button onClick={() => {
+                                                    setInfoTicket(data)
+                                                    setIsShowResponseTicket(true)
+                                                    setAnswerInfo(data.responses)
+
+                                                }} className={`w-4 h-4 text-admin-High hover:scale-110 hover:text-yellow-400 transition-all duration-300`}>{editPostIcon}</button>
+
+                                                {data.status !== "Closed" && (
+                                                    <button onClick={() => {
+                                                        setInfoTicket(data)
+                                                        setIsShowClosedTicket(true)
+                                                    }} className='w-4 h-4 text-admin-High hover:scale-110 hover:text-orange-400 transition-all duration-300'>{closeIcon}</button>
+                                                )}
+
+                                                <button onClick={() => {
+                                                    setInfoTicket(data)
+                                                    setIsShowDeleteTicket(true)
+                                                }} className='w-4 h-4 text-admin-High hover:scale-110 hover:text-error-red transition-all duration-300'>{deleteIcon}</button>
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                            {/* <TicketTableAdmin
                                 allTicket={filteredData || allTicket || []}
                                 setInfoTicket={setInfoTicket}
                                 setIsShowResponseTicket={setIsShowResponseTicket}
                                 setAnswerInfo={setAnswerInfo}
                                 setIsShowClosedTicket={setIsShowClosedTicket}
                                 setIsShowDeleteTicket={setIsShowDeleteTicket}
-                            />
+                            /> */}
                         </Table>
                     </div>
                 )}
@@ -181,16 +241,16 @@ function TicketsAdmin() {
                 setisOpenModal={setIsShowResponseTicket}
                 isOpenModal={isShowResponseTicket}
             >
-                {infoTicket && (
-                    <ResponseTicket
-                        readOnlyStars={true}
-                        bgInputAdmin={true}
-                        infoMessageUser={infoTicket}
-                        answerInfo={answerInfo}
-                        setAnswerInfo={setAnswerInfo} />
-                )}
-
-
+                <div className='flex flex-col max-h-72 overflow-auto'>
+                    {infoTicket && (
+                        <ResponseTicket
+                            readOnlyStars={true}
+                            bgInputAdmin={true}
+                            infoMessageUser={infoTicket}
+                            answerInfo={answerInfo}
+                            setAnswerInfo={setAnswerInfo} />
+                    )}
+                </div>
             </Modal>
 
 
@@ -212,6 +272,7 @@ function TicketsAdmin() {
                 setisOpenModal={setIsShowOpenFilter}
                 isOpenModal={isShowOpenFilter}
             >
+
                 {isSuccess && (
                     <FilterTicket
                         setIsShowOpenFilter={setIsShowOpenFilter}

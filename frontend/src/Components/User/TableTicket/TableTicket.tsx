@@ -12,6 +12,7 @@ import { useState } from 'react';
 import { ticketUser } from '../../../hooks/ticket/tickets.types';
 import ShowDialogModal from '../../ShowDialogModal/ShowDialogModal';
 import ResponseTicket from '../../ResponseTicket/ResponseTicket';
+import { eyeIcon } from '../../SvgIcon/SvgIcon';
 
 export type allTicketUserProps = {
     allTicketUser: ticketUser[]
@@ -112,8 +113,8 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
                                                         setisShowAnswer(true)
                                                         setInfoMessageUser(data)
                                                         setAnswerInfo(data.responses)
-                                                    }} className={`bg-purple-500/30 rounded px-1`}>
-                                                        Show
+                                                    }} className={` hover:text-purple-500 transition-all duration-300 hover:scale-110 w-4 h-4`}>
+                                                        {eyeIcon}
                                                     </button>
                                                 </TableCell>
                                             </TableRow>

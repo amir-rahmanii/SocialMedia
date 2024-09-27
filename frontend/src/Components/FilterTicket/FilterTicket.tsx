@@ -75,8 +75,8 @@ function FilterTicket(
 
 
         // Convert fromPicker and untilPicker to Dayjs objects
-        const fromDate = fromPicker ? dayjs(fromPicker) : null;
-        const untilDate = untilPicker ? dayjs(untilPicker) : null;
+        const fromDate = fromPicker ? dayjs(fromPicker).startOf('day') : null;
+        const untilDate = untilPicker ? dayjs(untilPicker).endOf('day') : null;
 
         const isFromDateValid = fromDate && fromDate.isValid();
         const isUntilDateValid = untilDate && untilDate.isValid();

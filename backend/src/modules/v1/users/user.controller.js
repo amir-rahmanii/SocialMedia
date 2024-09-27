@@ -699,7 +699,7 @@ exports.followToggle = async (req, res) => {
 exports.getAllUsersInformation = async (req, res) => {
   try {
     // Retrieve all users' information from the database
-    const users = await userModel.find({}, '-password'); // Exclude the password field
+    const users = await userModel.find({}, '-password').sort({ createdAt: -1 }); // Exclude the password field
 
     // برای هر کاربر تعداد پست‌های مربوط به او را دریافت کنید
     const usersWithPostCount = await Promise.all(users.map(async (user) => {

@@ -213,16 +213,16 @@ const PostItem: React.FC<Post> = (props) => {
 
 
     return (
-        <div className="flex flex-col rounded bg-white dark:bg-black relative mt-3">
+        <div className="flex flex-col rounded  relative mt-3">
 
             <div className="flex justify-between px-3 py-2.5 border-b dark:border-gray-300/20 border-gray-300  items-center">
                 <div className="flex space-x-3 items-center">
                     <Link to={`/profile/${props.user.id}`}><img draggable="false" className="w-10 h-10 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${props.user.userPicture.filename}`} alt="avatar" /></Link>
                     <Link to={`/profile/${props.user.id}`} className="text-black dark:text-white text-sm font-semibold">{props.user.username}</Link>
                 </div>
-                {myInfo?._id === props.user.id && (
-                    <button onClick={() => setPostDetailsToggle(true)} className="cursor-pointer text-black dark:text-white">{moreIcons}</button>
-                )}
+                    {myInfo?._id === props.user.id && (
+                        <button onClick={() => setPostDetailsToggle(true)} className="cursor-pointer text-black dark:text-white">{moreIcons}</button>
+                    )}
             </div>
 
             {postDatailsToggle && (
@@ -270,7 +270,7 @@ const PostItem: React.FC<Post> = (props) => {
                             <img
                                 draggable="false"
                                 loading="lazy"
-                                className="w-full h-auto object-cover object-center"
+                                className="w-full h-[400px] object-center"
                                 src={`http://localhost:4002/images/posts/${data.filename}`}
                                 alt="post image"
                             />

@@ -21,7 +21,6 @@ const Table: React.FC<PropsWithChildren<TableProps>> = ({ columns, children }) =
                     {children}
                 </table>
             </div>
-
         </div>
     )
 }

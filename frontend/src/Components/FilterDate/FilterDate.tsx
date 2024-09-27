@@ -12,7 +12,7 @@ type FilterDateProps = {
     setFromPicker: (value: Dayjs | null) => void;
     untilPicker: Dayjs | null;
     setUntilPicker: (value: Dayjs | null) => void;
-    filterDateHandler: () => void;
+    filterDateHandler: (value : any) => void;
 }
 
 const FilterDate: React.FC<PropsWithChildren<FilterDateProps>> = ({

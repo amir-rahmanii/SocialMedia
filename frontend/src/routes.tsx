@@ -17,6 +17,8 @@ import Index from "./Page/Dashboard/Index";
 import Users from "./Page/Dashboard/Users";
 import ProfileAdmin from "./Page/Dashboard/ProfileAdmin";
 import TicketsAdmin from "./Page/Dashboard/TicketsAdmin";
+import MessagesAdmin from "./Page/Dashboard/MessagesAdmin";
+import PostsAdmin from "./Page/Dashboard/PostsAdmin";
 
 
 const routes = [
@@ -34,6 +36,8 @@ const routes = [
             { path: "users", element: <Users /> },
             { path: "profile", element: <ProfileAdmin /> },
             { path: "tickets", element: <TicketsAdmin /> },
+            { path: "messages", element: <MessagesAdmin /> },
+            { path: "posts", element: <PostsAdmin /> },
         ]
     },
 

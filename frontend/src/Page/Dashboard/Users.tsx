@@ -3,13 +3,12 @@ import useGetData from '../../hooks/useGetData';
 import { userInformation } from '../../hooks/user/user.types';
 import SkeletonTable from '../../Components/SkeletonTable/SkeletonTable';
 import Table from '../../Components/Admin/Table/Table';
-import { searchIcon } from '../../Components/SvgIcon/SvgIcon';
-import ShowDialogModal from '../../Components/ShowDialogModal/ShowDialogModal';
+import { banUser, changeRoleIcon, deleteIcon, eyeIcon, searchIcon, unBanUser } from '../../Components/SvgIcon/SvgIcon';
 import Modal from '../../Components/Admin/Modal/Modal';
 import usePostData from '../../hooks/usePostData';
 import { useQueryClient } from 'react-query';
 import useDeleteData from '../../hooks/useDeleteData';
-import UserTable from '../../Components/Admin/UserTable/UserTable';
+import DateConverter from '../../utils/DateConverter';
 
 
 
@@ -74,20 +73,26 @@ export default function Users() {
     )
 
 
+    const { data: myInfo } = useGetData<userInformation>(
+        ["getMyUserInfo"],
+        "users/user-information"
+    );
+
+
 
 
     const changeRoleHandler = () => {
-        changeRole({userId : infoUser?._id})
+        changeRole({ userId: infoUser?._id })
     }
 
 
     const deleteUserHandler = () => {
-        deleteUser({userId : infoUser?._id})
+        deleteUser({ userId: infoUser?._id })
     }
 
 
     const banUserHandler = () => {
-        banUserToggle({userid : infoUser?._id})
+        banUserToggle({ userid: infoUser?._id })
     }
 
     useEffect(() => {
@@ -106,6 +111,11 @@ export default function Users() {
             setFilteredData(informationAllUser || []);
         }
     };
+
+    useEffect(() => {
+        isSuccess && setFilteredData(informationAllUser)
+        
+    } , [informationAllUser])
 
 
 
@@ -126,14 +136,54 @@ export default function Users() {
                             </form>
                         </div>
                         <Table columns={columns}>
-                            <UserTable
-                                information={filteredData || informationAllUser || []}
-                                setIsShowChangeRole={setIsShowChangeRole}
-                                setIsShowDeleteUser={setIsShowDeleteUser}
-                                setIsShowBanUser={setIsShowBanUser}
-                                setIsShowInfoUser={setIsShowInfoUser}
-                                setIsInfoUser={setIsInfoUser}
-                            />
+                            <tbody className='h-[200px] overflow-auto' >
+                                {filteredData?.map((data, index) => (
+                                    <tr key={data._id} className={`border-y text-sm ${data.isban ? "bg-red-400/20" : "even:bg-[#313D4A] "} text-center border-[#2e3a47]`}>
+                                        <td className='py-[18px]  px-2 lg:px-1'>{index + 1}</td>
+                                        <td className='py-[18px]  px-2 lg:px-1'>
+                                            <div className='flex items-center gap-2 justify-center'>
+                                                <img loading='lazy' className='w-8 h-8 rounded-full object-cover' src={`http://localhost:4002/images/profiles/${data.profilePicture.filename}`} alt="profile" />
+                                                {data.username}
+                                            </div>
+                                        </td>
+                                        <td className='py-[18px]  px-2 lg:px-1'>{data.email}</td>
+                                        <td className='py-[18px]  px-2 lg:px-1'>{data.name}</td>
+                                        <td className='py-[18px]  px-2 lg:px-1'>{data.role}</td>
+                                        <td className='py-[18px]  px-2 lg:px-1'><DateConverter date={data.createdAt} /></td>
+                                        <td className='py-[18px]  px-2 lg:px-1'>
+                                            <div className='flex items-center justify-center gap-2'>
+                                                <button onClick={() => {
+                                                    setIsInfoUser(data)
+                                                    setIsShowInfoUser(true)
+                                                }} className={`w-4 h-4 text-admin-High hover:scale-110 hover:text-yellow-400 transition-all duration-300`}>{eyeIcon}</button>
+
+                                                {(myInfo?._id !== data._id && data.username !== "Amirreza") && (
+                                                    <button onClick={() => {
+                                                        setIsInfoUser(data)
+                                                        setIsShowChangeRole(true)
+                                                    }} className='text-admin-High w-4 h-4  hover:scale-110 transition-all duration-300 hover:text-admin-low'>
+                                                        {changeRoleIcon}
+                                                    </button>
+                                                )}
+
+                                                {(myInfo?._id !== data._id && data.username !== "Amirreza") && (
+                                                    <button onClick={() => {
+                                                        setIsInfoUser(data)
+                                                        setIsShowBanUser(true)
+                                                    }} className={`w-4 h-4 text-admin-High hover:scale-110 ${data.isban ? "hover:text-green-400" : "hover:text-orange-400"} transition-all duration-300`}>{data.isban ? unBanUser : banUser}</button>
+                                                )}
+
+                                                {(myInfo?._id !== data._id && data.username !== "Amirreza") && (
+                                                    <button onClick={() => {
+                                                        setIsInfoUser(data)
+                                                        setIsShowDeleteUser(true)
+                                                    }} className='w-4 h-4 text-admin-High hover:scale-110 hover:text-error-red transition-all duration-300'>{deleteIcon}</button>
+                                                )}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
                         </Table>
                     </div>
                 )}
