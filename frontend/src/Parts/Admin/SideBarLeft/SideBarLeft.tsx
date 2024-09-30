@@ -5,7 +5,7 @@ import { closeIcon, homeFill, logOutIcon, messageOutline, postsIconFill, profile
 
 export type SideBarLeftProps = {
     showSidebarLeftMobile: boolean,
-    setShowSidebarLeftMobile: (value: boolean) => void
+    setShowSidebarLeftMobile: (value: boolean) => void,
 }
 
 function SideBarLeft({ showSidebarLeftMobile, setShowSidebarLeftMobile }: SideBarLeftProps) {

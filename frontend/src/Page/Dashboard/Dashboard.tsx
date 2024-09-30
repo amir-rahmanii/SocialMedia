@@ -25,7 +25,7 @@ function Dashboard() {
           <div className='bg-admin-black font-sans min-h-screen text-white'>
             <SideBarLeft setShowSidebarLeftMobile={setShowSidebarLeftMobile} showSidebarLeftMobile={showSidebarLeftMobile} />
             <Header setShowSidebarLeftMobile={setShowSidebarLeftMobile} showSidebarLeftMobile={showSidebarLeftMobile}/>
-            <div className="md:ml-16 lg:ml-40 xl:ml-64 mt-8">
+            <div className="md:ml-16 lg:ml-40 xl:ml-64 mt-12">
               <div className="flex gap-2 h-full w-full py-14 p-4 md:p-[74px]">
                 <Outlet />
               </div>

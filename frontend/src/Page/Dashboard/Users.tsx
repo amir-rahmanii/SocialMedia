@@ -121,7 +121,7 @@ export default function Users() {
 
     return (
         <>
-            <div className="font-sans grid w-full">
+            <div className="font-sans grid overflow-auto max-w-[710px] md:max-w-full md:w-full">
                 {isLoading ? (
                     <SkeletonTable />
                 ) : (

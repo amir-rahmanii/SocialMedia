@@ -25,20 +25,20 @@ function ProfileAdmin() {
       queryClient.invalidateQueries(["getMyUserInfo"]);
     }, true);
 
-    const fileChangeHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (e.target.files && e.target.files.length > 0) {
-        const imgFile = e.target.files[0];
-        
-        try {
-          const resizedImage = await resizeImage(imgFile, 300, 300); // Resizing to 300x300
-          const formData = new FormData();
-          formData.append('profilePicture', resizedImage);
-          updateProfilePicture(formData);
-        } catch (error) {
-          console.error('Error resizing image:', error);
-        }
+  const fileChangeHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const imgFile = e.target.files[0];
+
+      try {
+        const resizedImage = await resizeImage(imgFile, 300, 300); // Resizing to 300x300
+        const formData = new FormData();
+        formData.append('profilePicture', resizedImage);
+        updateProfilePicture(formData);
+      } catch (error) {
+        console.error('Error resizing image:', error);
       }
-    };
+    }
+  };
 
 
   return (
@@ -54,7 +54,7 @@ function ProfileAdmin() {
               <img src="/src/assets/images/cover.png" alt="profile cover" className="h-full w-full rounded-tl-sm rounded-tr-sm object-cover object-center" />
               {/* profile */}
 
-              <div className=" -translate-y-1/2 z-30 mx-auto w-full max-w-30 rounded-full bg-white/20 p-1 backdrop-blur h-32 sm:h-44 sm:max-w-44 sm:p-3">
+              <div className="-translate-y-1/2 z-30 mx-auto w-full max-w-30 rounded-full bg-white/20  backdrop-blur h-44 max-w-44 p-3">
                 <div className="relative drop-shadow-2">
                   <img className='rounded-full' loading='lazy' src={`http://localhost:4002/images/profiles/${myInfo?.profilePicture.filename}`} alt="profile" />
                   <label htmlFor="profile" className="absolute bottom-0 right-0 flex h-8.5 w-8.5 cursor-pointer items-center justify-center rounded-full bg-primary text-white hover:bg-opacity-90 sm:bottom-2 sm:right-2">
@@ -76,7 +76,7 @@ function ProfileAdmin() {
                 <p className='text-admin-low text-sm flex gap-1 items-center px-6'><span className='text-white font-bold text-base'>{myInfo?.following.length.toLocaleString()}</span>Following</p>
               </div>
               <p className='text-base my-6 font-bold'>About me</p>
-              <div className='flex justify-center items-center w-[720px] text-center'>
+              <div className='flex justify-center items-center max-w-[720px] text-center'>
                 <p className='text-admin-low'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris tempus ut. Donec fermentum blandit aliquet. Etiam dictum dapibus ultricies. Sed vel aliquet libero. Nunc a augue fermentum, pharetra ligula sed, aliquam lacus.</p>
               </div>
               <p className='text-base my-6 font-bold'>Follow Me On</p>
@@ -101,6 +101,7 @@ function ProfileAdmin() {
             </div>
           </div>
         </div>
+
       )}
     </>
   )

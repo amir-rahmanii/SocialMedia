@@ -138,7 +138,7 @@ function TicketsAdmin() {
 
     return (
         <>
-            <div className="font-sans grid w-full">
+            <div className="font-sans grid max-w-[710px] overflow-auto md:max-w-full md:w-full">
                 {isLoading ? (
                     <SkeletonTable />
                 ) : (
