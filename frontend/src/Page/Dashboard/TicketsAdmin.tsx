@@ -11,7 +11,7 @@ import { response } from '../../Components/User/TableTicket/TableTicket';
 import ResponseTicket from '../../Components/ResponseTicket/ResponseTicket';
 import usePostData from '../../hooks/usePostData';
 import { Button } from '@mui/material';
-import FilterTicket from '../../Components/FilterTicket/FilterTicket';
+import FilterTicket, { ticketFilterLocalStorage } from '../../Components/FilterTicket/FilterTicket';
 import dayjs from 'dayjs';
 import DateConverter from '../../utils/DateConverter';
 
@@ -26,6 +26,13 @@ function TicketsAdmin() {
         "CreatedAt",
         "Action"
     ]
+      //get localStorage
+      const [ticketFilterLocalStorage, setTicketFilterLocalStorage] = useState<ticketFilterLocalStorage | null>(
+        localStorage.getItem("ticketFilter")
+            ? JSON.parse(localStorage.getItem("ticketFilter") as string)
+            : null
+    )
+
     const [infoTicket, setInfoTicket] = useState<ticketUser | null>(null)
 
     const [searchValue, setSearchValue] = useState("")
@@ -48,7 +55,7 @@ function TicketsAdmin() {
         "ticket deleted successfuly",
         () => {
             setIsShowDeleteTicket(false)
-            queryClient.invalidateQueries(["useGetAllTicket"])
+            queryClient.invalidateQueries(["useGetAllTicket"]);
         }
     )
     const { mutate: closedTicket } = usePostData(
@@ -57,7 +64,7 @@ function TicketsAdmin() {
         true,
         () => {
             setIsShowClosedTicket(false)
-            queryClient.invalidateQueries(["useGetAllTicket"])
+            queryClient.invalidateQueries(["useGetAllTicket"]);
         }
     )
 
@@ -97,17 +104,16 @@ function TicketsAdmin() {
 
 
 
-    const filterTicketsFromQuery = (allTicket: ticketUser[]) => {
-        const query = new URLSearchParams(location.search); // Use location here
+    const filterTicketsFromLocalStorage = () => {
 
-        const fromPicker = dayjs(query.get('fromDate'));
-        const untilPicker = dayjs(query.get('untilDate'));
-        const orderTicket = (query.get('order') as "NTO" | "OTN") || "NTO";
-        const allPriority = query.get('priority')?.split(',') || ["Low", "Medium", "High"];
-        const allStatus = query.get('status')?.split(',') || ["Open", "Closed", "Answered"];
+        const fromPicker = dayjs(ticketFilterLocalStorage?.fromDate) || null
+        const untilPicker = dayjs(ticketFilterLocalStorage?.untilDate) || null
+        const orderTicket = ticketFilterLocalStorage?.order || "NTO"
+        const allPriority = ticketFilterLocalStorage?.priority  || ["Low", "Medium", "High"] 
+        const allStatus = ticketFilterLocalStorage?.status || ["Open", "Closed", "Answered"]
 
         // Filter tickets
-        const filteredTickets = allTicket.filter(info => {
+        const filteredTickets = allTicket?.filter(info => {
             const includedPriority = allPriority.includes(info.priority);
             const includedStatus = allStatus.includes(info.status);
             const infoDate = dayjs(info.createdAt);
@@ -116,14 +122,14 @@ function TicketsAdmin() {
         });
 
         // Only set filtered data if filteredTickets is an array
-        setFilteredData(orderTicket === "NTO" ? filteredTickets : filteredTickets.reverse());
+        setFilteredData(orderTicket === "NTO" ? filteredTickets || [] : filteredTickets?.reverse() || []);
     };
 
     useEffect(() => {
-        if (isSuccess && allTicket) {
-            filterTicketsFromQuery(allTicket); // Pass allTicket to the function
+        if (isSuccess) {
+            filterTicketsFromLocalStorage(); // Pass allTicket to the function
         }
-    }, [isSuccess, allTicket, location.search]);
+    }, [isSuccess, allTicket , ticketFilterLocalStorage]);
 
 
 
@@ -211,14 +217,6 @@ function TicketsAdmin() {
                                     </tr>
                                 ))}
                             </tbody>
-                            {/* <TicketTableAdmin
-                                allTicket={filteredData || allTicket || []}
-                                setInfoTicket={setInfoTicket}
-                                setIsShowResponseTicket={setIsShowResponseTicket}
-                                setAnswerInfo={setAnswerInfo}
-                                setIsShowClosedTicket={setIsShowClosedTicket}
-                                setIsShowDeleteTicket={setIsShowDeleteTicket}
-                            /> */}
                         </Table>
                     </div>
                 )}

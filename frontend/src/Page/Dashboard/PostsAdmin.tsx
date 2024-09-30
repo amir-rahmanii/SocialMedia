@@ -61,7 +61,7 @@ function PostsAdmin() {
     const [sortedBy, setSortedBy] = useState(query.get('sortedBy') || "New");
     const navigate = useNavigate();
 
-    const { data: allPosts, isLoading, isSuccess } = useGetData<Post[]>(
+    const { data: allPosts, isLoading, isSuccess  , refetch : refetchAllPosts } = useGetData<Post[]>(
         ['AllPostAllUsers'],
         'posts/get-all-posts'
     );
@@ -70,8 +70,13 @@ function PostsAdmin() {
         `posts/delete-post`,
         "Post Deleted successfully",
         () => {
-            setIsShowDeletePost(false)
-            queryClient.invalidateQueries(["AllPostAllUsers"]);
+            setIsShowDeletePost(false);
+
+            // حذف پست از داده‌های موجود
+            const updatedPosts = allPosts?.filter(post => post._id !== infoPost?._id) || [];
+            setFilteredData(updatedPosts.length > 0 ? updatedPosts : null);
+
+            refetchAllPosts();
         }
     );
 
@@ -80,7 +85,7 @@ function PostsAdmin() {
         "Comment Deleted successfully",
         () => {
             setIsShowDeleteComment(false)
-            queryClient.invalidateQueries(["AllPostAllUsers"]);
+            refetchAllPosts();
         }
     );
 
@@ -97,6 +102,8 @@ function PostsAdmin() {
         }
     };
 
+
+
     useEffect(() => {
         isSuccess && serchUsernameFilterHandler();
     }, [searchValue])
@@ -104,9 +111,9 @@ function PostsAdmin() {
 
     useEffect(() => {
         if (allPosts && isSuccess) {
-            filterDataHandler(allPosts)
+            filterDataHandler(allPosts);
         }
-    }, [allPosts, isSuccess, location.search, sortedBy])
+    }, [allPosts, isSuccess, location.search, sortedBy]);
 
 
 
@@ -136,19 +143,26 @@ function PostsAdmin() {
 
 
     const handleChangeSortBy = (e: SelectChangeEvent<string>) => {
-        setSortedBy(e.target.value as string);  // Update the sortedBy state when a new filter is selected
-        const params = new URLSearchParams();
-        params.set('sortedBy', e.target.value);
-        navigate(`?${params.toString()}`);
-    };
+        const selectedValue = e.target.value as string;
+        setSortedBy(selectedValue);  // Update state first
 
+        const params = new URLSearchParams();
+        params.set('sortedBy', selectedValue);
+        navigate(`?${params.toString()}`);  // Update URL
+
+        // همگام سازی با استیت پس از تغییرات URL
+        const querySortedBy = query.get('sortedBy') || "New";
+        setSortedBy(querySortedBy);
+    };
 
 
 
     const filterDataHandler = (allPosts: Post[]) => {
         if (allPosts) {
+
             const querySortedBy = query.get('sortedBy') || "New";
-            setSortedBy(querySortedBy);  // This ensures the filter is updated from the URL params
+            setSortedBy(querySortedBy);
+
 
             let sortedArray = [...allPosts];
 
@@ -171,9 +185,11 @@ function PostsAdmin() {
                     break;
             }
 
-            setFilteredData(sortedArray);  // Update the filtered data state
+            setFilteredData(sortedArray);
         }
     };
+
+
 
 
     return (
@@ -184,7 +200,7 @@ function PostsAdmin() {
                 ) : (
                     <div className='bg-admin-navy rounded'>
                         <div className='px-6 pt-6 flex justify-between items-center'>
-                            <h3 className='text-xl mb-6'>Messages</h3>
+                            <h3 className='text-xl mb-6'>Posts</h3>
                             <div className='gap-4 glex flex items-center'>
                                 <form className='flex items-center gap-1' onSubmit={e => e.preventDefault()}>
                                     <button onClick={serchUsernameFilterHandler} className='text-admin-High w-5 h-5'>
@@ -235,7 +251,7 @@ function PostsAdmin() {
                                             <button
                                                 onClick={() => {
                                                     setIsShowCommentPost(true)
-                                                    setAllComment(data.comments)
+                                                     setAllComment(data.comments)
                                                 }}
                                                 className='text-admin-High hover:text-emerald-500 hover:scale-110 transition-all duration-300 w-4 h-4'>
                                                 {eyeIcon}
@@ -312,7 +328,7 @@ function PostsAdmin() {
                 <div className='max-h-72 overflow-auto grid grid-cols-1 gap-3 px-3'>
                     {allComment && allComment?.length > 0 ? (
                         allComment.map(data => (
-                            <div className='flex justify-between items-center'>
+                            <div key={data._id} className='flex justify-between items-center'>
                                 <div className='flex overflow-hidden items-center gap-2'>
                                     <p className='shrink-0'>
                                         <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/images/profiles/${data.userPicture.filename}`} alt="avatar" />
@@ -381,7 +397,7 @@ function PostsAdmin() {
                 <div className='max-h-72 overflow-auto grid grid-cols-1 gap-3 px-3'>
                     {infoPost && infoPost?.likes.length > 0 ? (
                         infoPost?.likes.map(data => (
-                            <div className='flex justify-between items-center'>
+                            <div key={data._id} className='flex justify-between items-center'>
                                 <div className='flex items-center gap-2'>
                                     <p className='shrink-0'>
                                         <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/images/profiles/${data.userPicture.filename}`} alt="avatar" />

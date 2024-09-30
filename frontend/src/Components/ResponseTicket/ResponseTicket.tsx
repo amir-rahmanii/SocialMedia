@@ -47,7 +47,7 @@ function ResponseTicket({
     );
 
     const { mutate: addRating } = usePostData(
-        'ticket//add-rating',
+        'ticket/add-rating',
         "Rating send successfuly",
         true,
         () => {

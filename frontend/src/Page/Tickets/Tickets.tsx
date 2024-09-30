@@ -12,7 +12,7 @@ import useGetData from '../../hooks/useGetData'
 import SideBarLeft from '../../Parts/User/SideBarLeft/SideBarLeft'
 import Header from '../../Parts/User/Header/Header'
 import SideBarBottom from '../../Parts/User/SideBarBottom/SideBarBottom'
-import FilterTicket from '../../Components/FilterTicket/FilterTicket';
+import FilterTicket, { ticketFilterLocalStorage } from '../../Components/FilterTicket/FilterTicket';
 
 // Enable the 'isBetween' plugin for dayjs
 dayjs.extend(isBetween);
@@ -21,7 +21,12 @@ dayjs.extend(isBetween);
 
 
 function Tickets() {
-
+    //get localStorage
+    const [ticketFilterLocalStorage, setTicketFilterLocalStorage] = useState<ticketFilterLocalStorage | null>(
+        localStorage.getItem("ticketFilter")
+            ? JSON.parse(localStorage.getItem("ticketFilter") as string)
+            : null
+    )
 
 
     const [isShowOpenFilter, setIsShowOpenFilter] = useState(false);
@@ -34,18 +39,17 @@ function Tickets() {
         "ticket/user-tickets"
     )
 
-     // Function to filter tickets based on query parameters
-     const filterTicketsFromQuery = (allTicket: ticketUser[]) => {
-        const query = new URLSearchParams(location.search); // Use location here
-        
-        const fromPicker = dayjs(query.get('fromDate'));
-        const untilPicker = dayjs(query.get('untilDate'));
-        const orderTicket = (query.get('order') as "NTO" | "OTN") || "NTO";
-        const allPriority = query.get('priority')?.split(',') || ["Low", "Medium", "High"];
-        const allStatus = query.get('status')?.split(',') || ["Open", "Closed", "Answered"];
+    // Function to filter tickets based on local storage
+    const filterTicketsFromLocalStorage = () => {
+
+        const fromPicker = dayjs(ticketFilterLocalStorage?.fromDate) || null
+        const untilPicker = dayjs(ticketFilterLocalStorage?.untilDate) || null
+        const orderTicket = ticketFilterLocalStorage?.order || "NTO"
+        const allPriority = ticketFilterLocalStorage?.priority  || ["Low", "Medium", "High"] 
+        const allStatus = ticketFilterLocalStorage?.status || ["Open", "Closed", "Answered"]
 
         // Filter tickets
-        const filteredTickets = allTicket.filter(info => {
+        const filteredTickets = allTicket?.filter(info => {
             const includedPriority = allPriority.includes(info.priority);
             const includedStatus = allStatus.includes(info.status);
             const infoDate = dayjs(info.createdAt);
@@ -54,14 +58,14 @@ function Tickets() {
         });
 
         // Only set filtered data if filteredTickets is an array
-        setFilteredData(orderTicket === "NTO" ? filteredTickets : filteredTickets.reverse());
+        setFilteredData(orderTicket === "NTO" ? filteredTickets || [] : filteredTickets?.reverse() || []);
     };
 
     useEffect(() => {
-        if (isSuccess && allTicket) {
-            filterTicketsFromQuery(allTicket); // Pass allTicket to the function
+        if (isSuccess) {
+            filterTicketsFromLocalStorage(); // Pass allTicket to the function
         }
-    }, [isSuccess, allTicket, location.search]); 
+    }, [isSuccess, allTicket , ticketFilterLocalStorage]);
 
 
 

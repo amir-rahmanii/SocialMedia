@@ -68,37 +68,37 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
 
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (postImage.length === 5) {
-          toast.error("You can't upload more than 5 images");
+            toast.error("You can't upload more than 5 images");
         } else {
-          if (e.target.files) {
-            const files = Array.from(e.target.files);
-      
+            if (e.target.files) {
+                const files = Array.from(e.target.files);
 
-            const resizedFiles = await Promise.all(
-              files.map((file) => resizeImage(file, 300, 300))
-            );
-      
 
-            setPostImage((prevFiles) => [...prevFiles, ...resizedFiles]);
-      
+                const resizedFiles = await Promise.all(
+                    files.map((file) => resizeImage(file, 300, 300))
+                );
 
-            const previews = await Promise.all(
-              resizedFiles.map((file) => {
-                return new Promise<string>((resolve, reject) => {
-                  const reader = new FileReader();
-                  reader.onload = () => {
-                    resolve(reader.result as string);
-                  };
-                  reader.onerror = reject;
-                  reader.readAsDataURL(file);
-                });
-              })
-            );
-      
-            setPostPreview((prev) => [...prev, ...previews]);
-          }
+
+                setPostImage((prevFiles) => [...prevFiles, ...resizedFiles]);
+
+
+                const previews = await Promise.all(
+                    resizedFiles.map((file) => {
+                        return new Promise<string>((resolve, reject) => {
+                            const reader = new FileReader();
+                            reader.onload = () => {
+                                resolve(reader.result as string);
+                            };
+                            reader.onerror = reject;
+                            reader.readAsDataURL(file);
+                        });
+                    })
+                );
+
+                setPostPreview((prev) => [...prev, ...previews]);
+            }
         }
-      };
+    };
 
     const removeImageFromFiles = (index: number) => {
         const newPostImages = [...postImage]

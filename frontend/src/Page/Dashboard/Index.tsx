@@ -55,21 +55,21 @@ function Index() {
         <SpinLoader />
       ) : (
         <div className='font-sans grid gap-8 w-full'>
-          <div className='grid grid-cols-4 gap-8'>
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8'>
             <BoxHome svg={usersIcon} title="Users" count={countModel?.users.count || 0} growth={countModel?.users.growth || 0} />
             <BoxHome svg={ticketIcon} title="Tickets" count={countModel?.tickets.count || 0} growth={countModel?.tickets.growth || 0} />
             <BoxHome svg={messageOutline} title="Messages" count={countModel?.messages.count || 0} growth={countModel?.messages.growth || 0} />
             <BoxHome svg={postsIconFill} title="Posts" count={countModel?.posts.count || 0} growth={countModel?.posts.growth || 0} />
           </div>
 
-          <div className='grid grid-cols-3 gap-8'>
+          <div className='grid lg:grid-cols-1 xl:grid-cols-3 gap-8'>
             <div className='bg-admin-navy p-[30px] rounded'>
               <p className='text-xl'>Operating System Chart</p>
               {isSuccessTotalOsCount && (
                 <OperatingSystemChart totalOsCount={totalOsCount} />
               )}
             </div>
-            <div className='bg-admin-navy p-[30px] col-span-2 rounded'>
+            <div className='bg-admin-navy p-[30px] xl:col-span-2 rounded'>
               <p className='text-xl'>Messages By Month Chart</p>
               {isSuccessTotalMessageCount && (
                 <MessagesByMonthChart totalMessageCount={totalMessageCount} />

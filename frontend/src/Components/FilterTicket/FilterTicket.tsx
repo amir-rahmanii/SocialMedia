@@ -4,8 +4,6 @@ import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, 
 import dayjs, { Dayjs } from 'dayjs';
 import toast from 'react-hot-toast';
 import { ticketUser } from '../../hooks/ticket/tickets.types';
-import { useLocation, useNavigate } from 'react-router-dom';
-
 
 
 type FilterTicketProps = {
@@ -14,18 +12,17 @@ type FilterTicketProps = {
     allTicket: ticketUser[],
 }
 
+
+
 export type ticketFilterLocalStorage = {
-    status: string[],
     priority: string[],
+    status: string[],
     order: "OTN" | "NTO",
     fromDate: Dayjs,
-    untilDate: Dayjs,
-
+    untilDate: Dayjs
 }
 
-const useQuery = () => {
-    return new URLSearchParams(useLocation().search);
-};
+
 
 
 
@@ -36,27 +33,32 @@ function FilterTicket(
         setFilteredData,
         allTicket,
     }: FilterTicketProps
-) {
+) {  
 
-    const query = useQuery();
+    
+    //get localStorage
+    const [ticketFilterLocalStorage, setTicketFilterLocalStorage] = useState<ticketFilterLocalStorage | null>(
+        localStorage.getItem("ticketFilter")
+            ? JSON.parse(localStorage.getItem("ticketFilter") as string)
+            : null
+    )
 
     const [fromPicker, setFromPicker] = useState<Dayjs | null>(
-        dayjs(query.get('fromDate')) || null
+        dayjs(ticketFilterLocalStorage?.fromDate) || null
     );
     const [untilPicker, setUntilPicker] = useState<Dayjs | null>(
-        dayjs(query.get('untilDate')) || null
+        dayjs(ticketFilterLocalStorage?.untilDate) || null
     );
     const [orderTicket, setOrderTicket] = useState<"NTO" | "OTN">(
-        query.get('order') as "NTO" | "OTN" || "NTO"
+        ticketFilterLocalStorage?.order || "NTO"
     );
     const [allPriority, setAllPriority] = useState<string[]>(
-        query.get('priority')?.split(',') || ["Low", "Medium", "High"]
+        ticketFilterLocalStorage?.priority || ["Low", "Medium", "High"]
     );
     const [allStatus, setAllStatus] = useState<string[]>(
-        query.get('status')?.split(',') || ["Open", "Closed", "Answered"]
+        ticketFilterLocalStorage?.status || ["Open", "Closed", "Answered"]
     );
-    const navigate = useNavigate();
-
+    
 
 
     const filterDateHandler = () => {
@@ -71,26 +73,24 @@ function FilterTicket(
             return;
         }
 
-        console.log(fromPicker);
+    
 
 
         // Convert fromPicker and untilPicker to Dayjs objects
         const fromDate = fromPicker ? dayjs(fromPicker).startOf('day') : null;
         const untilDate = untilPicker ? dayjs(untilPicker).endOf('day') : null;
 
-        const isFromDateValid = fromDate && fromDate.isValid();
-        const isUntilDateValid = untilDate && untilDate.isValid();
 
-        // ساخت URL جدید با پارامترها
-        const params = new URLSearchParams();
-        params.set('status', allStatus.join(',')); // تبدیل آرایه به رشته
-        params.set('priority', allPriority.join(',')); // تبدیل آرایه به رشته
-        params.set('order', orderTicket);
-        isFromDateValid && params.set('fromDate', fromDate.toISOString()); // تبدیل به فرمت مناسب
-        isUntilDateValid && params.set('untilDate', untilDate.toISOString()); // تبدیل به فرمت مناسب
+    
+        localStorage.setItem("ticketFilter", JSON.stringify({
+            status: allStatus,
+            priority: allPriority,
+            order: orderTicket,
+            fromDate,
+            untilDate
+        }))
 
-        // به‌روزرسانی URL با پارامترها
-        navigate(`?${params.toString()}`);
+    
 
         const filteredTickets = allTicket?.filter(info => {
             const includedPriority = allPriority.includes(info.priority)

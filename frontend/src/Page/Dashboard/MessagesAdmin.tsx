@@ -54,7 +54,7 @@ function MessagesAdmin() {
     const navigate = useNavigate();
 
 
-    const { data: allMessages, isLoading, isSuccess } = useGetData<IMessage[]>(
+    const { data: allMessages, isLoading, isSuccess , refetch : refetchAllmessage } = useGetData<IMessage[]>(
         ["getAllMessages"],
         "message/all-messages"
     );
@@ -63,8 +63,8 @@ function MessagesAdmin() {
         "message/delete-messages",
         "Delete Msg successfuly!",
         () => {
-            queryClient.invalidateQueries(["getAllMessages"])
             setIsShowDeleteMessage(false);
+            refetchAllmessage();
         }
     )
 
