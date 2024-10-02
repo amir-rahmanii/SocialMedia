@@ -33,7 +33,7 @@ function startServer() {
 
   const io = socketIo(server, {
     cors: {
-      origin: "http://localhost:5173", // آدرس فرانت‌اند
+      origin: process.env.FRONT_URL, // آدرس فرانت‌اند
       methods: ["GET", "POST"]
     }
   });

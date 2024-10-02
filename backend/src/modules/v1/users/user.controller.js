@@ -290,7 +290,7 @@ exports.forgetPassword = async (req, res) => {
       subject: "Reset Password Link For Your Social account",
       html: `
        <h2>your link for reset password:</h2>
-       <p>http://localhost:5173/reset-password/?token=${resetPassordToken}</p>
+       <p>${process.env.FRONT_URL}/reset-password/?token=${resetPassordToken}</p>
        `,
     };
     transporter.sendMail(mailOptions);
