@@ -102,7 +102,7 @@ function ResponseTicket({
                 </div>
             ) : (
                 <div className="flex items-end gap-2 max-w-xs p-2">
-                    <img draggable="false" className="w-7 h-7 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${infoMessageUser.user.profilePicture.filename}`} alt="prof" />
+                    <img draggable="false" className="w-7 h-7 rounded-full object-cover" src={`${import.meta.env.VITE_API_BASE_URL}/${infoMessageUser.user.profilePicture.path}`} alt="prof" />
                     <div className="flex flex-col ">
                         <span className="text-xs text-gray-500 px-3 py-1">{infoMessageUser.user.username}</span>
                         <div className="flex flex-col">
@@ -132,7 +132,7 @@ function ResponseTicket({
                     ) : (
 
                         <div className="flex items-end gap-2 max-w-xs p-2">
-                            <img draggable="false" className="w-7 h-7 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${data.senderProfilePicture.filename}`} alt="prof" />
+                            <img draggable="false" className="w-7 h-7 rounded-full object-cover" src={`${import.meta.env.VITE_API_BASE_URL}/${data.senderProfilePicture.path}`} alt="prof" />
                             <div className="flex flex-col ">
                                 <span className="text-xs text-gray-500 px-3 py-1">{data.senderUsername} ( {infoMessageUser?.department} )</span>
                                 <div className="flex flex-col">

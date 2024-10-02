@@ -61,7 +61,7 @@ const StoriesContainer = () => {
                             <img
                                 loading="lazy"
                                 className="rounded-full h-full w-full object-cover"
-                                src={`http://localhost:4002/images/profiles/${myInfo.profilePicture.filename}`}
+                                src={`${import.meta.env.VITE_API_BASE_URL}/${myInfo.profilePicture.path}`}
                                 draggable="false"
                                 alt="story"
                             />
@@ -84,7 +84,7 @@ const StoriesContainer = () => {
                                 <img
                                     loading="lazy"
                                     className="rounded-full h-full w-full object-cover"
-                                    src={`http://localhost:4002/images/profiles/${s.user.userPicture.filename}`}
+                                    src={`${import.meta.env.VITE_API_BASE_URL}/${s.user.userPicture.path}`}
                                     draggable="false"
                                     alt="story"
                                 />

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Auth from '../../LayOut/Auth/Auth'
 import TextField from '@mui/material/TextField';
@@ -7,12 +7,15 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import loginSchema from '../../Validation/login';
 import IsLoaderBtn from '../../Components/IsLoaderBtn/IsLoaderBtn';
 import usePostData from '../../hooks/usePostData';
+import { IconButton, InputAdornment } from '@mui/material';
+import { VisibilityEye, VisibilityEyeOff } from '../../Components/SvgIcon/SvgIcon';
 
 
 function Login() {
 
     const navigate = useNavigate();
-    
+    const [showPassword, setShowPassword] = useState(false);
+
     const { mutate: loginUser, isLoading } = usePostData('users/login',
         "User login successfuly",
         false,
@@ -56,10 +59,31 @@ function Login() {
                         <TextField
                             {...register('password')}
                             label="Password"
-                            type="password"
+                            type={showPassword ? 'text' : 'password'}
                             required
                             size="small"
                             fullWidth
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={() => setShowPassword(prev => !prev)}
+                                            edge="end"
+                                        >
+                                            {showPassword ?
+                                                <div className='w-5 h-5'>
+                                                    {VisibilityEye}
+                                                </div>
+                                                :
+                                                <div className='w-5 h-5'>
+                                                    {VisibilityEyeOff}
+                                                </div>
+                                            }
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                         {errors.password && <p className='text-error-red text-sm mt-1.5'> {errors.password.message}</p>}
                     </div>

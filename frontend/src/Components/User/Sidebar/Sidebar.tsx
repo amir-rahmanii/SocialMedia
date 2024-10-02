@@ -61,7 +61,7 @@ function Sidebar() {
                         <div className='flex justify-between items-center'>
                             <div className='flex items-center gap-2'>
                                 <Link to={`/profile/${myInfo?._id}`}>
-                                    <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/images/profiles/${myInfo?.profilePicture.filename}`} alt="avatar" />
+                                    <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`${import.meta.env.VITE_API_BASE_URL}/${myInfo?.profilePicture.path}`} alt="avatar" />
                                 </Link>
                                 <div className='flex flex-col'>
                                     <Link to={`/profile/${myInfo?._id}`} className="text-sm font-semibold hover:underline text-black dark:text-white">{myInfo?.username}</Link>
@@ -81,7 +81,7 @@ function Sidebar() {
                                     <div className='flex items-center justify-between pb-2'>
                                         <div className='flex items-center gap-2'>
                                             <Link to={`/profile/${data._id}`}>
-                                                <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/images/profiles/${data.profilePicture.filename}`} alt="avatar" />
+                                                <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`${import.meta.env.VITE_API_BASE_URL}/${data.profilePicture.path}`} alt="avatar" />
                                             </Link>
                                             <div className='flex flex-col'>
                                                 <Link to={`/profile/${data._id}`} className="text-sm font-semibold hover:underline text-black dark:text-white">{data.username}</Link>

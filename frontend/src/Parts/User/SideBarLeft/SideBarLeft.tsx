@@ -102,7 +102,7 @@ function SideBarLeft() {
                     <li className='p-3 rounded-md hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 group'>
                         <Link className='text-base/5 flex items-center justify-center xl:justify-start gap-3 font-bold text-black dark:text-white' to={`/profile/${myInfo?._id}`}>
                             <div className='w-6 h-6 group-hover:scale-110 transition-all duration-300'>
-                                    <img loading='lazy' className='w-full h-full rounded-full object-cover' src={`http://localhost:4002/images/profiles/${myInfo?.profilePicture.filename}`} alt="profile" />
+                                    <img loading='lazy' className='w-full h-full rounded-full object-cover' src={`${import.meta.env.VITE_API_BASE_URL}/${myInfo?.profilePicture.path}`} alt="profile" />
 
                             </div>
                             <span className='hidden xl:block'>Profile</span>

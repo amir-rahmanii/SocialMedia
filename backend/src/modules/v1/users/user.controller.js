@@ -31,7 +31,7 @@ const forgetPasswordModel = require("../../../models/v1/forgetPassword");
 
 exports.register = async (req, res) => {
   const { email, username, name, password, confirmPassword } = req.body;
-  const systemInfo = req.systemInfo || {}; // اطلاعات سیستم را از میدلویر بگیرید
+  const systemInfo = req.systemInfo || {};
 
   try {
     await userValidator.registerUserVakidator.validate(
@@ -47,6 +47,10 @@ exports.register = async (req, res) => {
       }
     );
 
+    if (!req.file) {
+      throwError("Profile picture is required", 400); // بررسی اینکه آیا کاربر تصویر آپلود کرده است
+    }
+
     const isUserExist = await userModel
       .findOne({
         $or: [{ email }, { username }],
@@ -57,6 +61,9 @@ exports.register = async (req, res) => {
     }
     const isFirstUser = (await userModel.countDocuments()) === 0;
 
+    // حذف 'public' از مسیر فایل
+    const profilePath = req.file.path.replace(/^public[\\\/]/, "");
+
     // ایجاد کاربر جدید
     let user = new userModel({
       email,
@@ -64,6 +71,10 @@ exports.register = async (req, res) => {
       name,
       password,
       role: isFirstUser ? "ADMIN" : "USER",
+      profilePicture: {
+        path: profilePath, // تنظیم مسیر فایل آپلود شده بدون 'public'
+        filename: req.file.filename,
+      },
     });
     user = await user.save();
 
@@ -86,7 +97,6 @@ exports.register = async (req, res) => {
       }
     );
 
-
     const accessToken = accessTokenCreator(user, "30s");
     const refreshToken = await RefreshTokenModel.createToken(user);
 
@@ -106,6 +116,8 @@ exports.register = async (req, res) => {
     return errorResponse(res, error.statusCode, { message: error.message });
   }
 };
+
+
 
 
 exports.login = async (req, res) => {

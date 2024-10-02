@@ -14,7 +14,7 @@ exports.createStory = async (req, res) => {
 
     // Create a new media document
     const mediaStory = new mediaStoryModel({
-      path: `images/stories/${req.file.filename}`,
+      path: `images/story/${req.file.filename}`,
       filename: req.file.filename,
     });
 

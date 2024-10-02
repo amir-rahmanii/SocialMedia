@@ -147,7 +147,7 @@ function UpdatePost({ postInfo, updatePost, setUpdatePost }: UpdatePostProps) {
                         <div className='grid grid-cols-3 gap-4 p-3 bg-white dark:bg-black'>
                             {postInfo.media.map(data => (
                                 <div key={data._id} className="bg-white dark:bg-black relative h-52 w-full">
-                                    <img draggable="false" className="object-contain h-full w-full" src={`http://localhost:4002/images/posts/${data.filename}`} alt="post" />
+                                    <img draggable="false" className="object-contain h-full w-full" src={`${import.meta.env.VITE_API_BASE_URL}/${data.path}`} alt="post" />
                                 </div>
                             ))}
                         </div>
@@ -159,7 +159,7 @@ function UpdatePost({ postInfo, updatePost, setUpdatePost }: UpdatePostProps) {
 
                         {isSuccessMyInfo && (
                             <div className="flex gap-3 px-3 py-2 items-center">
-                                <img draggable="false" className="w-11 h-11 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${myInfo?.profilePicture.filename}`} alt="avatar" />
+                                <img draggable="false" className="w-11 h-11 rounded-full object-cover" src={`${import.meta.env.VITE_API_BASE_URL}/${myInfo?.profilePicture.path}`} alt="avatar" />
                                 <span className="text-black dark:text-white text-sm font-semibold">{myInfo?.username}</span>
                             </div>
                         )}

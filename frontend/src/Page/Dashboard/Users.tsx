@@ -114,8 +114,8 @@ export default function Users() {
 
     useEffect(() => {
         isSuccess && setFilteredData(informationAllUser)
-        
-    } , [informationAllUser])
+
+    }, [informationAllUser])
 
 
 
@@ -135,56 +135,64 @@ export default function Users() {
                                 <input value={searchValue} onChange={(e) => setSearchValue(e.target.value)} className='bg-transparent text-white outline-none' placeholder='search...' type="text" />
                             </form>
                         </div>
-                        <Table columns={columns}>
-                            <tbody className='h-[200px] overflow-auto' >
-                                {filteredData?.map((data, index) => (
-                                    <tr key={data._id} className={`border-y text-sm ${data.isban ? "bg-red-400/20" : "even:bg-[#313D4A] "} text-center border-[#2e3a47]`}>
-                                        <td className='py-[18px]  px-2 lg:px-1'>{index + 1}</td>
-                                        <td className='py-[18px]  px-2 lg:px-1'>
-                                            <div className='flex items-center gap-2 justify-center'>
-                                                <img loading='lazy' className='w-8 h-8 rounded-full object-cover' src={`http://localhost:4002/images/profiles/${data.profilePicture.filename}`} alt="profile" />
-                                                {data.username}
-                                            </div>
-                                        </td>
-                                        <td className='py-[18px]  px-2 lg:px-1'>{data.email}</td>
-                                        <td className='py-[18px]  px-2 lg:px-1'>{data.name}</td>
-                                        <td className='py-[18px]  px-2 lg:px-1'>{data.role}</td>
-                                        <td className='py-[18px]  px-2 lg:px-1'><DateConverter date={data.createdAt} /></td>
-                                        <td className='py-[18px]  px-2 lg:px-1'>
-                                            <div className='flex items-center justify-center gap-2'>
-                                                <button onClick={() => {
-                                                    setIsInfoUser(data)
-                                                    setIsShowInfoUser(true)
-                                                }} className={`w-4 h-4 text-admin-High hover:scale-110 hover:text-yellow-400 transition-all duration-300`}>{eyeIcon}</button>
-
-                                                {(myInfo?._id !== data._id && data.username !== "Amirreza") && (
+                        {filteredData && filteredData?.length > 0 ? (
+                            <Table columns={columns}>
+                                <tbody className='h-[200px] overflow-auto' >
+                                    {filteredData?.map((data, index) => (
+                                        <tr key={data._id} className={`border-y text-sm ${data.isban ? "bg-red-400/20" : "even:bg-[#313D4A] "} text-center border-[#2e3a47]`}>
+                                            <td className='py-[18px]  px-2 lg:px-1'>{index + 1}</td>
+                                            <td className='py-[18px]  px-2 lg:px-1'>
+                                                <div className='flex items-center gap-2 justify-center'>
+                                                    <img loading='lazy' className='w-8 h-8 rounded-full object-cover' src={`${import.meta.env.VITE_API_BASE_URL}/${data.profilePicture.path}`} alt="profile" />
+                                                    {data.username}
+                                                </div>
+                                            </td>
+                                            <td className='py-[18px]  px-2 lg:px-1'>{data.email}</td>
+                                            <td className='py-[18px]  px-2 lg:px-1'>{data.name}</td>
+                                            <td className='py-[18px]  px-2 lg:px-1'>{data.role}</td>
+                                            <td className='py-[18px]  px-2 lg:px-1'><DateConverter date={data.createdAt} /></td>
+                                            <td className='py-[18px]  px-2 lg:px-1'>
+                                                <div className='flex items-center justify-center gap-2'>
                                                     <button onClick={() => {
                                                         setIsInfoUser(data)
-                                                        setIsShowChangeRole(true)
-                                                    }} className='text-admin-High w-4 h-4  hover:scale-110 transition-all duration-300 hover:text-admin-low'>
-                                                        {changeRoleIcon}
-                                                    </button>
-                                                )}
+                                                        setIsShowInfoUser(true)
+                                                    }} className={`w-4 h-4 text-admin-High hover:scale-110 hover:text-yellow-400 transition-all duration-300`}>{eyeIcon}</button>
 
-                                                {(myInfo?._id !== data._id && data.username !== "Amirreza") && (
-                                                    <button onClick={() => {
-                                                        setIsInfoUser(data)
-                                                        setIsShowBanUser(true)
-                                                    }} className={`w-4 h-4 text-admin-High hover:scale-110 ${data.isban ? "hover:text-green-400" : "hover:text-orange-400"} transition-all duration-300`}>{data.isban ? unBanUser : banUser}</button>
-                                                )}
+                                                    {(myInfo?._id !== data._id && data.username !== "Amirreza") && (
+                                                        <button onClick={() => {
+                                                            setIsInfoUser(data)
+                                                            setIsShowChangeRole(true)
+                                                        }} className='text-admin-High w-4 h-4  hover:scale-110 transition-all duration-300 hover:text-admin-low'>
+                                                            {changeRoleIcon}
+                                                        </button>
+                                                    )}
 
-                                                {(myInfo?._id !== data._id && data.username !== "Amirreza") && (
-                                                    <button onClick={() => {
-                                                        setIsInfoUser(data)
-                                                        setIsShowDeleteUser(true)
-                                                    }} className='w-4 h-4 text-admin-High hover:scale-110 hover:text-error-red transition-all duration-300'>{deleteIcon}</button>
-                                                )}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </Table>
+                                                    {(myInfo?._id !== data._id && data.username !== "Amirreza") && (
+                                                        <button onClick={() => {
+                                                            setIsInfoUser(data)
+                                                            setIsShowBanUser(true)
+                                                        }} className={`w-4 h-4 text-admin-High hover:scale-110 ${data.isban ? "hover:text-green-400" : "hover:text-orange-400"} transition-all duration-300`}>{data.isban ? unBanUser : banUser}</button>
+                                                    )}
+
+                                                    {(myInfo?._id !== data._id && data.username !== "Amirreza") && (
+                                                        <button onClick={() => {
+                                                            setIsInfoUser(data)
+                                                            setIsShowDeleteUser(true)
+                                                        }} className='w-4 h-4 text-admin-High hover:scale-110 hover:text-error-red transition-all duration-300'>{deleteIcon}</button>
+                                                    )}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        ) : (
+                            <div>
+                                <p className='text-center text-xl py-3'>
+                                    No user found with this username or name or email 😩
+                                </p>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>

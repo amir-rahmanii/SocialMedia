@@ -1,24 +1,31 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Auth from '../../LayOut/Auth/Auth'
-import { TextField } from '@mui/material'
+import { Avatar, IconButton, InputAdornment, TextField } from '@mui/material'
 import { Link, useNavigate } from 'react-router-dom'
 import registerSchema from '../../Validation/register';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from "@hookform/resolvers/yup";
 import IsLoaderBtn from '../../Components/IsLoaderBtn/IsLoaderBtn';
 import usePostData from '../../hooks/usePostData';
-
+import toast from 'react-hot-toast';
+import { VisibilityEye, VisibilityEyeOff } from '../../Components/SvgIcon/SvgIcon';
 
 function Register() {
 
     const navigate = useNavigate();
+    const [avatarPreview, setAvatarPreview] = useState<null | string>(null);
+    const [avatar, setAvatar] = useState<null | File>(null);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const { mutate: registerUser, isLoading } = usePostData('users/register',
         'User created successfuly!',
         false,
         () => {
             navigate("/")
-        });
+        },
+        true
+    );
 
 
 
@@ -32,6 +39,27 @@ function Register() {
     });
 
 
+    const handleDataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = () => {
+                if (reader.readyState === 2) {
+                    if (typeof reader.result === 'string') {
+                        setAvatarPreview(reader.result);
+                    } else {
+                        setAvatarPreview(null);
+                    }
+                }
+            };
+
+            reader.readAsDataURL(file);
+            setAvatar(file);
+        }
+    };
+
+
     return (
         <Auth>
             <div className="bg-white dark:bg-black border dark:border-gray-300/20 border-gray-300  flex flex-col gap-2 p-4 pt-10">
@@ -43,6 +71,30 @@ function Register() {
                     encType="multipart/form-data"
                     className="flex flex-col justify-center items-center gap-3 m-3 md:m-8"
                 >
+
+                    <div className="flex w-full justify-between gap-3 items-center">
+                        <Avatar
+                            alt="Avatar Preview"
+                            src={avatarPreview ?? undefined}
+                            sx={{ width: 48, height: 48 }}
+                        />
+                        <label>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                name="avatar"
+                                onChange={handleDataChange}
+                                className="block w-full text-sm text-gray-400
+                                    file:mr-3 file:py-2 file:px-6
+                                    file:rounded-full file:border-0
+                                    file:text-sm file:cursor-pointer file:font-semibold
+                                    file:bg-blue-100 file:text-blue-700
+                                    hover:file:bg-blue-200
+                                    "/>
+                        </label>
+                    </div>
+
+
                     <div className='w-full'>
                         <TextField
                             {...register('email')}
@@ -84,11 +136,32 @@ function Register() {
                         <TextField
                             {...register('password')}
                             label="Password"
-                            type="password"
+                            type={showPassword ? 'text' : 'password'}
                             name="password"
                             required
                             size="small"
                             fullWidth
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={() => setShowPassword(prev => !prev)}
+                                            edge="end"
+                                        >
+                                            {showPassword ?
+                                                <div className='w-5 h-5'>
+                                                    {VisibilityEye}
+                                                </div>
+                                                :
+                                                <div className='w-5 h-5'>
+                                                    {VisibilityEyeOff}
+                                                </div>
+                                            }
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                         {errors.password && <p className='text-error-red text-sm mt-1.5'> {errors.password.message}</p>}
                     </div>
@@ -96,20 +169,58 @@ function Register() {
                     <div className='w-full'>
                         <TextField
                             {...register('confirmPassword')}
-                            label="confirmPassword"
-                            type="password"
+                            label="Confirm Password"
+                            type={showConfirmPassword ? 'text' : 'password'} // تغییر نوع به text یا password
                             name="confirmPassword"
                             required
                             size="small"
                             fullWidth
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={() => setShowConfirmPassword(prev => !prev)}
+                                            edge="end"
+                                        >
+                                            {showConfirmPassword ?
+                                                <div className='w-5 h-5'>
+                                                    {VisibilityEye}
+                                                </div>
+                                                :
+                                                <div className='w-5 h-5'>
+                                                    {VisibilityEyeOff}
+                                                </div>
+                                            }
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
-                        {errors.confirmPassword && <p className='text-error-red text-sm mt-1.5'> {errors.confirmPassword.message}</p>}
+                        {errors.confirmPassword && (
+                            <p className='text-error-red text-sm mt-1.5'>
+                                {errors.confirmPassword.message}
+                            </p>
+                        )}
                     </div>
 
 
-
                     <button onClick={handleSubmit((data) => {
-                        registerUser(data)
+                        if (!avatar) {
+                            toast.error("Upload profile picture");
+                            return
+                        }
+
+                        // Create a FormData object to handle file uploads
+                        const formData = new FormData();
+                        formData.append("name", data.name);
+                        formData.append("email", data.email);
+                        formData.append("username", data.username);
+                        formData.append("password", data.password);
+                        formData.append("confirmPassword", data.confirmPassword);
+                        formData.append("profilePicture", avatar);  // Adding the file (avatar)
+
+                        registerUser(formData);
                     })} disabled={isLoading} type="submit" className={`font-sans py-2 rounded text-white w-full  duration-300 transition-all ${isLoading ? "bg-primaryLoading-blue" : "bg-primary-blue hover:bg-primaryhover-blue"}`}>
                         {isLoading ? <IsLoaderBtn /> : "Sign up"}
                     </button>

@@ -12,7 +12,7 @@ const upload = multerStorage(
 
 
 // * POST
-router.route("/register").post(controller.register);
+router.route('/register').post(upload.single('profilePicture'), controller.register);
 router.route("/login").post(controller.login);
 router.route("/update-password").post(controller.updatePassword);
 router.route("/forget-password").post(controller.forgetPassword);

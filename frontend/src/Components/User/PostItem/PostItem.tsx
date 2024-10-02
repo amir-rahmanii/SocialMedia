@@ -217,7 +217,7 @@ const PostItem: React.FC<Post> = (props) => {
 
             <div className="flex justify-between px-3 py-2.5 border-b dark:border-gray-300/20 border-gray-300  items-center">
                 <div className="flex space-x-3 items-center">
-                    <Link to={`/profile/${props.user.id}`}><img draggable="false" className="w-10 h-10 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${props.user.userPicture.filename}`} alt="avatar" /></Link>
+                    <Link to={`/profile/${props.user.id}`}><img draggable="false" className="w-10 h-10 rounded-full object-cover" src={`${import.meta.env.VITE_API_BASE_URL}/${props.user.userPicture.path}`} alt="avatar" /></Link>
                     <Link to={`/profile/${props.user.id}`} className="text-black dark:text-white text-sm font-semibold">{props.user.username}</Link>
                 </div>
                     {myInfo?._id === props.user.id && (
@@ -271,7 +271,7 @@ const PostItem: React.FC<Post> = (props) => {
                                 draggable="false"
                                 loading="lazy"
                                 className="w-full h-[400px] object-center"
-                                src={`http://localhost:4002/images/posts/${data.filename}`}
+                                src={`${import.meta.env.VITE_API_BASE_URL}/${data.path}`}
                                 alt="post image"
                             />
                         </div>
@@ -343,7 +343,7 @@ const PostItem: React.FC<Post> = (props) => {
                                 {props.comments.map((c) => (
                                     <div className="flex items-start mb-2 border-b dark:border-gray-300/20 border-gray-300  space-x-3" key={c._id}>
                                         <Link to={`/profile/${c.userid}`} className='mt-2'>
-                                            <img draggable="false" className="h-7 w-7 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/images/profiles/${c.userPicture.filename}`} alt="avatar" />
+                                            <img draggable="false" className="h-7 w-7 rounded-full shrink-0 object-cover mr-0.5" src={`${import.meta.env.VITE_API_BASE_URL}/${c.userPicture.path}`} alt="avatar" />
                                         </Link>
                                         <div className='flex justify-between w-full p-1'>
                                             <div className='flex flex-col items-start mb-2 space-y-1 text-black dark:text-white'>
@@ -426,7 +426,7 @@ const PostItem: React.FC<Post> = (props) => {
                             <div key={index} className='flex items-center justify-between border-b dark:border-gray-300/20 border-gray-300 p-2'>
                                 <div className='flex items-center gap-2'>
                                     <Link className='shrink-0' to={`/profile/${data.userid}`}>
-                                        <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/images/profiles/${data.userPicture.filename}`} alt="avatar" />
+                                        <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`${import.meta.env.VITE_API_BASE_URL}/${data.userPicture.path}`} alt="avatar" />
                                     </Link>
                                     <div className='flex flex-col'>
                                         <Link to={`/profile/${data.userid}`} className="text-sm text-black dark:text-white font-semibold hover:underline">{data.username}</Link>

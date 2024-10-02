@@ -56,7 +56,7 @@ function ProfileAdmin() {
 
               <div className="-translate-y-1/2 z-30 mx-auto w-full max-w-30 rounded-full bg-white/20  backdrop-blur h-44 max-w-44 p-3">
                 <div className="relative drop-shadow-2">
-                  <img className='rounded-full' loading='lazy' src={`http://localhost:4002/images/profiles/${myInfo?.profilePicture.filename}`} alt="profile" />
+                  <img className='rounded-full' loading='lazy' src={`${import.meta.env.VITE_API_BASE_URL}/${myInfo?.profilePicture.path}`} alt="profile" />
                   <label htmlFor="profile" className="absolute bottom-0 right-0 flex h-8.5 w-8.5 cursor-pointer items-center justify-center rounded-full bg-primary text-white hover:bg-opacity-90 sm:bottom-2 sm:right-2">
                     <div className='bg-[#4E60E2] hover:scale-110 transition-all duration-300 rounded-full w-[34px] h-[34px] flex items-center justify-center'>
                       {photosIcon}

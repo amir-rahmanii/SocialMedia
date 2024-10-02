@@ -68,7 +68,7 @@ const Message = (props: MessageProps) => {
                                 <div className="grid gap-[2px] py-[2px] auto-cols-max grid-flow-col">
                                     {props.message.likedBy.map(data => (
                                         <div className="flex items-center" key={data._id}>
-                                            <img draggable="false" className="w-5 h-5 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${data.profilePicture.filename}`} alt="p" />
+                                            <img draggable="false" className="w-5 h-5 rounded-full object-cover" src={`${import.meta.env.VITE_API_BASE_URL}/${data.profilePicture.path}`} alt="p" />
                                             <span >
                                                 ❤️
                                             </span>
@@ -80,12 +80,12 @@ const Message = (props: MessageProps) => {
                     :
                     props.message.content === '❤️' ?
                         <div className="flex items-end gap-2 max-w-xs">
-                            <img draggable="false" className="w-7 h-7 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${props.message?.sender?.profilePicture?.filename}`} alt="p" />
+                            <img draggable="false" className="w-7 h-7 rounded-full object-cover" src={`${import.meta.env.VITE_API_BASE_URL}/${props.message?.sender?.profilePicture?.path}`} alt="p" />
                             <span className="items-end text-4xl">{props.message.content}</span>
                         </div>
                         :
                         <div className="flex items-end gap-2 max-w-xs">
-                            <img draggable="false" className="w-7 h-7 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${props.message?.sender?.profilePicture?.filename}`} alt="p" />
+                            <img draggable="false" className="w-7 h-7 rounded-full object-cover" src={`${import.meta.env.VITE_API_BASE_URL}/${props.message?.sender?.profilePicture?.path}`} alt="p" />
                             <div className="flex flex-col ">
                                 <span className="text-xs text-gray-500 px-3 py-1">{props.message.sender.username}</span>
                                 <div className="flex flex-col">
@@ -103,7 +103,7 @@ const Message = (props: MessageProps) => {
                                         <div className="grid px-2 gap-[2px] py-[2px] auto-cols-max grid-flow-col">
                                             {props.message.likedBy.map(data => (
                                                 <div className="flex items-center" key={data._id}>
-                                                    <img draggable="false" className="w-5 h-5 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${data.profilePicture.filename}`} alt="p" />
+                                                    <img draggable="false" className="w-5 h-5 rounded-full object-cover" src={`${import.meta.env.VITE_API_BASE_URL}/${data.profilePicture.path}`} alt="prof" />
                                                     <span >
                                                         ❤️
                                                     </span>

@@ -45,7 +45,7 @@ function Header({setShowSidebarLeftMobile, showSidebarLeftMobile }: SideBarLeftP
                                     <p className='text-white font-bold text-sm'>{myInfo?.username}</p>
                                     <p className='text-admin-low font-light text-xs'>Frontend developer</p>
                                 </div>
-                                <img loading='lazy' className='w-12 h-12 rounded-full object-cover' src={`http://localhost:4002/images/profiles/${myInfo?.profilePicture.filename}`} alt="profile" />
+                                <img loading='lazy' className='w-12 h-12 rounded-full object-cover' src={`${import.meta.env.VITE_API_BASE_URL}/${myInfo?.profilePicture.path}`} alt="profile" />
                             </div>
                         )}
                     </div>

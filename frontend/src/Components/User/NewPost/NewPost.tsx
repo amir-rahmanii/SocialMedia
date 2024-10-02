@@ -160,7 +160,7 @@ function NewPost({ newPost, setNewPost }: NewPostProps) {
 
                         {isSuccessMyInfo && (
                             <div className="flex gap-3 px-3 py-2 items-center">
-                                <img draggable="false" className="w-11 h-11 rounded-full object-cover" src={`http://localhost:4002/images/profiles/${myInfo?.profilePicture.filename}`} alt="avatar" />
+                                <img draggable="false" className="w-11 h-11 rounded-full object-cover" src={`${import.meta.env.VITE_API_BASE_URL}/${myInfo?.profilePicture.path}`} alt="avatar" />
                                 <span className="text-black dark:text-white text-sm font-semibold">{myInfo?.username}</span>
                             </div>
                         )}

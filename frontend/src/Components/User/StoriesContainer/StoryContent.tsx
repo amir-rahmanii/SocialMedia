@@ -47,12 +47,12 @@ function StoryContent({ allStories, setIsShowStoryContent, isShowStoryContent }:
         navigate({ search: searchParams.toString() });
 
         const formattedStories = selectedStory.media.map(mediaItem => ({
-            url: `http://localhost:4002/images/story/${mediaItem.filename}`,
+            url: `${import.meta.env.VITE_API_BASE_URL}/${mediaItem.path}`,
             duration: 10000,
             header: {
                 heading: selectedStory.user.username,
                 subheading: DateConverterStory(selectedStory.createdAt) + "h",
-                profileImage: `http://localhost:4002/images/profiles/${selectedStory.user.userPicture.filename}`
+                profileImage: `${import.meta.env.VITE_API_BASE_URL}/${selectedStory.user.userPicture.path}`
             }
         }));
         setStoryData(formattedStories);

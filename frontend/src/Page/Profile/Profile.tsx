@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import MetaData from '../../Components/MetaData/MetaData'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { photoIcon, postsIconOutline, postUploadOutline, reelsIcon, savedIconFill, postsIconFill, savedIconOutline, settingsIcon, taggedIcon, photosIcon } from '../../Components/SvgIcon/SvgIcon'
+import {postsIconOutline, postUploadOutline, reelsIcon, savedIconFill, savedIconOutline, settingsIcon, taggedIcon, photosIcon } from '../../Components/SvgIcon/SvgIcon'
 import PostContainerUser from '../../Components/User/PostContainerUser/PostContainerUser'
 import SpinLoader from '../../Components/SpinLoader/SpinLoader'
 import { Dialog } from '@mui/material'
@@ -200,7 +200,7 @@ function Profile() {
                   }}
                   draggable="false"
                   className={`${(informationUserData && informationUserData?.stories.length > 0) ? "border-red-500" : ""} w-32 h-32 lg:w-40 lg:h-40 border-2 rounded-full object-cover`}
-                  src={`http://localhost:4002/images/profiles/${informationUserData?.user.profilePicture.filename}`}
+                  src={`${import.meta.env.VITE_API_BASE_URL}/${informationUserData?.user.profilePicture.path}`}
                   alt="profile"
                 />
 
@@ -230,7 +230,7 @@ function Profile() {
               {/* is showing profile picture */}
               <Dialog open={isShowProfile} onClose={() => setIsShowProfile(false)} maxWidth='xl'>
                 <div className="bg-gradient-to-r p-2 from-[#833ab4] via-[#fd1d1d] to-[#fcb045]">
-                  <img draggable="false" className="w-60 h-60 border-none rounded-full border-2 object-cover" src={`http://localhost:4002/images/profiles/${informationUserData?.user.profilePicture.filename}`} alt="profile" />
+                  <img draggable="false" className="w-60 h-60 border-none rounded-full border-2 object-cover" src={`${import.meta.env.VITE_API_BASE_URL}/${informationUserData?.user.profilePicture.path}`} alt="profile" />
                 </div>
               </Dialog>
 
@@ -274,7 +274,7 @@ function Profile() {
                                 <div key={index} className='flex justify-between items-center'>
                                   <div key={index} className='flex items-center gap-2 p-2'>
                                     <Link to={`/profile/${data.userId}`}>
-                                      <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/${data.profilePicture.path}`} alt="avatar" />
+                                      <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`${import.meta.env.VITE_API_BASE_URL}/${data.profilePicture.path}`} alt="avatar" />
                                     </Link>
                                     <div className='flex flex-col'>
                                       <Link to={`/profile/${data.userId}`} className="text-black dark:text-white text-sm font-semibold hover:underline">{data.username}</Link>
@@ -326,7 +326,7 @@ function Profile() {
                                 <div key={data._id} className='flex justify-between items-center'>
                                   <div key={index} className='flex items-center gap-2 p-2'>
                                     <Link to={`/profile/${data.userId}`}>
-                                      <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/${data.profilePicture.path}`} alt="avatar" />
+                                      <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`${import.meta.env.VITE_API_BASE_URL}/${data.profilePicture.path}`} alt="avatar" />
                                     </Link>
                                     <div className='flex flex-col'>
                                       <Link to={`/profile/${data.userId}`} className="text-black dark:text-white text-sm font-semibold hover:underline">{data.username}</Link>
@@ -394,7 +394,7 @@ function Profile() {
                 <span onClick={() => {
                   setSavedTab(false)
                 }} className={`${savedTab ? 'text-gray-400' : 'border-t border-black dark:border-white'} py-3 cursor-pointer  flex items-center text-[13px] uppercase gap-3 tracking-[1px] font-sans`}>
-                  {savedTab ? postsIconOutline : postsIconFill} posts</span>
+                  {postsIconOutline} posts</span>
 
                 {myInfo?._id === informationUserData?.user._id && (
                   <span onClick={() => {

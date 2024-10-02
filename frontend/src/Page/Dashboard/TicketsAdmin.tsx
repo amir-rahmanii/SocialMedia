@@ -26,8 +26,8 @@ function TicketsAdmin() {
         "CreatedAt",
         "Action"
     ]
-      //get localStorage
-      const [ticketFilterLocalStorage, setTicketFilterLocalStorage] = useState<ticketFilterLocalStorage | null>(
+    //get localStorage
+    const [ticketFilterLocalStorage, setTicketFilterLocalStorage] = useState<ticketFilterLocalStorage | null>(
         localStorage.getItem("ticketFilter")
             ? JSON.parse(localStorage.getItem("ticketFilter") as string)
             : null
@@ -109,7 +109,7 @@ function TicketsAdmin() {
         const fromPicker = dayjs(ticketFilterLocalStorage?.fromDate) || null
         const untilPicker = dayjs(ticketFilterLocalStorage?.untilDate) || null
         const orderTicket = ticketFilterLocalStorage?.order || "NTO"
-        const allPriority = ticketFilterLocalStorage?.priority  || ["Low", "Medium", "High"] 
+        const allPriority = ticketFilterLocalStorage?.priority || ["Low", "Medium", "High"]
         const allStatus = ticketFilterLocalStorage?.status || ["Open", "Closed", "Answered"]
 
         // Filter tickets
@@ -129,7 +129,7 @@ function TicketsAdmin() {
         if (isSuccess) {
             filterTicketsFromLocalStorage(); // Pass allTicket to the function
         }
-    }, [isSuccess, allTicket , ticketFilterLocalStorage]);
+    }, [isSuccess, allTicket, ticketFilterLocalStorage]);
 
 
 
@@ -146,7 +146,7 @@ function TicketsAdmin() {
                         <div className='px-6 pt-6 flex justify-between items-center'>
                             <h3 className='text-xl mb-6'>Tickets</h3>
                             <div className='gap-4 glex flex items-center'>
-                                <form  className='flex items-center gap-1' onSubmit={e => e.preventDefault()}>
+                                <form className='flex items-center gap-1' onSubmit={e => e.preventDefault()}>
                                     <button onClick={serchUsernameFilterHandler} className='text-admin-High w-5 h-5'>
                                         {searchIcon}
                                     </button>
@@ -156,68 +156,76 @@ function TicketsAdmin() {
                                 <Button onClick={() => setIsShowOpenFilter(true)} variant="outlined">Filter</Button>
                             </div>
                         </div>
-                        <Table columns={columns}>
-                            <tbody className='h-[200px] overflow-auto' >
-                                {filteredData?.map((data, index) => (
-                                    <tr key={data._id} className={`border-y text-sm text-center border-[#2e3a47]`}>
-                                        <td className='py-[18px]  px-2 lg:px-1'>{index + 1}</td>
-                                        <td className='py-[18px]  px-2 lg:px-1'>
-                                            <div className='flex items-center gap-2 justify-center'>
-                                                <img loading='lazy' className='w-8 h-8 rounded-full object-cover' src={`http://localhost:4002/images/profiles/${data.user.profilePicture.filename}`} alt="profile" />
-                                                {data.user.username}
-                                            </div>
-                                        </td>
-                                        <td className='py-[18px]  px-2 lg:px-1'>
-                                            <div className='text-sm bg-cyan-400/30 rounded'>
-                                                {data.title}
-                                            </div>
-                                        </td>
-                                        <td className='py-[18px]  px-2 lg:px-1'>{data.department}</td>
-                                        <td className='py-[18px]  px-2 lg:px-1'>
-                                            <div className={` flex justify-center items-center ${data.priority === "Low" ? "bg-green-400/30" :
-                                                data.priority === "Medium" ? "bg-yellow-400/30" :
-                                                    "bg-red-400/30"
-                                                } rounded px-1 md:px-0`}>
-                                                {data.priority}
-                                            </div>
-                                        </td>
-                                        <td className='py-[18px]  px-2 lg:px-1'>
-                                            <div className={`flex justify-center items-center ${data.status === "Answered" ? "bg-green-400/30" :
-                                                data.status === "Open" ? "bg-yellow-400/30" :
-                                                    "bg-red-400/30"
-                                                } rounded px-1 md:px-0`}>
-                                                {data.status}
-                                            </div>
-                                        </td>
+                        {filteredData && filteredData.length > 0 ? (
+                            <Table columns={columns}>
+                                <tbody className='h-[200px] overflow-auto' >
+                                    {filteredData?.map((data, index) => (
+                                        <tr key={data._id} className={`border-y text-sm text-center border-[#2e3a47]`}>
+                                            <td className='py-[18px]  px-2 lg:px-1'>{index + 1}</td>
+                                            <td className='py-[18px]  px-2 lg:px-1'>
+                                                <div className='flex items-center gap-2 justify-center'>
+                                                    <img loading='lazy' className='w-8 h-8 rounded-full object-cover' src={`${import.meta.env.VITE_API_BASE_URL}/${data.user.profilePicture.path}`} alt="profile" />
+                                                    {data.user.username}
+                                                </div>
+                                            </td>
+                                            <td className='py-[18px]  px-2 lg:px-1'>
+                                                <div className='text-sm bg-cyan-400/30 rounded'>
+                                                    {data.title}
+                                                </div>
+                                            </td>
+                                            <td className='py-[18px]  px-2 lg:px-1'>{data.department}</td>
+                                            <td className='py-[18px]  px-2 lg:px-1'>
+                                                <div className={` flex justify-center items-center ${data.priority === "Low" ? "bg-green-400/30" :
+                                                    data.priority === "Medium" ? "bg-yellow-400/30" :
+                                                        "bg-red-400/30"
+                                                    } rounded px-1 md:px-0`}>
+                                                    {data.priority}
+                                                </div>
+                                            </td>
+                                            <td className='py-[18px]  px-2 lg:px-1'>
+                                                <div className={`flex justify-center items-center ${data.status === "Answered" ? "bg-green-400/30" :
+                                                    data.status === "Open" ? "bg-yellow-400/30" :
+                                                        "bg-red-400/30"
+                                                    } rounded px-1 md:px-0`}>
+                                                    {data.status}
+                                                </div>
+                                            </td>
 
-                                        <td className='py-[18px]  px-2 lg:px-1'><DateConverter date={data.createdAt} /></td>
-                                        <td className='py-[18px]  px-2 lg:px-1'>
-                                            <div className='flex items-center justify-center gap-2'>
-                                                <button onClick={() => {
-                                                    setInfoTicket(data)
-                                                    setIsShowResponseTicket(true)
-                                                    setAnswerInfo(data.responses)
-
-                                                }} className={`w-4 h-4 text-admin-High hover:scale-110 hover:text-yellow-400 transition-all duration-300`}>{editPostIcon}</button>
-
-                                                {data.status !== "Closed" && (
+                                            <td className='py-[18px]  px-2 lg:px-1'><DateConverter date={data.createdAt} /></td>
+                                            <td className='py-[18px]  px-2 lg:px-1'>
+                                                <div className='flex items-center justify-center gap-2'>
                                                     <button onClick={() => {
                                                         setInfoTicket(data)
-                                                        setIsShowClosedTicket(true)
-                                                    }} className='w-4 h-4 text-admin-High hover:scale-110 hover:text-orange-400 transition-all duration-300'>{closeIcon}</button>
-                                                )}
+                                                        setIsShowResponseTicket(true)
+                                                        setAnswerInfo(data.responses)
 
-                                                <button onClick={() => {
-                                                    setInfoTicket(data)
-                                                    setIsShowDeleteTicket(true)
-                                                }} className='w-4 h-4 text-admin-High hover:scale-110 hover:text-error-red transition-all duration-300'>{deleteIcon}</button>
+                                                    }} className={`w-4 h-4 text-admin-High hover:scale-110 hover:text-yellow-400 transition-all duration-300`}>{editPostIcon}</button>
 
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </Table>
+                                                    {data.status !== "Closed" && (
+                                                        <button onClick={() => {
+                                                            setInfoTicket(data)
+                                                            setIsShowClosedTicket(true)
+                                                        }} className='w-4 h-4 text-admin-High hover:scale-110 hover:text-orange-400 transition-all duration-300'>{closeIcon}</button>
+                                                    )}
+
+                                                    <button onClick={() => {
+                                                        setInfoTicket(data)
+                                                        setIsShowDeleteTicket(true)
+                                                    }} className='w-4 h-4 text-admin-High hover:scale-110 hover:text-error-red transition-all duration-300'>{deleteIcon}</button>
+
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        ) : (
+                            <div>
+                                <p className='text-center text-xl py-3'>
+                                    No ticket found 😩
+                                </p>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>

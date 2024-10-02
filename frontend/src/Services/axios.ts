@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 
 const apiRequest = axios.create({
   withCredentials: true, // به این نیاز داریم تا کوکی‌ها به همراه درخواست‌ها ارسال شوند
-  baseURL: "http://localhost:4002", // آدرس سرور خود را در اینجا وارد کنید
+  baseURL: import.meta.env.VITE_API_BASE_URL, // آدرس سرور خود را در اینجا وارد کنید
 });
 
 // Interceptor برای اضافه کردن access-token به هدرها (در صورت وجود)

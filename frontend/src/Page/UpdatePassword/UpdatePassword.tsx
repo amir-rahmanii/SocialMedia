@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Auth from '../../LayOut/Auth/Auth'
-import { TextField } from '@mui/material'
+import { IconButton, InputAdornment, TextField } from '@mui/material'
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -11,9 +11,15 @@ import IsLoaderBtn from '../../Components/IsLoaderBtn/IsLoaderBtn';
 import usePostData from '../../hooks/usePostData';
 import useGetData from '../../hooks/useGetData';
 import { userInformation } from '../../hooks/user/user.types';
+import { VisibilityEye, VisibilityEyeOff } from '../../Components/SvgIcon/SvgIcon';
 
 
 function UpdatePassword() {
+
+    const [showPrevPassword, setShowPrevPassword] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
     const { data: myInfo, isSuccess: isSuccessMyInfo } = useGetData<userInformation>(
         ["getMyUserInfo"],
         "users/user-information"
@@ -55,9 +61,30 @@ function UpdatePassword() {
                             fullWidth
                             size="small"
                             label="Perv Password"
-                            type="password"
+                            type={showPrevPassword ? 'text' : 'password'}
                             name="pervPassword"
                             required
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={() => setShowPrevPassword(prev => !prev)}
+                                            edge="end"
+                                        >
+                                            {showPrevPassword ?
+                                                <div className='w-5 h-5'>
+                                                    {VisibilityEye}
+                                                </div>
+                                                :
+                                                <div className='w-5 h-5'>
+                                                    {VisibilityEyeOff}
+                                                </div>
+                                            }
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                         {errors.pervPassword && <p className='text-error-red text-sm mt-1.5'> {errors.pervPassword.message}</p>}
                     </div>
@@ -67,9 +94,30 @@ function UpdatePassword() {
                             fullWidth
                             size="small"
                             label="New Password"
-                            type="password"
+                            type={showPassword ? 'text' : 'password'}
                             name="newPassword"
                             required
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={() => setShowPassword(prev => !prev)}
+                                            edge="end"
+                                        >
+                                            {showPassword ?
+                                                <div className='w-5 h-5'>
+                                                    {VisibilityEye}
+                                                </div>
+                                                :
+                                                <div className='w-5 h-5'>
+                                                    {VisibilityEyeOff}
+                                                </div>
+                                            }
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                         {errors.newPassword && <p className='text-error-red text-sm mt-1.5'> {errors.newPassword.message}</p>}
                     </div>
@@ -79,9 +127,30 @@ function UpdatePassword() {
                             fullWidth
                             size="small"
                             label="New ConfrimPassword"
-                            type="password"
+                            type={showConfirmPassword ? 'text' : 'password'}
                             name="newConfrimPassword"
                             required
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={() => setShowConfirmPassword(prev => !prev)}
+                                            edge="end"
+                                        >
+                                            {showConfirmPassword ?
+                                                <div className='w-5 h-5'>
+                                                    {VisibilityEye}
+                                                </div>
+                                                :
+                                                <div className='w-5 h-5'>
+                                                    {VisibilityEyeOff}
+                                                </div>
+                                            }
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                         {errors.newConfrimPassword && <p className='text-error-red text-sm mt-1.5'> {errors.newConfrimPassword.message}</p>}
                     </div>

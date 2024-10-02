@@ -1,17 +1,19 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Auth from '../../LayOut/Auth/Auth'
-import { TextField } from '@mui/material'
+import { IconButton, InputAdornment, TextField } from '@mui/material'
 import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import resetPassSchema from '../../Validation/resetPassword';
 import IsLoaderBtn from '../../Components/IsLoaderBtn/IsLoaderBtn';
 import usePostData from '../../hooks/usePostData';
+import { VisibilityEye, VisibilityEyeOff } from '../../Components/SvgIcon/SvgIcon';
 
 function ResetPassword() {
 
     const [searchParams] = useSearchParams();
     const token = searchParams.get('token');
+    const [showPassword, setShowPassword] = useState(false);
 
     let navigate = useNavigate()
 
@@ -49,9 +51,30 @@ function ResetPassword() {
                                     fullWidth
                                     size="small"
                                     label="New Password"
-                                    type="password"
+                                    type={showPassword ? 'text' : 'password'}
                                     name="password"
                                     required
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="toggle password visibility"
+                                                    onClick={() => setShowPassword(prev => !prev)}
+                                                    edge="end"
+                                                >
+                                                    {showPassword ?
+                                                        <div className='w-5 h-5'>
+                                                            {VisibilityEye}
+                                                        </div>
+                                                        :
+                                                        <div className='w-5 h-5'>
+                                                            {VisibilityEyeOff}
+                                                        </div>
+                                                    }
+                                                </IconButton>
+                                            </InputAdornment>
+                                        ),
+                                    }}
                                 />
                                 {errors.password && <p className='text-error-red text-sm mt-1.5'> {errors.password.message}</p>}
                             </div>

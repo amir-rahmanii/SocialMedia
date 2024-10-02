@@ -46,7 +46,7 @@ interface IUserMessage {
 }
 
 // url base socket
-const socketURL = 'http://localhost:4002';
+const socketURL = import.meta.env.VITE_API_BASE_URL;
 
 function Inbox() {
     const [socket, setSocket] = useState<Socket | null>(null);

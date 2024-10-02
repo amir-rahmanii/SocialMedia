@@ -61,7 +61,7 @@ function PostsAdmin() {
     const [sortedBy, setSortedBy] = useState(query.get('sortedBy') || "New");
     const navigate = useNavigate();
 
-    const { data: allPosts, isLoading, isSuccess  , refetch : refetchAllPosts } = useGetData<Post[]>(
+    const { data: allPosts, isLoading, isSuccess, refetch: refetchAllPosts } = useGetData<Post[]>(
         ['AllPostAllUsers'],
         'posts/get-all-posts'
     );
@@ -226,62 +226,70 @@ function PostsAdmin() {
 
                             </div>
                         </div>
-                        <Table columns={columns}>
-                            <tbody className='h-[200px] overflow-auto' >
-                                {filteredData?.map((data, index) => (
-                                    <tr key={data._id} className={`border-y text-sm  text-center border-[#2e3a47]`}>
-                                        <td className='py-[18px]  px-2 lg:px-1'>{index + 1}</td>
-                                        <td className='py-[18px]  px-2 lg:px-1'>
-                                            <div className='flex items-center gap-2 justify-center'>
-                                                <img loading='lazy' className='w-8 h-8 rounded-full object-cover' src={`http://localhost:4002/images/profiles/${data.user.userPicture.filename}`} alt="profile" />
-                                                {data.user.username}
-                                            </div>
-                                        </td>
-                                        <td className='py-[18px]  px-2 lg:px-1'>
-                                            <button
-                                                onClick={() => {
-                                                    setIsShowPost(true)
-                                                    setIsInfoPost(data)
-                                                }}
-                                                className='text-admin-High hover:text-lime-500 hover:scale-110 transition-all duration-300 w-4 h-4'>
-                                                {eyeIcon}
-                                            </button>
-                                        </td>
-                                        <td className='py-[18px]  px-2 lg:px-1'>
-                                            <button
-                                                onClick={() => {
-                                                    setIsShowCommentPost(true)
-                                                     setAllComment(data.comments)
-                                                }}
-                                                className='text-admin-High hover:text-emerald-500 hover:scale-110 transition-all duration-300 w-4 h-4'>
-                                                {eyeIcon}
-                                            </button>
-                                        </td>
-                                        <td className='py-[18px]  px-2 lg:px-1'>
-                                            <button
-                                                onClick={() => {
-                                                    setIsShowLikedPost(true)
-                                                    setIsInfoPost(data)
-                                                }}
-                                                className='text-admin-High hover:text-cyan-500 hover:scale-110 transition-all duration-300 w-4 h-4'>
-                                                {eyeIcon}
-                                            </button>
-                                        </td>
-                                        <td className='py-[18px]  px-2 lg:px-1'><DateConverter date={data.createdAt} /></td>
-                                        <td className='py-[18px]  px-2 lg:px-1'>
-                                            <div className='flex items-center justify-center gap-2'>
+                        {filteredData && filteredData?.length > 0 ? (
+                            <Table columns={columns}>
+                                <tbody className='h-[200px] overflow-auto' >
+                                    {filteredData?.map((data, index) => (
+                                        <tr key={data._id} className={`border-y text-sm  text-center border-[#2e3a47]`}>
+                                            <td className='py-[18px]  px-2 lg:px-1'>{index + 1}</td>
+                                            <td className='py-[18px]  px-2 lg:px-1'>
+                                                <div className='flex items-center gap-2 justify-center'>
+                                                    <img loading='lazy' className='w-8 h-8 rounded-full object-cover' src={`${import.meta.env.VITE_API_BASE_URL}/${data.user.userPicture.path}`} alt="profile" />
+                                                    {data.user.username}
+                                                </div>
+                                            </td>
+                                            <td className='py-[18px]  px-2 lg:px-1'>
+                                                <button
+                                                    onClick={() => {
+                                                        setIsShowPost(true)
+                                                        setIsInfoPost(data)
+                                                    }}
+                                                    className='text-admin-High hover:text-lime-500 hover:scale-110 transition-all duration-300 w-4 h-4'>
+                                                    {eyeIcon}
+                                                </button>
+                                            </td>
+                                            <td className='py-[18px]  px-2 lg:px-1'>
+                                                <button
+                                                    onClick={() => {
+                                                        setIsShowCommentPost(true)
+                                                        setAllComment(data.comments)
+                                                    }}
+                                                    className='text-admin-High hover:text-emerald-500 hover:scale-110 transition-all duration-300 w-4 h-4'>
+                                                    {eyeIcon}
+                                                </button>
+                                            </td>
+                                            <td className='py-[18px]  px-2 lg:px-1'>
+                                                <button
+                                                    onClick={() => {
+                                                        setIsShowLikedPost(true)
+                                                        setIsInfoPost(data)
+                                                    }}
+                                                    className='text-admin-High hover:text-cyan-500 hover:scale-110 transition-all duration-300 w-4 h-4'>
+                                                    {eyeIcon}
+                                                </button>
+                                            </td>
+                                            <td className='py-[18px]  px-2 lg:px-1'><DateConverter date={data.createdAt} /></td>
+                                            <td className='py-[18px]  px-2 lg:px-1'>
+                                                <div className='flex items-center justify-center gap-2'>
 
-                                                <button onClick={() => {
-                                                    setIsShowDeletePost(true)
-                                                    setIsInfoPost(data)
-                                                }} className='w-4 h-4 text-admin-High hover:scale-110 hover:text-error-red transition-all duration-300'>{deleteIcon}</button>
+                                                    <button onClick={() => {
+                                                        setIsShowDeletePost(true)
+                                                        setIsInfoPost(data)
+                                                    }} className='w-4 h-4 text-admin-High hover:scale-110 hover:text-error-red transition-all duration-300'>{deleteIcon}</button>
 
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </Table>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        ) : (
+                            <div>
+                                <p className='text-center text-xl py-3'>
+                                    No Post found 😩
+                                </p>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>
@@ -301,7 +309,7 @@ function PostsAdmin() {
                                         draggable="false"
                                         loading="lazy"
                                         className="w-full h-[400px] object-center"
-                                        src={`http://localhost:4002/images/posts/${data.filename}`}
+                                        src={`${import.meta.env.VITE_API_BASE_URL}/${data.path}`}
                                         alt="post image"
                                     />
                                 </div>
@@ -331,7 +339,7 @@ function PostsAdmin() {
                             <div key={data._id} className='flex justify-between items-center'>
                                 <div className='flex overflow-hidden items-center gap-2'>
                                     <p className='shrink-0'>
-                                        <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/images/profiles/${data.userPicture.filename}`} alt="avatar" />
+                                        <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`${import.meta.env.VITE_API_BASE_URL}/${data.userPicture.path}`} alt="avatar" />
                                     </p>
                                     <div className='flex flex-col'>
                                         <p className="text-sm text-black dark:text-white font-semibold hover:underline">{data.username}</p>
@@ -373,7 +381,7 @@ function PostsAdmin() {
                 <div className='max-h-72 overflow-auto'>
                     <div className='flex items-center gap-2'>
                         <p className='shrink-0'>
-                            <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/images/profiles/${commentInfo?.userPicture.filename}`} alt="avatar" />
+                            <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`${import.meta.env.VITE_API_BASE_URL}/${commentInfo?.userPicture.path}`} alt="avatar" />
                         </p>
                         <div className='flex flex-col'>
                             <p className="text-sm text-black dark:text-white font-semibold hover:underline">{commentInfo?.username}</p>
@@ -400,7 +408,7 @@ function PostsAdmin() {
                             <div key={data._id} className='flex justify-between items-center'>
                                 <div className='flex items-center gap-2'>
                                     <p className='shrink-0'>
-                                        <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`http://localhost:4002/images/profiles/${data.userPicture.filename}`} alt="avatar" />
+                                        <img draggable="false" className="h-12 w-12 rounded-full shrink-0 object-cover mr-0.5" src={`${import.meta.env.VITE_API_BASE_URL}/${data.userPicture.path}`} alt="avatar" />
                                     </p>
                                     <div className='flex flex-col'>
                                         <p className="text-sm text-black dark:text-white font-semibold hover:underline">{data.username}</p>
