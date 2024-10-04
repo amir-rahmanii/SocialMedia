@@ -43,10 +43,10 @@ apiRequest.interceptors.response.use(
           return apiRequest(originalRequest); // تلاش مجدد با درخواست اصلی
         } catch (error) {
           // در صورت عدم موفقیت در refresh توکن، کاربر را logout کنید و توکن‌ها را پاک کنید
-          handleSessionExpired();
+          // handleSessionExpired();
         }
       } else {
-        handleSessionExpired();
+        // handleSessionExpired();
       }
     }
 
@@ -55,13 +55,13 @@ apiRequest.interceptors.response.use(
 );
 
 // مدیریت انقضای نشست (کاربر را logout کنید و به صفحه ورود هدایت کنید)
-const handleSessionExpired = () => {
-  Cookies.remove("access-token");
-  Cookies.remove("refresh-token");
-  toast.error("Session expired. Please log in again.");
-  setTimeout(() => {
-    window.location.href = "/login"; // این مسیر را به صفحه ورود اپلیکیشن خود تنظیم کنید
-  }, 1500); // تأخیر برای نمایش toast قبل از هدایت
-};
+// const handleSessionExpired = () => {
+//   Cookies.remove("access-token");
+//   Cookies.remove("refresh-token");
+//   toast.error("Session expired. Please log in again.");
+//   setTimeout(() => {
+//     window.location.href = "/login"; // این مسیر را به صفحه ورود اپلیکیشن خود تنظیم کنید
+//   }, 1500); // تأخیر برای نمایش toast قبل از هدایت
+// };
 
 export default apiRequest;
