@@ -31,7 +31,6 @@ function Profile() {
   const [isShowFollowing, setIsShowFollowing] = useState(false)
   const [savedTab, setSavedTab] = useState(false);
   const [newPost, setNewPost] = useState(false);
-  const [isShowChangeProfile, setIsShowChangeProfile] = useState(false);
   const [isShowProfile, setIsShowProfile] = useState(false);
   const [isShowStoryContent, setIsShowStoryContent] = useState(false);
   const [followedList, setFollowedList] = useState<string[]>([])
@@ -46,6 +45,7 @@ function Profile() {
     false,
     () => {
       queryClient.invalidateQueries(["getMyUserInfo"]);
+      queryClient.invalidateQueries(["getUserData"]);
     }
   );
 
@@ -207,7 +207,7 @@ function Profile() {
 
                 {myInfo?._id === informationUserData?.user._id && (
                   <>
-                    <button onClick={() => setIsShowChangeProfile(true)} className='absolute bottom-0 sm:bottom-14 md:bottom-16 lg:bottom-9 right-0'>
+                    <button className='absolute bottom-0 sm:bottom-14 md:bottom-16 lg:bottom-9 right-0'>
                       <label htmlFor="profile" className="absolute bottom-0 right-0 flex h-8.5 w-8.5 cursor-pointer items-center justify-center rounded-full bg-primary text-white hover:bg-opacity-90 sm:bottom-2 sm:right-2">
                         <div className='bg-[#4E60E2] hover:scale-110 transition-all duration-300 rounded-full w-[34px] h-[34px] flex items-center justify-center'>
                           {photosIcon}
