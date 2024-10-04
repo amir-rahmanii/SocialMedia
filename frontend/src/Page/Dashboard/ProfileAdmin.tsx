@@ -1,11 +1,10 @@
-import React, { useState } from 'react'
+import React from 'react'
 import useGetData from '../../hooks/useGetData';
 import { userInformation } from '../../hooks/user/user.types';
 import SpinLoader from '../../Components/SpinLoader/SpinLoader';
 import { faceBookIcon, GitHubIcon, GlobeIcon, linkedin, photosIcon, twiterIcon } from '../../Components/SvgIcon/SvgIcon';
 import { useQueryClient } from 'react-query';
 import usePostData from '../../hooks/usePostData';
-import toast from 'react-hot-toast';
 import resizeImage from '../../utils/resizeImage';
 
 function ProfileAdmin() {

@@ -37,7 +37,7 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
     const [isShowAnswer, setisShowAnswer] = useState(false);
     const [answerInfo, setAnswerInfo] = useState<response[] | null>(null);
 
-    const handleChangePage = (event: unknown, newPage: number) => {
+    const handleChangePage = (_: unknown, newPage: number) => {
         setPage(newPage);
     };
 

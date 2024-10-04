@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import  { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { dashboardIcon, logOutIcon, metaballsMenu, postUploadOutline, searchIcon } from '../../../Components/SvgIcon/SvgIcon';
 import { FormControlLabel } from '@mui/material';
@@ -23,7 +23,7 @@ export default function Header() {
 
 
     const [newPost, setNewPost] = useState(false);
-    const { toggleTheme, themeMode } = useThemeContext();
+    const { toggleTheme } = useThemeContext();
 
     const [isShowSearch, setIsShowSearch] = useState(false);
     const [showOption, setShowOption] = useState(false);
@@ -36,7 +36,7 @@ export default function Header() {
         navigate("/login")
     }
 
-    const { data: myInfo, isSuccess: isSuccessMyInfo } = useGetData<userInformation>(
+    const { data: myInfo } = useGetData<userInformation>(
         ["getMyUserInfo"],
         "users/user-information"
     );

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import FilterDate from '../FilterDate/FilterDate'
 import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Radio, RadioGroup } from '@mui/material'
 import dayjs, { Dayjs } from 'dayjs';
@@ -37,7 +37,7 @@ function FilterTicket(
 
     
     //get localStorage
-    const [ticketFilterLocalStorage, setTicketFilterLocalStorage] = useState<ticketFilterLocalStorage | null>(
+    const [ticketFilterLocalStorage] = useState<ticketFilterLocalStorage | null>(
         localStorage.getItem("ticketFilter")
             ? JSON.parse(localStorage.getItem("ticketFilter") as string)
             : null

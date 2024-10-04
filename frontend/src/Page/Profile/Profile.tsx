@@ -23,9 +23,6 @@ import resizeImage from '../../utils/resizeImage'
 
 function Profile() {
   const { userId } = useParams<string>();
-
-
-
   const [followed, setFollowed] = useState(false)
   const [isShowFollowers, setIsShowFollowers] = useState(false)
   const [isShowFollowing, setIsShowFollowing] = useState(false)
@@ -56,8 +53,8 @@ function Profile() {
 
   //this is for all users data
   const { data: informationUserData, isLoading: isLoadingUserData, isSuccess: isSucessGetUserData, isError, refetch } = useGetData<profile>(
-    ['getUserData'],
-    `users/user-allData/${userId}`,
+    ['getUserData'], 
+    `users/user-allData/${userId}`
   );
 
 

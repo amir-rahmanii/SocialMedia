@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { IMessage } from "../../../Page/Inbox/Inbox"
 import { formatTime } from "../../../utils/formatTime";
 import { deleteIcon, editPostIcon, moreIcons } from "../../SvgIcon/SvgIcon";

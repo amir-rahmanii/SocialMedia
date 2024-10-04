@@ -1,4 +1,4 @@
-import { Dialog, LinearProgress } from '@mui/material'
+import { Dialog } from '@mui/material'
 import React, { useState } from 'react'
 import toast from 'react-hot-toast';
 import usePostData from '../../../hooks/usePostData';

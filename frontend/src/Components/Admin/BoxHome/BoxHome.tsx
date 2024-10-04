@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { ArrowDropDownIcon } from '@mui/x-date-pickers'
 
 type BoxHomeProps = {

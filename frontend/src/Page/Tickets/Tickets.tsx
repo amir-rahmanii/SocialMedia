@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import  { useEffect, useState } from 'react'
 import MetaData from '../../Components/MetaData/MetaData'
 import { Button } from '@mui/material'
 import dayjs from 'dayjs';
@@ -22,7 +22,7 @@ dayjs.extend(isBetween);
 
 function Tickets() {
     //get localStorage
-    const [ticketFilterLocalStorage, setTicketFilterLocalStorage] = useState<ticketFilterLocalStorage | null>(
+    const [ticketFilterLocalStorage] = useState<ticketFilterLocalStorage | null>(
         localStorage.getItem("ticketFilter")
             ? JSON.parse(localStorage.getItem("ticketFilter") as string)
             : null

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useGetData from '../../hooks/useGetData';
 import { userInformation } from '../../hooks/user/user.types';
 import SkeletonTable from '../../Components/SkeletonTable/SkeletonTable';

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { allStories } from "../../../hooks/story/story.types";
 import Stories from 'react-insta-stories';

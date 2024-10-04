@@ -35,7 +35,7 @@ const FilterDate: React.FC<PropsWithChildren<FilterDateProps>> = ({
         setUntilPicker(newValueDate);
     };
 
-    const { data: myInfo, isSuccess: isSuccessMyInfo } = useGetData<userInformation>(
+    const { data: myInfo } = useGetData<userInformation>(
         ["getMyUserInfo"],
         "users/user-information"
     );

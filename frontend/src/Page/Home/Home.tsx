@@ -1,4 +1,4 @@
-import React from 'react'
+
 import MetaData from '../../Components/MetaData/MetaData'
 import PostsContainer from '../../Components/User/PostsContainer/PostsContainer'
 import SideBarLeft from '../../Parts/User/SideBarLeft/SideBarLeft'

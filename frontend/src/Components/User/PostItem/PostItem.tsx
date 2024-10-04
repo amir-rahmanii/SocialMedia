@@ -83,12 +83,13 @@ const PostItem: React.FC<Post> = (props) => {
         false,
         () => {
             setComment('');
-            queryClient.invalidateQueries(["getUserData"]);
+            queryClient.refetchQueries(["getUserData"]);
             queryClient.invalidateQueries(["AllPostAllUsers"]);
             queryClient.invalidateQueries(["mySavedPost"]);
             queryClient.invalidateQueries(["searchPosts"]);
         }
     );
+
 
 
     const { mutate: deleteComment } = useDeleteData<CommentDeleteData>(

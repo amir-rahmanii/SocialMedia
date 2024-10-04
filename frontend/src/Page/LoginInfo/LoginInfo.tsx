@@ -39,7 +39,7 @@ type loginInfoFilterLocalStorage = {
 function LoginInfo() {
 
     //get localStorage
-    const [loginInfoFilterLocalStorage, setLoginInfoFilterLocalStorage] = useState<loginInfoFilterLocalStorage | null>(
+    const [loginInfoFilterLocalStorage] = useState<loginInfoFilterLocalStorage | null>(
         localStorage.getItem("loginInfoFilter")
             ? JSON.parse(localStorage.getItem("loginInfoFilter") as string)
             : null

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import SkeletonTable from '../../Components/SkeletonTable/SkeletonTable'
-import { Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material'
+import {  FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material'
 import { Post } from '../../hooks/post/post.types';
 import useGetData from '../../hooks/useGetData';
 import Table from '../../Components/Admin/Table/Table';
@@ -9,9 +9,7 @@ import DateConverter from '../../utils/DateConverter';
 import Modal from '../../Components/Admin/Modal/Modal';
 import Slider from 'react-slick';
 import useDeleteData from '../../hooks/useDeleteData';
-import { useQueryClient } from 'react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
 
 
 type Comments = {
@@ -57,7 +55,6 @@ function PostsAdmin() {
     const [allComment, setAllComment] = useState<Comments[] | null>(null)
     const [isShowDeleteComment, setIsShowDeleteComment] = useState(false)
     const [filteredData, setFilteredData] = useState<Post[] | null>(null)
-    const queryClient = useQueryClient();
     const [sortedBy, setSortedBy] = useState(query.get('sortedBy') || "New");
     const navigate = useNavigate();
 

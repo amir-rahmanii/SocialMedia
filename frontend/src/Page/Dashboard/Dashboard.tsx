@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import SideBarLeft from '../../Parts/Admin/SideBarLeft/SideBarLeft'
 import Header from '../../Parts/Admin/Header/Header'
 import useGetData from '../../hooks/useGetData';
 import { userInformation } from '../../hooks/user/user.types';
-import { Navigate, Outlet } from 'react-router-dom';
-import SpinLoader from '../../Components/SpinLoader/SpinLoader';
+import { Outlet } from 'react-router-dom';
 import NotFound from '../NotFound/NotFound';
 
 function Dashboard() {

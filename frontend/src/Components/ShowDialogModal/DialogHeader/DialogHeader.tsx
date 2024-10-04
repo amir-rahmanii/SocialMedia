@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { closeIcon } from '../../SvgIcon/SvgIcon'
 
 

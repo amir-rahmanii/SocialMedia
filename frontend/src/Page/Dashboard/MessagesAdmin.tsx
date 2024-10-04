@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import  { useEffect, useState } from 'react'
 import useGetData from '../../hooks/useGetData';
 import { IMessage } from '../Inbox/Inbox';
 import SkeletonTable from '../../Components/SkeletonTable/SkeletonTable';
@@ -7,7 +7,6 @@ import DateConverter from '../../utils/DateConverter';
 import Table from '../../Components/Admin/Table/Table';
 import Modal from '../../Components/Admin/Modal/Modal';
 import useDeleteData from '../../hooks/useDeleteData';
-import { useQueryClient } from 'react-query';
 import { Button, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material';
 import FilterDate from '../../Components/FilterDate/FilterDate';
 import dayjs, { Dayjs } from 'dayjs';
@@ -49,7 +48,6 @@ function MessagesAdmin() {
     const [isShowMessage, setIsShowMessage] = useState(false);
     const [isShowDeleteMessage, setIsShowDeleteMessage] = useState(false);
     const [isShowOpenFilter, setIsShowOpenFilter] = useState(false);
-    const queryClient = useQueryClient();
     const [filteredData, setFilteredData] = useState<IMessage[] | null>(null)
     const navigate = useNavigate();
 

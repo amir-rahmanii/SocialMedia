@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import { Fragment, useState } from 'react'
 import DateConverter from '../../utils/DateConverter';
 import { userInformation } from '../../hooks/user/user.types';
 import useGetData from '../../hooks/useGetData';
@@ -184,7 +184,7 @@ function ResponseTicket({
                                     <Rating
                                         name="simple-controlled"
                                         value={rating || +infoMessageUser.rating || 0} // Provide a default value if infoMessageUser.rating is undefined
-                                        onChange={(event, newValue) => {
+                                        onChange={(_, newValue) => {
                                             setRating(newValue || 0); // Provide a default value if newValue is undefined
                                             if (infoMessageUser?._id && newValue !== null) {
                                                 let newObjectAddRating = {

@@ -43,7 +43,7 @@ const OperatingSystemChart = ({ totalOsCount }: OperatingSystemChartProps) => {
           fill="#8884d8"
           dataKey="value"
         >
-          {totalOsCount.map((entry, index) => (
+          {totalOsCount.map((_, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}
         </Pie>

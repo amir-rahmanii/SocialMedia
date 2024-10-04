@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import SkeletonTable from '../../Components/SkeletonTable/SkeletonTable'
 import useGetData from '../../hooks/useGetData'
 import { closeIcon, deleteIcon, editPostIcon, searchIcon } from '../../Components/SvgIcon/SvgIcon';
@@ -27,7 +27,7 @@ function TicketsAdmin() {
         "Action"
     ]
     //get localStorage
-    const [ticketFilterLocalStorage, setTicketFilterLocalStorage] = useState<ticketFilterLocalStorage | null>(
+    const [ticketFilterLocalStorage] = useState<ticketFilterLocalStorage | null>(
         localStorage.getItem("ticketFilter")
             ? JSON.parse(localStorage.getItem("ticketFilter") as string)
             : null

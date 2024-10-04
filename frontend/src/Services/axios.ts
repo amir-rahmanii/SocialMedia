@@ -37,16 +37,16 @@ apiRequest.interceptors.response.use(
       if (refreshToken) {
         try {
           // تلاش برای تازه‌سازی access token
-          const response = await apiRequest.post(`/users/refresh-token`, { refreshToken });
+           await apiRequest.post(`/users/refresh-token`, { refreshToken });
 
           // توکن جدید از سمت بک‌اند در کوکی‌ها ست خواهد شد، بنابراین نیازی به set دستی نیست
           return apiRequest(originalRequest); // تلاش مجدد با درخواست اصلی
         } catch (error) {
           // در صورت عدم موفقیت در refresh توکن، کاربر را logout کنید و توکن‌ها را پاک کنید
-          // handleSessionExpired();
+          handleSessionExpired();
         }
       } else {
-        // handleSessionExpired();
+        handleSessionExpired();
       }
     }
 

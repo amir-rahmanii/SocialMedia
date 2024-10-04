@@ -1,4 +1,4 @@
-import React, {  useEffect } from 'react'
+import {  useEffect } from 'react'
 import SpinLoader from '../../Components/SpinLoader/SpinLoader'
 import MetaData from '../../Components/MetaData/MetaData'
 import { useParams } from 'react-router-dom'

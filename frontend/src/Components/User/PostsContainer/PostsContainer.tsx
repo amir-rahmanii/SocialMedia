@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import  { useState } from 'react'
 import SkeletonPost from '../../SkeletonPost/SkeletonPost'
 import PostItem from '../PostItem/PostItem';
 import { postUploadOutline } from '../../SvgIcon/SvgIcon';
@@ -30,7 +30,7 @@ function PostsContainer() {
 
 
                     {isLoading ? (
-                        Array(5).fill("").map((el, i) => (<SkeletonPost key={i} />))
+                        Array(5).fill("").map((_, i) => (<SkeletonPost key={i} />))
                     ) : (
                         <>
                             {data && data?.length > 0 ? (

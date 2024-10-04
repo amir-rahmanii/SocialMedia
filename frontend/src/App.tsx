@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import  {useEffect } from 'react'
 import { useRoutes } from 'react-router-dom'
 import routes from './routes'
 import { QueryClient, QueryClientProvider } from 'react-query'
@@ -7,8 +7,6 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { ThemeProviderContext } from './Global/ThemeContext'
 
-import Cookies from 'js-cookie'
-import apiRequest from './Services/axios'
 
 
 function App() {
@@ -16,8 +14,6 @@ function App() {
   const route = useRoutes(routes);
 
   
-
-
 
 
   const client = new QueryClient({

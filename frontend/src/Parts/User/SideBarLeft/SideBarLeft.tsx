@@ -21,7 +21,7 @@ function SideBarLeft() {
         localStorage.getItem("theme") === "dark" ? true : false
     );
     const navigate = useNavigate();
-    const { toggleTheme, themeMode } = useThemeContext();
+    const { toggleTheme } = useThemeContext();
 
 
 
@@ -31,7 +31,7 @@ function SideBarLeft() {
         navigate("/login")
     }
 
-    const { data: myInfo, isSuccess: isSuccessMyInfo } = useGetData<userInformation>(
+    const { data: myInfo } = useGetData<userInformation>(
         ["getMyUserInfo"],
         "users/user-information"
     );

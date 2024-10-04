@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import  { useEffect, useState } from 'react'
 import SkeletonUserItem from '../../User/SkeletonUserItem/SkeletonUserItem';
 import { Link } from 'react-router-dom';
 import usePostData from '../../../hooks/usePostData';
@@ -18,7 +18,7 @@ function Sidebar() {
 
 
 
-    const { data: myInfo, isSuccess: isSuccessMyInfo } = useGetData<userInformation>(
+    const { data: myInfo } = useGetData<userInformation>(
         ["getMyUserInfo"],
         "users/user-information"
     );
@@ -55,7 +55,7 @@ function Sidebar() {
         <div className="fixed lg:right-[0px] hidden w-fit h-full lg:flex flex-col flex-auto m-8 xl:pr-8 -z-1">
             <div className="xl:ml-10 mt-4 flex flex-col lg:p-1 xl:p-4 rounded">
                 {isLoading ? (
-                    Array(5).fill("").map((el, i) => (<SkeletonUserItem key={i} />))
+                    Array(5).fill("").map((_, i) => (<SkeletonUserItem key={i} />))
                 ) : (
                     <div className='flex flex-col px-1 gap-1 overflow-y-auto h-72'>
                         <div className='flex justify-between items-center'>
