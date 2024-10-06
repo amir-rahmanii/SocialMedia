@@ -36,7 +36,7 @@ function PostsContainer() {
                             {data && data?.length > 0 ? (
                                 <div className="flex flex-col space-y-4">
                                     {data?.map((post) => (
-                                        <PostItem key={post._id} {...post} />
+                                        <PostItem key={post._id} post={post} />
                                     ))}
                                 </div>
                             ) : (

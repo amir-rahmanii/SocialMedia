@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import MetaData from '../../Components/MetaData/MetaData'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import {postsIconOutline, postUploadOutline, reelsIcon, savedIconFill, savedIconOutline, settingsIcon, taggedIcon, photosIcon } from '../../Components/SvgIcon/SvgIcon'
+import { postsIconOutline, postUploadOutline, reelsIcon, savedIconFill, savedIconOutline, settingsIcon, taggedIcon, photosIcon } from '../../Components/SvgIcon/SvgIcon'
 import PostContainerUser from '../../Components/User/PostContainerUser/PostContainerUser'
 import SpinLoader from '../../Components/SpinLoader/SpinLoader'
 import { Dialog } from '@mui/material'
 import ShowDialogModal from '../../Components/ShowDialogModal/ShowDialogModal'
-import { useQueryClient } from 'react-query'
 import usePostData from '../../hooks/usePostData'
 import useGetData from '../../hooks/useGetData'
 import { profile, userInformation } from '../../hooks/user/user.types'
@@ -35,30 +34,28 @@ function Profile() {
 
 
 
-
-  const queryClient = useQueryClient();
   const { mutate: followToggle } = usePostData("users/followToggle"
     , "User Followed/UnFollowed succesfuly!",
     false,
     () => {
-      queryClient.invalidateQueries(["getMyUserInfo"]);
-      queryClient.invalidateQueries(["getUserData"]);
+      refetchGetData();
+      refetchMyInfo();
     }
   );
 
-  const { data: mySavedPost, isLoading: isLoadingMySavedPost } = useGetData<Post[]>(
+  const { data: mySavedPost, isLoading: isLoadingMySavedPost, refetch: refetchMySavedPost } = useGetData<Post[]>(
     ['mySavedPost'],
     'posts/my-save-posts'
   );
 
   //this is for all users data
-  const { data: informationUserData, isLoading: isLoadingUserData, isSuccess: isSucessGetUserData, isError, refetch } = useGetData<profile>(
-    ['getUserData'], 
+  const { data: informationUserData, isLoading: isLoadingUserData, isSuccess: isSucessGetUserData, isError, refetch: refetchGetData } = useGetData<profile>(
+    ['getUserData'],
     `users/user-allData/${userId}`
   );
 
 
-  const { data: myInfo, isLoading: isLoadingMyInfo, isSuccess: isSuccessMyInfo } = useGetData<userInformation>(
+  const { data: myInfo, isLoading: isLoadingMyInfo, isSuccess: isSuccessMyInfo, refetch: refetchMyInfo } = useGetData<userInformation>(
     ["getMyUserInfo"],
     "users/user-information"
   );
@@ -67,8 +64,8 @@ function Profile() {
     , 'Profile picture updated successfuly!'
     , true,
     () => {
-      queryClient.invalidateQueries(["getMyUserInfo"]);
-      queryClient.invalidateQueries(["getUserData"]);
+      refetchGetData();
+      refetchMyInfo();
     }, true);
 
 
@@ -92,7 +89,7 @@ function Profile() {
       setSavedTab(false);
       setIsShowFollowers(false);
       setIsShowFollowing(false);
-      refetch()
+      refetchGetData()
     }
   }, [userId]);
 
@@ -141,7 +138,7 @@ function Profile() {
   const fileChangeHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const imgFile = e.target.files[0];
-      
+
       try {
         const resizedImage = await resizeImage(imgFile, 300, 300); // Resizing to 300x300
         const formData = new FormData();
@@ -416,7 +413,12 @@ function Profile() {
                 <>
                   {isLoadingMySavedPost ? <SpinLoader /> : (
                     (mySavedPost && mySavedPost.length > 0) ? (
-                      <PostContainerUser showCol={true} posts={mySavedPost} />
+                      <PostContainerUser
+                        refetchMySavedPost={refetchMySavedPost}
+                        refetchGetData={refetchGetData}
+                        showCol={true}
+                        posts={mySavedPost} 
+                        />
                     ) : (
                       <div className='text-black dark:text-white text-center mt-2 p-4 text-xl rounded'>
                         Sorry, no posts have been Saved yet😩
@@ -431,7 +433,11 @@ function Profile() {
                 <>
                   {isLoadingMySavedPost ? <SpinLoader /> : (
                     (informationUserData && informationUserData.posts && informationUserData.posts.length > 0) ? (
-                      <PostContainerUser showCol={true} posts={informationUserData?.posts} />
+                      <PostContainerUser
+                        refetchMySavedPost={refetchMySavedPost}
+                        refetchGetData={refetchGetData}
+                        showCol={true}
+                        posts={informationUserData?.posts} />
                     ) : (
                       <div className='text-black dark:text-white text-center mt-2 p-4 text-xl rounded'>
                         Sorry, no posts have been registered yet😩

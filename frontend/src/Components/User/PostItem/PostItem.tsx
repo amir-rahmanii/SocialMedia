@@ -24,9 +24,16 @@ interface CommentDeleteData {
     commentid: string;
 }
 
+interface PostItemProps {
+    post: Post,
+    refetchMySavedPost?: any,
+    refetchGetData?: any,
+}
 
 
-const PostItem: React.FC<Post> = (props) => {
+
+const PostItem: React.FC<PostItemProps> = ({ post, refetchMySavedPost, refetchGetData
+}) => {
 
     const commentInput = useRef<HTMLInputElement>(null);
     const [liked, setLiked] = useState(false);
@@ -48,6 +55,7 @@ const PostItem: React.FC<Post> = (props) => {
         , "User Followed/UnFollowed succesfuly!",
         false,
         () => {
+            refetchGetData();
             queryClient.invalidateQueries(["getMyUserInfo"]);
         }
     );
@@ -59,9 +67,9 @@ const PostItem: React.FC<Post> = (props) => {
         "post liked/unLiked successfuly!",
         false,
         () => {
-            queryClient.invalidateQueries(["getUserData"]);
+            refetchGetData();
+            refetchMySavedPost();
             queryClient.invalidateQueries(["AllPostAllUsers"]);
-            queryClient.invalidateQueries(["mySavedPost"]);
             queryClient.invalidateQueries(["searchPosts"]);
         }
     );
@@ -71,8 +79,8 @@ const PostItem: React.FC<Post> = (props) => {
         "post saved/unSaved successfuly!",
         false,
         () => {
-            queryClient.invalidateQueries(["getUserData"]);
-            queryClient.invalidateQueries(["mySavedPost"]);
+            refetchGetData();
+            refetchMySavedPost();
         }
     );
 
@@ -83,9 +91,9 @@ const PostItem: React.FC<Post> = (props) => {
         false,
         () => {
             setComment('');
-            queryClient.refetchQueries(["getUserData"]);
+            refetchGetData();
+            refetchMySavedPost();
             queryClient.invalidateQueries(["AllPostAllUsers"]);
-            queryClient.invalidateQueries(["mySavedPost"]);
             queryClient.invalidateQueries(["searchPosts"]);
         }
     );
@@ -96,9 +104,9 @@ const PostItem: React.FC<Post> = (props) => {
         `posts/delete-comment`,
         "Comment Deleted successfully",
         () => {
-            queryClient.invalidateQueries(["getUserData"]);
+            refetchGetData();
+            refetchMySavedPost();
             queryClient.invalidateQueries(["AllPostAllUsers"]);
-            queryClient.invalidateQueries(["mySavedPost"]);
             queryClient.invalidateQueries(["searchPosts"]);
         }
     );
@@ -107,9 +115,9 @@ const PostItem: React.FC<Post> = (props) => {
         `posts/delete-post`,
         "Post Deleted successfully",
         () => {
-            queryClient.invalidateQueries(["getUserData"]);
+            refetchGetData();
+            refetchMySavedPost();
             queryClient.invalidateQueries(["AllPostAllUsers"]);
-            queryClient.invalidateQueries(["mySavedPost"]);
             queryClient.invalidateQueries(["searchPosts"]);
         }
     );
@@ -136,7 +144,7 @@ const PostItem: React.FC<Post> = (props) => {
         setTimeout(() => {
             setLikeEffect(false)
         }, 500)
-        if (props.likes.some(id => props.user.id === id.userid)) {
+        if (post.likes.some(id => post.user.id === id.userid)) {
             return;
         }
         handleLike(postid);
@@ -164,9 +172,9 @@ const PostItem: React.FC<Post> = (props) => {
     //for show liked
     useEffect(() => {
         if (isSuccessMyInfo && myInfo) {
-            let isLiked = props.likes.some(data => myInfo?._id === data.userid);
+            let isLiked = post.likes.some(data => myInfo?._id === data.userid);
             setLiked(isLiked);
-            let isPosted = props.saved.some(data => myInfo?._id === data);
+            let isPosted = post.saved.some(data => myInfo?._id === data);
             setSaved(isPosted);
         }
     }, [myInfo, isSuccessMyInfo])
@@ -218,12 +226,12 @@ const PostItem: React.FC<Post> = (props) => {
 
             <div className="flex justify-between px-3 py-2.5 border-b dark:border-gray-300/20 border-gray-300  items-center">
                 <div className="flex space-x-3 items-center">
-                    <Link to={`/profile/${props.user.id}`}><img draggable="false" className="w-10 h-10 rounded-full object-cover" src={`${import.meta.env.VITE_API_BASE_URL}/${props.user.userPicture.path}`} alt="avatar" /></Link>
-                    <Link to={`/profile/${props.user.id}`} className="text-black dark:text-white text-sm font-semibold">{props.user.username}</Link>
+                    <Link to={`/profile/${post.user.id}`}><img draggable="false" className="w-10 h-10 rounded-full object-cover" src={`${import.meta.env.VITE_API_BASE_URL}/${post.user.userPicture.path}`} alt="avatar" /></Link>
+                    <Link to={`/profile/${post.user.id}`} className="text-black dark:text-white text-sm font-semibold">{post.user.username}</Link>
                 </div>
-                    {myInfo?._id === props.user.id && (
-                        <button onClick={() => setPostDetailsToggle(true)} className="cursor-pointer text-black dark:text-white">{moreIcons}</button>
-                    )}
+                {myInfo?._id === post.user.id && (
+                    <button onClick={() => setPostDetailsToggle(true)} className="cursor-pointer text-black dark:text-white">{moreIcons}</button>
+                )}
             </div>
 
             {postDatailsToggle && (
@@ -234,15 +242,15 @@ const PostItem: React.FC<Post> = (props) => {
                     height='h-auto'
                 >
                     <div className="flex flex-col w-full overflow-hidden rounded">
-                        {(myInfo?._id === props.user.id) && (
-                            <button onClick={() => deletePostHandler(props._id)} className="flex bg-red-500 text-white items-center justify-between p-2.5 text-sm pl-4 cursor-pointer font-semibold hover:bg-red-400 duration-300 transition-all">
+                        {(myInfo?._id === post.user.id) && (
+                            <button onClick={() => deletePostHandler(post._id)} className="flex bg-red-500 text-white items-center justify-between p-2.5 text-sm pl-4 cursor-pointer font-semibold hover:bg-red-400 duration-300 transition-all">
                                 Delete
                                 <div className='w-5 h-5'>
                                     {deleteIcon}
                                 </div>
                             </button>
                         )}
-                        {myInfo?._id === props.user.id && (
+                        {myInfo?._id === post.user.id && (
                             <button onClick={() => {
                                 setPostDetailsToggle(false)
                                 setUpdatePost(true)
@@ -259,15 +267,15 @@ const PostItem: React.FC<Post> = (props) => {
             )}
 
             {updatePost && (
-                <UpdatePost postInfo={props} updatePost={updatePost} setUpdatePost={setUpdatePost} />
+                <UpdatePost postInfo={post} updatePost={updatePost} setUpdatePost={setUpdatePost} />
             )}
 
             {/* post image container */}
 
             <Slider {...settings} className='w-full h-full'>
-                {props.media.map((data) => (
+                {post.media.map((data) => (
                     <div key={data._id} className='relative w-full h-full'>
-                        <div onDoubleClick={() => setLike(props._id)} className='flex justify-center items-center w-full h-full'>
+                        <div onDoubleClick={() => setLike(post._id)} className='flex justify-center items-center w-full h-full'>
                             <img
                                 draggable="false"
                                 loading="lazy"
@@ -302,46 +310,46 @@ const PostItem: React.FC<Post> = (props) => {
                         {/* icons container */}
                         <div className="flex items-center justify-between py-2">
                             <div className="flex space-x-4">
-                                <button className='w-6 h-6 text-black dark:text-white' onClick={() => handleLike(props._id)}>{liked ? likeFill : likeIconOutline}</button>
+                                <button className='w-6 h-6 text-black dark:text-white' onClick={() => handleLike(post._id)}>{liked ? likeFill : likeIconOutline}</button>
                                 <button className='w-6 h-6 text-black dark:text-white' onClick={() => commentInput.current?.focus()}>{commentIcon}</button>
                                 <button className='w-6 h-6 text-black dark:text-white'>
                                     {shareIcon}
                                 </button>
                             </div>
-                            <button className='w-6 h-6 text-black dark:text-white' onClick={() => handleSave(props._id)}>{(props.isSaved || saved) ? saveIconFill : saveIconOutline}</button>
+                            <button className='w-6 h-6 text-black dark:text-white' onClick={() => handleSave(post._id)}>{(post.isSaved || saved) ? saveIconFill : saveIconOutline}</button>
                         </div>
 
                         {/* likes  */}
-                        <button onClick={() => setIsOpenShowLiked(true)} className="font-semibold text-sm cursor-pointer text-left text-black dark:text-white">{props.likes.length} likes</button>
+                        <button onClick={() => setIsOpenShowLiked(true)} className="font-semibold text-sm cursor-pointer text-left text-black dark:text-white">{post.likes.length} likes</button>
 
                         {/* comment */}
                         <div className="flex flex-auto items-center space-x-1 text-black dark:text-white">
-                            <Link to={`/profile/${props.user.id}`} className="text-sm font-semibold hover:underline">{props.user.username}</Link>
-                            <span className="text-sm truncate line-clamp-1">{props.title}</span>
+                            <Link to={`/profile/${post.user.id}`} className="text-sm font-semibold hover:underline">{post.user.username}</Link>
+                            <span className="text-sm truncate line-clamp-1">{post.title}</span>
                         </div>
 
                         <div className={` ${showMoreDesc ? "flex" : "hidden"} gap-[2px] flex-col text-black dark:text-white`}>
-                            <span className="text-sm truncate">{props.description}</span>
-                            <span className="text-sm truncate text-primary-blue">{props.hashtags}</span>
+                            <span className="text-sm truncate">{post.description}</span>
+                            <span className="text-sm truncate text-primary-blue">{post.hashtags}</span>
                         </div>
 
                         <button onClick={() => setShowMoreDesc(prev => !prev)} className='text-left text-[14px] text-gray-500 cursor-pointer'>{showMoreDesc ? "...close" : "...more"}</button>
 
                         {/* time */}
-                        {props.comments.length > 0 ? (
+                        {post.comments.length > 0 ? (
                             <span onClick={() => setViewComment(!viewComment)} className="text-[13px] text-gray-500 cursor-pointer">
-                                {viewComment ? "Hide Comments" : `View All ${props.comments.length} Comments`
+                                {viewComment ? "Hide Comments" : `View All ${post.comments.length} Comments`
                                 }
                             </span>
                         ) : (
                             <span className="text-[13px] text-gray-500">No Comments Yet!</span>
                         )}
 
-                        <span className="text-xs text-gray-500">{<DateConverter date={props.createdAt} />}</span>
+                        <span className="text-xs text-gray-500">{<DateConverter date={post.createdAt} />}</span>
 
                         {viewComment &&
                             <div className="w-full h-52 overflow-y-auto py-1">
-                                {props.comments.map((c) => (
+                                {post.comments.map((c) => (
                                     <div className="flex items-start mb-2 border-b dark:border-gray-300/20 border-gray-300  space-x-3" key={c._id}>
                                         <Link to={`/profile/${c.userid}`} className='mt-2'>
                                             <img draggable="false" className="h-7 w-7 rounded-full shrink-0 object-cover mr-0.5" src={`${import.meta.env.VITE_API_BASE_URL}/${c.userPicture.path}`} alt="avatar" />
@@ -352,7 +360,7 @@ const PostItem: React.FC<Post> = (props) => {
                                                 <p className="text-sm line-clamp-3">{c.content}</p>
                                                 <span className="text-xs text-gray-500">{<DateConverter date={c.createdAt} />}</span>
                                             </div>
-                                            {(props.user.id === myInfo?._id || c.userid === myInfo?._id) && (
+                                            {(post.user.id === myInfo?._id || c.userid === myInfo?._id) && (
                                                 <button onClick={() => {
                                                     const commentIdDelete = {
                                                         commentid: c._id
@@ -401,7 +409,7 @@ const PostItem: React.FC<Post> = (props) => {
                             placeholder="Add a comment..."
                         />
                         <button
-                            onClick={() => submitComment(props._id)}
+                            onClick={() => submitComment(post._id)}
                             type="submit"
                             className={`${comment.trim().length < 1 ? 'text-blue-300' : 'text-primary-blue'} text-sm font-semibold`}
                             disabled={comment.trim().length < 1}
@@ -421,9 +429,9 @@ const PostItem: React.FC<Post> = (props) => {
                 title="List User Liked"
                 height='h-72'
             >
-                {props.likes.length > 0 ? (
+                {post.likes.length > 0 ? (
                     <div className='py-3 px-4 flex flex-col'>
-                        {props.likes.map((data, index) => (
+                        {post.likes.map((data, index) => (
                             <div key={index} className='flex items-center justify-between border-b dark:border-gray-300/20 border-gray-300 p-2'>
                                 <div className='flex items-center gap-2'>
                                     <Link className='shrink-0' to={`/profile/${data.userid}`}>
