@@ -18,15 +18,15 @@ const svgIconOs = (OsName: string) => {
 const svgIconBrowser = (browserName: string) => {
     switch (browserName.toLowerCase()) {
         case 'chrome':
-            return '/src/assets/images/browser/chrome.png';
+            return '/images/browser/chrome.png';
         case 'firefox':
-            return '/src/assets/images/browser/firefox.png';
+            return '/images/browser/firefox.png';
         case 'safari':
-            return '/src/assets/images/browser/safari.png';
+            return '/images/browser/safari.png';
         case 'edge':
-            return '/src/assets/images/browser/edge.png';
+            return '/images/browser/edge.png';
         case 'opera':
-            return '/src/assets/images/browser/opera.jpg';
+            return '/images/browser/opera.jpg';
         default:
             return '';
     }

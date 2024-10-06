@@ -465,15 +465,15 @@ function Profile() {
           </div> */}
 
             {/* footer */}
-            <div className="text-black dark:text-white mt-10 mb-10 drop-shadow-sm rounded flex sm:flex-row flex-col sm:gap-0 gap-5 sm:p-0 p-4 items-center justify-between">
+            <div className="text-black dark:text-white mt-10 mb-10 drop-shadow-sm rounded flex lg:flex-row flex-col sm:gap-0 gap-5 sm:p-0 p-4 items-center justify-between">
               <div className='grid grid-cols-3 gap-2'>
                 {Array(9).fill(0).map((_, index) => (
-                  <img key={index + 1} loading='lazy' draggable="false" className="rounded w-28 h-28" src="/src/assets/images/4.jpg" alt="1" />
+                  <img key={index + 1} loading='lazy' draggable="false" className="rounded w-28 h-28" src="/images/4.jpg" alt="1" />
                 ))}
 
               </div>
               <div className="mx-auto flex flex-col items-center">
-                <h4 className="font-sans text-lg sm:text-xl">Start capturing and sharing your moments.</h4>
+                <h4 className="font-sans text-lg sm:text-xl text-center">Start capturing and sharing your moments.</h4>
                 <p>Get the app to share your first photo or video.</p>
               </div>
 

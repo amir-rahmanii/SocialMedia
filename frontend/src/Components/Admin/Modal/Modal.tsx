@@ -42,7 +42,7 @@ function Modal({ isAttention,
                         <>
                             {/* img err */}
                             <div className='flex justify-center'>
-                                <img className='w-14 h-14' src="/src/assets/images/error.png" alt="err" />
+                                <img className='w-14 h-14' src="/images/error.png" alt="err" />
                             </div>
                             {/* title */}
                             <div>
@@ -53,7 +53,7 @@ function Modal({ isAttention,
                                 <div className='px-4 my-2'>
                                     <div className='flex items-center gap-1'>
                                         <p className='font-bold text-admin-low'>Attention</p>
-                                        <img className='w-5 h-5' src="/src/assets/images/error.png" alt="err" />
+                                        <img className='w-5 h-5' src="/images/error.png" alt="err" />
                                     </div>
                                     <p className='text-gray-400'>This operation is irreversible. The consequences of doing it are at your own risk.</p>
                                 </div>

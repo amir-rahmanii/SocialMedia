@@ -50,7 +50,7 @@ function ProfileAdmin() {
           <div className='w-full rounded bg-admin-navy pb-8'>
             {/* bg  */}
             <div className='relative'>
-              <img src="/src/assets/images/cover.png" alt="profile cover" className="h-full w-full rounded-tl-sm rounded-tr-sm object-cover object-center" />
+              <img src="/images/cover.png" alt="profile cover" className="h-full w-full rounded-tl-sm rounded-tr-sm object-cover object-center" />
               {/* profile */}
 
               <div className="-translate-y-1/2 z-30 mx-auto w-full max-w-30 rounded-full bg-white/20  backdrop-blur h-44 max-w-44 p-3">

@@ -247,7 +247,7 @@ function Inbox() {
                         <div className="flex py-3 px-6 border-b dark:border-gray-300/20 border-gray-300 items-center justify-between">
                             <div className="flex gap-2 items-center">
                                 <div className="w-8 h-8 relative">
-                                    <img draggable="false" className="w-7 h-7 rounded-full object-cover" src={`src/assets/images/group.jpg`} alt="profile" />
+                                    <img draggable="false" className="w-7 h-7 rounded-full object-cover" src={`/images/group.jpg`} alt="profile" />
 
                                     {/* {onlineUsers[informationUserData.user._id] && (
                                             <div className="absolute -right-0.5 -bottom-0.5 h-3 w-3 bg-green-500 rounded-full"></div>

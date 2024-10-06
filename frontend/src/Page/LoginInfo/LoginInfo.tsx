@@ -214,7 +214,7 @@ function LoginInfo() {
                         <FormGroup>
                             <div className='flex flex-wrap gap-3'>
                                 <FormControlLabel
-                                    label={<img loading='lazy' src="/src/assets/images/browser/chrome.png" alt="Chrome" width={24} height={24} />}
+                                    label={<img loading='lazy' src="/images/browser/chrome.png" alt="Chrome" width={24} height={24} />}
                                     control={<Checkbox
                                         value='Chrome'
                                         checked={allBrowser.some(data => data === "Chrome")}
@@ -222,7 +222,7 @@ function LoginInfo() {
                                     />}
                                 />
                                 <FormControlLabel
-                                    label={<img loading='lazy' src="/src/assets/images/browser/firefox.png" alt="FireFox" width={24} height={24} />}
+                                    label={<img loading='lazy' src="/images/browser/firefox.png" alt="FireFox" width={24} height={24} />}
                                     control={<Checkbox
                                         value='Firefox'
                                         checked={allBrowser.some(data => data === "Firefox")}
@@ -230,7 +230,7 @@ function LoginInfo() {
                                     />}
                                 />
                                 <FormControlLabel
-                                    label={<img loading='lazy' src="/src/assets/images/browser/opera.jpg" alt="Opera" width={24} height={24} />}
+                                    label={<img loading='lazy' src="/images/browser/opera.jpg" alt="Opera" width={24} height={24} />}
                                     control={<Checkbox
                                         value='Opera'
                                         checked={allBrowser.some(data => data === "Opera")}
@@ -238,7 +238,7 @@ function LoginInfo() {
                                     />}
                                 />
                                 <FormControlLabel
-                                    label={<img loading='lazy' src="/src/assets/images/browser/safari.png" alt="Safari" width={24} height={24} />}
+                                    label={<img loading='lazy' src="/images/browser/safari.png" alt="Safari" width={24} height={24} />}
                                     control={<Checkbox
                                         value='Safari'
                                         checked={allBrowser.some(data => data === "Safari")}
@@ -246,7 +246,7 @@ function LoginInfo() {
                                     />}
                                 />
                                 <FormControlLabel
-                                    label={<img loading='lazy' src="/src/assets/images/browser/edge.png" alt="Edge" width={24} height={24} />}
+                                    label={<img loading='lazy' src="/images/browser/edge.png" alt="Edge" width={24} height={24} />}
                                     control={<Checkbox
                                         value='Edge'
                                         checked={allBrowser.some(data => data === "Edge")}
