@@ -55,7 +55,7 @@ const PostItem: React.FC<PostItemProps> = ({ post, refetchMySavedPost, refetchGe
         , "User Followed/UnFollowed succesfuly!",
         false,
         () => {
-            refetchGetData();
+            refetchGetData && refetchGetData();
             queryClient.invalidateQueries(["getMyUserInfo"]);
         }
     );
@@ -67,8 +67,8 @@ const PostItem: React.FC<PostItemProps> = ({ post, refetchMySavedPost, refetchGe
         "post liked/unLiked successfuly!",
         false,
         () => {
-            refetchGetData();
-            refetchMySavedPost();
+             refetchGetData && refetchGetData();
+             refetchMySavedPost && refetchMySavedPost();
             queryClient.invalidateQueries(["AllPostAllUsers"]);
             queryClient.invalidateQueries(["searchPosts"]);
         }
@@ -79,8 +79,8 @@ const PostItem: React.FC<PostItemProps> = ({ post, refetchMySavedPost, refetchGe
         "post saved/unSaved successfuly!",
         false,
         () => {
-            refetchGetData();
-            refetchMySavedPost();
+            refetchGetData && refetchGetData();
+            refetchMySavedPost && refetchMySavedPost();
         }
     );
 
@@ -91,8 +91,8 @@ const PostItem: React.FC<PostItemProps> = ({ post, refetchMySavedPost, refetchGe
         false,
         () => {
             setComment('');
-            refetchGetData();
-            refetchMySavedPost();
+            refetchGetData && refetchGetData();
+             refetchMySavedPost && refetchMySavedPost();
             queryClient.invalidateQueries(["AllPostAllUsers"]);
             queryClient.invalidateQueries(["searchPosts"]);
         }
@@ -104,8 +104,8 @@ const PostItem: React.FC<PostItemProps> = ({ post, refetchMySavedPost, refetchGe
         `posts/delete-comment`,
         "Comment Deleted successfully",
         () => {
-            refetchGetData();
-            refetchMySavedPost();
+            refetchGetData && refetchGetData();
+            refetchMySavedPost && refetchMySavedPost();
             queryClient.invalidateQueries(["AllPostAllUsers"]);
             queryClient.invalidateQueries(["searchPosts"]);
         }
@@ -115,8 +115,8 @@ const PostItem: React.FC<PostItemProps> = ({ post, refetchMySavedPost, refetchGe
         `posts/delete-post`,
         "Post Deleted successfully",
         () => {
-            refetchGetData();
-            refetchMySavedPost();
+            refetchGetData && refetchGetData();
+            refetchMySavedPost && refetchMySavedPost();
             queryClient.invalidateQueries(["AllPostAllUsers"]);
             queryClient.invalidateQueries(["searchPosts"]);
         }
