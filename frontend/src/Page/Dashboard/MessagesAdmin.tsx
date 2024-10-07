@@ -1,4 +1,4 @@
-import  { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import useGetData from '../../hooks/useGetData';
 import { IMessage } from '../Inbox/Inbox';
 import SkeletonTable from '../../Components/SkeletonTable/SkeletonTable';
@@ -146,8 +146,8 @@ function MessagesAdmin() {
                     <SkeletonTable />
                 ) : (
                     <div className='bg-admin-navy rounded'>
-                        <div className='px-6 pt-6 flex justify-between items-center'>
-                            <h3 className='text-xl mb-6'>Messages</h3>
+                        <h3 className='text-xl px-6 pt-6 '>Messages</h3>
+                        <div className='px-6 pt-6 flex justify-end items-center'>
                             <div className='gap-4 glex flex items-center'>
                                 <form className='flex items-center gap-1' onSubmit={e => e.preventDefault()}>
                                     <button onClick={serchUsernameFilterHandler} className='text-admin-High w-5 h-5'>

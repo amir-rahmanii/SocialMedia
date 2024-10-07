@@ -126,8 +126,8 @@ export default function Users() {
                     <SkeletonTable />
                 ) : (
                     <div className='bg-admin-navy rounded'>
-                        <div className='px-6 pt-6 flex justify-between items-center'>
-                            <h3 className='text-xl mb-6'>Users</h3>
+                        <h3 className='text-xl px-6 pt-6'>Users</h3>
+                        <div className='px-6 pt-6 flex justify-end items-center'>
                             <form className='flex items-center gap-4' onSubmit={e => e.preventDefault()}>
                                 <button onClick={serchUsernameFilterHandler} className='text-admin-High w-5 h-5'>
                                     {searchIcon}
@@ -242,9 +242,9 @@ export default function Users() {
                     <p className='text-xl font-bold text-admin-High'>{infoUser?.username} Information :</p>
                 </div>
                 <div className='bg-[#37404F] my-4 border border-[#2E3A47] flex justify-center rounded-md divide-x divide-[#2E3A47] p-2.5'>
-                    <p className='text-admin-low text-sm flex gap-1 items-center px-6'><span className='text-white font-bold text-base'>{infoUser?.postCount}</span>Posts</p>
-                    <p className='text-admin-low text-sm flex gap-1 items-center px-6'><span className='text-white font-bold text-base'>{infoUser?.followers.length.toLocaleString()}</span>Followers</p>
-                    <p className='text-admin-low text-sm flex gap-1 items-center px-6'><span className='text-white font-bold text-base'>{infoUser?.following.length.toLocaleString()}</span>Following</p>
+                    <p className='text-admin-low text-sm flex gap-1 items-center px-3'><span className='text-white font-bold text-base'>{infoUser?.postCount}</span>Posts</p>
+                    <p className='text-admin-low text-sm flex gap-1 items-center px-3'><span className='text-white font-bold text-base'>{infoUser?.followers.length.toLocaleString()}</span>Followers</p>
+                    <p className='text-admin-low text-sm flex gap-1 items-center px-3'><span className='text-white font-bold text-base'>{infoUser?.following.length.toLocaleString()}</span>Following</p>
                 </div>
             </Modal>
         </>

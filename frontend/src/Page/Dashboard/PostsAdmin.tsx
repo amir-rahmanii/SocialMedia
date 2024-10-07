@@ -196,8 +196,8 @@ function PostsAdmin() {
                     <SkeletonTable />
                 ) : (
                     <div className='bg-admin-navy rounded'>
-                        <div className='px-6 pt-6 flex justify-between items-center'>
-                            <h3 className='text-xl mb-6'>Posts</h3>
+                            <h3 className='text-xl px-6 pt-6'>Posts</h3>
+                        <div className='px-6 pt-6 flex justify-end items-center'>
                             <div className='gap-4 glex flex items-center'>
                                 <form className='flex items-center gap-1' onSubmit={e => e.preventDefault()}>
                                     <button onClick={serchUsernameFilterHandler} className='text-admin-High w-5 h-5'>
