@@ -1,7 +1,7 @@
-![image]([https://github.com/amir-rahmanii/SocialMedia/blob/main/frontend/public/images/Screen/screen1.png])
+![image](https://github.com/amir-rahmanii/SocialMedia/blob/main/frontend/public/images/Screen/screen1.png)
 <br/><br/>
 <br/><br/>
-![image]([https://github.com/amir-rahmanii/SocialMedia/blob/main/frontend/public/images/Screen/screen2.png])
+![image](https://github.com/amir-rahmanii/SocialMedia/blob/main/frontend/public/images/Screen/screen2.png)
 
 <p align="center">
   <a href="https://insta-front.liara.run">View online</a>
