@@ -1,6 +1,5 @@
 import axios from "axios";
 import Cookies from "js-cookie";
-import toast from "react-hot-toast";
 
 const apiRequest = axios.create({
   withCredentials: true, // به این نیاز داریم تا کوکی‌ها به همراه درخواست‌ها ارسال شوند

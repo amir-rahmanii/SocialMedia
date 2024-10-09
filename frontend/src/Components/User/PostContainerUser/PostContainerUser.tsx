@@ -8,8 +8,8 @@ import PostItem from '../PostItem/PostItem';
 type PostContainerUserProps = {
     posts: Post[],
     showCol: boolean,
-    refetchGetData: any,
-    refetchMySavedPost: any
+    refetchGetData?: any,
+    refetchMySavedPost?: any
 };
 
 function PostContainerUser({ refetchMySavedPost, refetchGetData, showCol, posts }: PostContainerUserProps) {
