@@ -245,7 +245,7 @@ function Profile() {
 
                 </div>
 
-                <div className="flex justify-between items-center max-w-[21.5rem] text-black dark:text-white">
+                <div className="flex justify-between gap-3 items-center max-w-[21.5rem] text-black dark:text-white">
                   <div className="cursor-pointer"><span className="font-semibold ">
 
                     {informationUserData?.posts.length}

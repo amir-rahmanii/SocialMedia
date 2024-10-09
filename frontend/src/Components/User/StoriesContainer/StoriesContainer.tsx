@@ -12,7 +12,7 @@ import { allStories } from "../../../hooks/story/story.types";
 
 const StoriesContainer = () => {
 
-    const { data: allStories, isSuccess } = useGetData<allStories>(
+    const { data: allStories, isSuccess , refetch : refetchGetAllStories } = useGetData<allStories>(
         ['getAllStories'],
         "story/get-all-stories"
     );
@@ -98,13 +98,13 @@ const StoriesContainer = () => {
 
 
             {(isShowStoryContent && isSuccess) && (
-                <StoryContent setIsShowStoryContent={setIsShowStoryContent} isShowStoryContent={isShowStoryContent} allStories={allStories} />
+                <StoryContent refetchGetAllStories={refetchGetAllStories}  setIsShowStoryContent={setIsShowStoryContent} isShowStoryContent={isShowStoryContent} allStories={allStories} />
             )}
 
 
 
             {showAddStory && (
-                <AddNewStory showAddStory={showAddStory} setShowAddStory={setShowAddStory} />
+                <AddNewStory refetchGetAllStories={refetchGetAllStories} showAddStory={showAddStory} setShowAddStory={setShowAddStory} />
             )}
         </>
     );

@@ -14,7 +14,7 @@ router
   .route("/createStory")
   .post(auth, upload.single("storyMedia"), controller.createStory);
 
-
+router.route("/deleteStory").delete(auth, controller.deleteMedia);
 
 // * GET
 router.route("/get-all-stories").get(auth, controller.getStories);

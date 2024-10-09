@@ -14,7 +14,7 @@ export type story = {
         filename: string,
         __v: number,
         createdAt: Date,
-        _id: number
+        _id: string
     }[],
     updatedAt: Date,
     user: {

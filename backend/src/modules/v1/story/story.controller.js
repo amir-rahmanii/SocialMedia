@@ -65,20 +65,31 @@ exports.getStories = async (req, res) => {
 
 
 
-// exports.getStoryById = async (req , res) => {
-//   try {
-//     const { storyId } = req.params;
+exports.deleteMedia = async (req , res) => {
+  const { storyId, mediaId } = req.body;
+  try {
+      // حذف مدیا از پایگاه داده
+      await mediaStoryModel.findByIdAndDelete(mediaId);
 
-//     // پیدا کردن استوری بر اساس ID
-//     const story = await storyModel.findById(storyId).populate('user.id', 'username email name userPicture');
+      // بروزرسانی استوری برای حذف مدیا از آرایه مدیاها
+      const story = await storyModel.findById(storyId);
+      if (!story) {
+          return res.status(404).json({ message: "Story not found" });
+      }
 
-//     if (!story) {
-//       return res.status(404).json({ message: "Story not found" });
-//     }
+      // حذف مدیا از آرایه مدیاها
+      story.media = story.media.filter(media => media.toString() !== mediaId);
+      await story.save();
 
-//     res.status(200).json({ story });
-//   } catch (error) {
-//     res.status(400).json({ message: error.message });
-//   }
+      // اگر هیچ مدیایی برای استوری باقی نمانده بود، استوری را هم حذف کنید
+      if (story.media.length === 0) {
+          await storyModel.findByIdAndDelete(storyId);
+          return res.status(200).json({ message: "Media deleted and story removed" });
+      }
 
-// }
+      return res.status(200).json({ message: "Media deleted successfully", story });
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Server error" });
+  }
+}

@@ -3,23 +3,22 @@ import toast from 'react-hot-toast';
 import { Dialog } from '@mui/material';
 import IsLoaderBtn from '../../IsLoaderBtn/IsLoaderBtn';
 import usePostData from '../../../hooks/usePostData';
-import { useQueryClient } from 'react-query';
 import { closeIcon, deleteIcon, photoIcon } from '../../SvgIcon/SvgIcon';
 import AddNewUploadFile from './AddNewUploadFile';
 
 type AddNewStoryProps = {
     showAddStory: boolean;
     setShowAddStory: (value: boolean) => void;
+    refetchGetAllStories : any;
 };
 
-function AddNewStory({ showAddStory, setShowAddStory }: AddNewStoryProps) {
+function AddNewStory({ refetchGetAllStories , showAddStory, setShowAddStory }: AddNewStoryProps) {
     const [postImage, setPostImage] = useState<File | null>(null);
     const [postPreview, setPostPreview] = useState<string | null>(null);
     const [showIsUploadFileStory, setShowIsUploadFileStory] = useState(false);
     const [isCameraActive, setIsCameraActive] = useState(false);
     const videoRef = useRef<HTMLVideoElement | null>(null);
 
-    const queryClient = useQueryClient();
     const { mutate: addNewStory, isLoading } = usePostData(
         'story/createStory',
         "Story Uploaded successfuly",
@@ -28,7 +27,7 @@ function AddNewStory({ showAddStory, setShowAddStory }: AddNewStoryProps) {
             setPostImage(null);
             setPostPreview(null);
             setShowAddStory(false);
-            queryClient.invalidateQueries(["getAllStories"]);
+            refetchGetAllStories();
         },
         true
     );
