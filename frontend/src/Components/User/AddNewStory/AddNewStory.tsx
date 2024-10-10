@@ -27,7 +27,7 @@ function AddNewStory({ refetchGetAllStories , showAddStory, setShowAddStory }: A
             setPostImage(null);
             setPostPreview(null);
             setShowAddStory(false);
-            refetchGetAllStories();
+            refetchGetAllStories && refetchGetAllStories();
         },
         true
     );

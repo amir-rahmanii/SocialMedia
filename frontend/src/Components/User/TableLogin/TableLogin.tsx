@@ -10,6 +10,7 @@ import TableRow from '@mui/material/TableRow';
 import DateConverter from '../../../utils/DateConverter';
 import { svgIconBrowser, svgIconOs } from '../../../utils/systemInfoConverterSvg';
 import { useState } from 'react';
+import Flag from 'react-world-flags'
 
 export type TableLoginProps = {
     loginInformation?: {
@@ -39,6 +40,10 @@ export default function TableLogin({ loginInformation }: TableLoginProps) {
 
 
     const hasData = loginInformation && loginInformation.length > 0;
+
+
+    console.log(loginInformation);
+    
 
 
 
@@ -71,7 +76,11 @@ export default function TableLogin({ loginInformation }: TableLoginProps) {
                                             <TableCell align="center" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                                 <div className='w-10 h-10'>{svgIconOs(data.os)}</div>
                                             </TableCell>
-                                            <TableCell align="center">{data.country}</TableCell>
+                                            <TableCell align="center">
+                                                <div className='flex justify-center items-center'>
+                                                <Flag code={data.country} height="40" width='40' />
+                                                </div>
+                                            </TableCell>
                                             <TableCell align="center">
                                                 <div className='flex justify-center items-center'>
                                                     {svgIconBrowser(data.browser) ? (

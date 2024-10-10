@@ -189,7 +189,7 @@ function LoginInfo() {
                         <SkeletonTable />
                     ) : (
                         isSuccessMyInfo && (
-                            <div className='px-3'>
+                            <div className='px-3 mb-20 md:mb-0'>
                                 <TableLogin loginInformation={filteredData || myInfo?.systemInfos} />
                             </div>
                         )

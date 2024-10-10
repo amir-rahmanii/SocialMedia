@@ -88,7 +88,7 @@ function Tickets() {
                         <SkeletonTable />
                     ) : (
                         isSuccess && (
-                            <div className='px-3'>
+                            <div className='px-3 mb-20 md:mb-0'>
                                 <TableTicket allTicketUser={filteredData || allTicket} />
                             </div>
                         )
