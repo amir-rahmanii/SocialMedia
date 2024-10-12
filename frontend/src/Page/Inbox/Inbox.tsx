@@ -239,7 +239,7 @@ function Inbox() {
             <MetaData title="Instagram • Direct" />
             <Header />
             <SideBarLeft />
-            <div className="mt-14 xl:mr-32 pb-4 rounded h-[calc(100vh-200px)] md:w-4/6 mx-auto bg-white dark:bg-black">
+            <div className="mt-14 xl:mr-32 pb-4 rounded h-[calc(100vh-200px)] md:h-[calc(100vh-100px)] md:w-4/6 mx-auto bg-white dark:bg-black">
                 <div className={`flex border dark:border-gray-300/20 border-gray-300 h-full rounded w-full`}>
                     <div className="flex flex-col justify-between w-full">
 

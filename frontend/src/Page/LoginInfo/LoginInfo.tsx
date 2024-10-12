@@ -76,7 +76,6 @@ function LoginInfo() {
 
 
 
-
     const filterDateHandler = () => {
 
         if (allBrowser.length === 0) {
@@ -93,22 +92,35 @@ function LoginInfo() {
         const fromDate = dayjs(fromPicker).startOf('day');
         const untilDate = dayjs(untilPicker).endOf('day');
 
-        //save in localStorage
+        // ذخیره در localStorage
         localStorage.setItem("loginInfoFilter", JSON.stringify({
             browser: allBrowser,
             os: allOs,
             order: orderSystemInfo,
             fromDate,
             untilDate
-        }))
+        }));
 
+        // تابع برای نگاشت مرورگرهای موبایل به مرورگرهای اصلی
+        const mapBrowserToMain = (browser: string): string => {
+            if (browser.includes("Mobile")) {
+                if (browser.includes("Chrome")) return "Chrome";
+                if (browser.includes("Firefox")) return "Firefox";
+                if (browser.includes("Safari")) return "Safari";
+                if (browser.includes("Opera")) return "Opera";
+                if (browser.includes("Edge")) return "Edge";
+            }
+            return browser;
+        };
 
         // فیلتر کردن systemInfos بر اساس بازه زمانی و مرورگر
         const filteredSystemInfos = myInfo?.systemInfos.filter(info => {
+            const mappedBrowser = mapBrowserToMain(info.browser); // نگاشت مرورگر موبایل به مرورگر اصلی
+
             const isMainOsIncluded = allOs.includes(info.os);
             const isOtherOs = allOs.includes("Other") && !mainOs.includes(info.os);
-            const isMainBrowserIncluded = allBrowser.includes(info.browser); // چک کردن مرورگرهای اصلی
-            const isOtherBrowser = allBrowser.includes("Other") && !mainBrowsers.includes(info.browser); // چک کردن مرورگرهای غیر اصلی
+            const isMainBrowserIncluded = allBrowser.includes(mappedBrowser); // چک کردن مرورگرهای اصلی
+            const isOtherBrowser = allBrowser.includes("Other") && !mainBrowsers.includes(mappedBrowser); // چک کردن مرورگرهای غیر اصلی
             const infoDate = dayjs(info.date);
             const isDateInRange = infoDate.isBetween(fromDate, untilDate, null, '[]'); // چک کردن تاریخ
 
@@ -117,15 +129,16 @@ function LoginInfo() {
         });
 
         // ذخیره داده‌های فیلتر شده
-        {
-            orderSystemInfo === "OTN" ?
-                setFilteredData(filteredSystemInfos?.reverse() || [])
-                : setFilteredData(filteredSystemInfos || [])
+        if (orderSystemInfo === "OTN") {
+            setFilteredData(filteredSystemInfos?.reverse() || []);
+        } else {
+            setFilteredData(filteredSystemInfos || []);
         }
 
         // بستن دیالوگ فیلتر
         setIsShowOpenFilter(false);
     };
+
 
 
     const changeHandlerBrowser = (e: React.ChangeEvent<HTMLInputElement>) => {
