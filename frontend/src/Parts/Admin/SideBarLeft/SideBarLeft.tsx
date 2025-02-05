@@ -23,7 +23,7 @@ function SideBarLeft({ showSidebarLeftMobile, setShowSidebarLeftMobile }: SideBa
                 </div>
                 {/* menu */}
                 <div className='mt-9'>
-                    <p className='text-admin-High text-center lg:text-start lg:px-6 mb-2 text-sm'>MENU</p>
+                    <p className='text- text-center lg:text-start lg:px-6 mb-2 text-sm'>MENU</p>
                     <ul className='flex flex-col gap-3'>
                         <li>
                             <NavLink to='panel' className={({ isActive }) =>
@@ -186,9 +186,6 @@ function SideBarLeft({ showSidebarLeftMobile, setShowSidebarLeftMobile }: SideBa
                     </div>
                 // </div>
             )}
-
-
-
         </>
     )
 }

@@ -24,9 +24,6 @@ function Login() {
         });
 
 
-
-
-
     // hook form
     const {
         register,
@@ -35,6 +32,7 @@ function Login() {
     } = useForm({
         resolver: yupResolver(loginSchema)
     });
+
 
 
     return (

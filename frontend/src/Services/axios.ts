@@ -1,5 +1,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
+import toast from "react-hot-toast";
 
 const apiRequest = axios.create({
   withCredentials: true, // به این نیاز داریم تا کوکی‌ها به همراه درخواست‌ها ارسال شوند
@@ -28,6 +29,12 @@ apiRequest.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+
+    // بررسی خطای 404 و پیام "please fitst login"
+    if (error.response?.status === 404 && error.response.data?.error === "please fitst login") {
+      handleSessionExpired(); // هدایت کاربر به صفحه لاگین
+    }
+
     // بررسی انقضای توکن و تلاش برای refresh
     if (error.response?.status === 409 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -42,10 +49,10 @@ apiRequest.interceptors.response.use(
           return apiRequest(originalRequest); // تلاش مجدد با درخواست اصلی
         } catch (error) {
           // در صورت عدم موفقیت در refresh توکن، کاربر را logout کنید و توکن‌ها را پاک کنید
-          // handleSessionExpired();
+          handleSessionExpired();
         }
       } else {
-        // handleSessionExpired();
+        handleSessionExpired();
       }
     }
 
@@ -54,13 +61,13 @@ apiRequest.interceptors.response.use(
 );
 
 // مدیریت انقضای نشست (کاربر را logout کنید و به صفحه ورود هدایت کنید)
-// const handleSessionExpired = () => {
-//   Cookies.remove("access-token");
-//   Cookies.remove("refresh-token");
-//   toast.error("Session expired. Please log in again.");
-//   setTimeout(() => {
-//     window.location.href = "/login"; // این مسیر را به صفحه ورود اپلیکیشن خود تنظیم کنید
-//   }, 1500); // تأخیر برای نمایش toast قبل از هدایت
-// };
+const handleSessionExpired = () => {
+  Cookies.remove("access-token");
+  Cookies.remove("refresh-token");
+  toast.error("Session expired. Please log in again.");
+  setTimeout(() => {
+    window.location.href = "/login"; // این مسیر را به صفحه ورود اپلیکیشن خود تنظیم کنید
+  }, 1500); // تأخیر برای نمایش toast قبل از هدایت
+};
 
 export default apiRequest;
