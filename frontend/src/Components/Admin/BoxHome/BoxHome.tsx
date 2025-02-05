@@ -10,7 +10,7 @@ type BoxHomeProps = {
 
 function BoxHome(props: BoxHomeProps) {
   return (
-    <div className='py-6 rounded px-[30px] bg-admin-navy'>
+    <div className='py-6 rounded-sm px-[30px] bg-admin-navy'>
       {/* icon */}
       <div className='bg-[#313D4A] w-[46px] h-[46px] rounded-full flex items-center justify-center'>
         <div className='w-5 h-5'>

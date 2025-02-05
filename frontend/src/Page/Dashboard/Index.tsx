@@ -63,13 +63,13 @@ function Index() {
           </div>
 
           <div className='grid lg:grid-cols-1 xl:grid-cols-3 gap-8'>
-            <div className='bg-admin-navy p-[30px] rounded'>
+            <div className='bg-admin-navy p-[30px] rounded-sm'>
               <p className='text-xl'>Operating System Chart</p>
               {isSuccessTotalOsCount && (
                 <OperatingSystemChart totalOsCount={totalOsCount} />
               )}
             </div>
-            <div className='bg-admin-navy p-[30px] xl:col-span-2 rounded'>
+            <div className='bg-admin-navy p-[30px] xl:col-span-2 rounded-sm'>
               <p className='text-xl'>Messages By Month Chart</p>
               {isSuccessTotalMessageCount && (
                 <MessagesByMonthChart totalMessageCount={totalMessageCount} />

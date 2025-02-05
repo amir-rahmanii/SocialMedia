@@ -239,8 +239,8 @@ function Inbox() {
             <MetaData title="Instagram • Direct" />
             <Header />
             <SideBarLeft />
-            <div className="mt-14 xl:mr-32 pb-4 rounded h-[calc(100vh-200px)] md:h-[calc(100vh-100px)] md:w-4/6 mx-auto bg-white dark:bg-black">
-                <div className={`flex border dark:border-gray-300/20 border-gray-300 h-full rounded w-full`}>
+            <div className="mt-14 xl:mr-32 pb-4 rounded-sm h-[calc(100vh-200px)] md:h-[calc(100vh-100px)] md:w-4/6 mx-auto bg-white dark:bg-black">
+                <div className={`flex border dark:border-gray-300/20 border-gray-300 h-full rounded-sm w-full`}>
                     <div className="flex flex-col justify-between w-full">
 
                         {/* header */}
@@ -301,7 +301,7 @@ function Inbox() {
                             )}
 
                             <input
-                                className="flex-1 outline-none text-sm bg-white dark:bg-black text-black dark:text-white"
+                                className="flex-1 outline-hidden text-sm bg-white dark:bg-black text-black dark:text-white"
                                 type="text"
                                 placeholder="Message..."
                                 value={message}

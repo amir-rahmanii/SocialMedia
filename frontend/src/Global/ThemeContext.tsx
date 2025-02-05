@@ -13,7 +13,7 @@ const lightTheme = createTheme({
     palette: {
         mode: 'light',
         background: {
-            default: '#f4f4f4',
+            default: '#ffffff',
         },
     },
 });
@@ -22,7 +22,7 @@ const darkTheme = createTheme({
     palette: {
         mode: 'dark',
         background: {
-            default: '#303030',
+            default: '#000000',
         },
     },
 });

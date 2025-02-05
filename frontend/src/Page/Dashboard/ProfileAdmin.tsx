@@ -47,13 +47,13 @@ function ProfileAdmin() {
       ) : (
         <div className='font-sans grid w-full'>
           <h3 className='text-2xl font-bold mb-6'>Profile</h3>
-          <div className='w-full rounded bg-admin-navy pb-8'>
+          <div className='w-full rounded-sm bg-admin-navy pb-8'>
             {/* bg  */}
             <div className='relative'>
               <img src="/images/cover.png" alt="profile cover" className="h-full w-full rounded-tl-sm rounded-tr-sm object-cover object-center" />
               {/* profile */}
 
-              <div className="-translate-y-1/2 z-30 mx-auto w-full max-w-30 rounded-full bg-white/20  backdrop-blur h-44 max-w-44 p-3">
+              <div className="-translate-y-1/2 z-30 mx-auto w-full max-w-30 rounded-full bg-white/20  backdrop-blur-sm h-44 max-w-44 p-3">
                 <div className="relative drop-shadow-2">
                   <img className='rounded-full' loading='lazy' src={`${import.meta.env.VITE_API_BASE_URL}/${myInfo?.profilePicture.path}`} alt="profile" />
                   <label htmlFor="profile" className="absolute bottom-0 right-0 flex h-8.5 w-8.5 cursor-pointer items-center justify-center rounded-full bg-primary text-white hover:bg-opacity-90 sm:bottom-2 sm:right-2">

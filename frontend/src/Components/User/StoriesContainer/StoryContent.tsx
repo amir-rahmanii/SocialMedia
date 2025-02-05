@@ -121,7 +121,7 @@ function StoryContent({ refetchGetAllStories, allStories, setIsShowStoryContent,
 
     return (
         <div
-            className={`fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-[1000]`}
+            className={`fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-1000`}
             onClick={handleBackgroundClick}
         >
             <div className="relative w-[360px] h-[628px]" onClick={e => e.stopPropagation()}>
@@ -142,7 +142,7 @@ function StoryContent({ refetchGetAllStories, allStories, setIsShowStoryContent,
                 {isSuccess && (
                     (myInfo?._id === allStories.stories[currentStoryIndex].user.id || myInfo?.role === "ADMIN") && (
                         <button
-                            className="absolute top-4 right-4 bg-error-red text-white p-2 rounded-full z-[1001]"
+                            className="absolute top-4 right-4 bg-error-red text-white p-2 rounded-full z-1001"
                             onClick={e => {
                                 e.stopPropagation();
                                 const storyId = allStories.stories[currentStoryIndex]._id;

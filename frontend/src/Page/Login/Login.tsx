@@ -87,7 +87,7 @@ function Login() {
                     </div>
                     <button onClick={handleSubmit((data) => {
                         loginUser(data)
-                    })} disabled={isLoading} type="submit" className={`font-sans py-2 rounded text-white w-full  duration-300 transition-all ${isLoading ? "bg-primaryLoading-blue" : "bg-primary-blue hover:bg-primaryhover-blue"}`}>
+                    })} disabled={isLoading} type="submit" className={`font-sans py-2 rounded-sm text-white w-full  duration-300 transition-all ${isLoading ? "bg-primaryLoading-blue" : "bg-primary-blue hover:bg-primaryhover-blue"}`}>
                         {isLoading ? <IsLoaderBtn /> : "Log in"}
                     </button>
                     <span className="my-3 text-gray-500">OR</span>

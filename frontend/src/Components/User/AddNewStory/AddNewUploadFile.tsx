@@ -131,7 +131,7 @@ const AddNewUploadFile = ({ showIsUploadFileStory, setShowIsUploadFileStory, set
                                 {/* <p className='text-sm text-slate-500'> {postImage ? postImage.name : "No file Choosen"}</p> */}
                             </div>
                             <div className="flex justify-center w-full mt-4">
-                                <button onClick={newPostSubmitHandler} disabled={isLoading} className="bg-primary-blue hover:bg-primaryhover-blue transition-all duration-300 w-full text-white py-1.5 rounded font-medium hover:drop-shadow-lg uppercase text-sm tracking-wider">Upload Story</button>
+                                <button onClick={newPostSubmitHandler} disabled={isLoading} className="bg-primary-blue hover:bg-primaryhover-blue transition-all duration-300 w-full text-white py-1.5 rounded-sm font-medium hover:drop-shadow-lg uppercase text-sm tracking-wider">Upload Story</button>
                             </div>
                         </form>
                     </div>

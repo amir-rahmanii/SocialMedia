@@ -45,7 +45,7 @@ const FilterDate: React.FC<PropsWithChildren<FilterDateProps>> = ({
 
     return (
         <div>
-            <div className="flex flex-col min-w-60 rounded">
+            <div className="flex flex-col min-w-60 rounded-sm">
                 <form onSubmit={e => e.preventDefault()} className=' flex flex-col my-6 px-3 gap-4'>
                     <div className='flex flex-col gap-4  md:flex-row md:justify-between'>
                         <DatePicker
@@ -68,7 +68,7 @@ const FilterDate: React.FC<PropsWithChildren<FilterDateProps>> = ({
                     <button
                         onClick={filterDateHandler}
                         type="submit"
-                        className={`font-sans py-2 rounded text-white w-full duration-300 transition-all bg-primary-blue`}
+                        className={`font-sans py-2 rounded-sm text-white w-full duration-300 transition-all bg-primary-blue`}
                     >
                         Submit
                     </button>

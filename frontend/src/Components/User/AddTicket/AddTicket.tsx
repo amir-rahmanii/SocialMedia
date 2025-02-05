@@ -60,7 +60,7 @@ function AddTicket() {
 
 
     return (
-        <form onSubmit={e => e.preventDefault()} className='py-7 px-3 rounded flex flex-col gap-4'>
+        <form onSubmit={e => e.preventDefault()} className='py-7 px-3 rounded-sm flex flex-col gap-4'>
             <div className='w-full flex flex-col md:flex-row justify-between gap-4'>
                 <div className='flex flex-col w-full'>
                     <TextField
@@ -139,7 +139,7 @@ function AddTicket() {
                 }
 
 
-                })} disabled={isLoading} type="submit" className={`font-sans py-2 rounded text-white w-full  duration-300 transition-all ${isLoading ? "bg-primaryLoading-blue" : "bg-primary-blue hover:bg-primaryhover-blue"}`}>
+                })} disabled={isLoading} type="submit" className={`font-sans py-2 rounded-sm text-white w-full  duration-300 transition-all ${isLoading ? "bg-primaryLoading-blue" : "bg-primary-blue hover:bg-primaryhover-blue"}`}>
                     {isLoading ? <IsLoaderBtn /> : "Submit"}
                 </button>
             </div>

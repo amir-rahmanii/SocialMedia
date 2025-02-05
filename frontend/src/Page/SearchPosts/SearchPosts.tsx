@@ -40,7 +40,7 @@ function SearchPosts() {
           (mySearchPosts && mySearchPosts.length > 0) ? (
             <PostContainerUser showCol = {false} posts={mySearchPosts} />
           ) : (
-            <div className='text-black dark:text-white w-full text-center mt-2 p-4 text-xl rounded'>
+            <div className='text-black dark:text-white w-full text-center mt-2 p-4 text-xl rounded-sm'>
               Sorry, No posts were found with your search😩
               <div className='flex items-center justify-center gap-3 mt-2'>
                 <span> You be the first search valid title</span>

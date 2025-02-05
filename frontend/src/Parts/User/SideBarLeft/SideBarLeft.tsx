@@ -176,7 +176,7 @@ function SideBarLeft() {
                 title="Search title"
                 height="h-auto"
             >
-                <div className="flex justify-center items-center border rounded dark:border-gray-300/20 border-gray-300">
+                <div className="flex justify-center items-center border rounded-sm dark:border-gray-300/20 border-gray-300">
                     <SearchBox />
                 </div>
             </ShowDialogModal>

@@ -195,7 +195,7 @@ function PostsAdmin() {
                 {isLoading ? (
                     <SkeletonTable />
                 ) : (
-                    <div className='bg-admin-navy rounded'>
+                    <div className='bg-admin-navy rounded-sm'>
                             <h3 className='text-xl px-6 pt-6'>Posts</h3>
                         <div className='px-6 pt-6 flex justify-end items-center'>
                             <div className='gap-4 glex flex items-center'>
@@ -203,7 +203,7 @@ function PostsAdmin() {
                                     <button onClick={serchUsernameFilterHandler} className='text-admin-High w-5 h-5'>
                                         {searchIcon}
                                     </button>
-                                    <input value={searchValue} onChange={(e) => setSearchValue(e.target.value)} className='bg-transparent text-white outline-none' placeholder='search...' type="text" />
+                                    <input value={searchValue} onChange={(e) => setSearchValue(e.target.value)} className='bg-transparent text-white outline-hidden' placeholder='search...' type="text" />
                                 </form>
                                 <FormControl fullWidth>
                                     <InputLabel id="demo-simple-select-label">Sorted By</InputLabel>

@@ -153,7 +153,7 @@ function ResponseTicket({
                 <form onSubmit={e => e.preventDefault()} className="flex items-center mt-auto gap-3 justify-between border rounded-full py-2.5 px-4 m-5 relative">
 
                     <input
-                        className={`flex-1 outline-none text-sm ${bgInputAdmin ? "bg-transparent text-white" : "bg-white dark:bg-black text-black dark:text-white"}  `}
+                        className={`flex-1 outline-hidden text-sm ${bgInputAdmin ? "bg-transparent text-white" : "bg-white dark:bg-black text-black dark:text-white"}  `}
                         type="text"
                         placeholder="Message..."
                         value={message}

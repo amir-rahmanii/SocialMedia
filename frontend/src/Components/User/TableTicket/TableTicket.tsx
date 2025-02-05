@@ -82,7 +82,7 @@ export default function TableTicket({ allTicketUser }: allTicketUserProps) {
                                             <TableRow key={data._id}>
                                                 <TableCell>{index + 1}</TableCell>
                                                 <TableCell align="center">
-                                                    <div className='text-sm bg-cyan-400/30 rounded'>
+                                                    <div className='text-sm bg-cyan-400/30 rounded-sm'>
                                                         {data.title}
 
                                                     </div>

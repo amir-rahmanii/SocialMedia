@@ -124,7 +124,7 @@ const Message = (props: MessageProps) => {
                 title="Details Message"
                 height="h-auto"
             >
-                <div className="flex flex-col w-full overflow-hidden rounded">
+                <div className="flex flex-col w-full overflow-hidden rounded-sm">
                     <div onClick={() => props.handleDeleteMessage(props.message._id)} className="flex bg-red-500 text-white items-center justify-between p-2.5 text-sm pl-4 cursor-pointer font-semibold hover:bg-red-400 duration-300 transition-all">
                         Delete
                         <div className='w-4 h-4'>
@@ -155,12 +155,12 @@ const Message = (props: MessageProps) => {
                         label="New Message"
                         name="New Message"
                         inputRef={textAreaRef}
-                        className='border border-gray-500  font-sans rounded text-gray-500'
+                        className='border border-gray-500  font-sans rounded-sm text-gray-500'
                         placeholder='Write...'
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}>
                     </TextField>
-                    <button onClick={submitHandler} className='font-sans py-2 rounded text-white w-full  duration-300 transition-all bg-primary-blue hover:bg-primaryhover-blue'>
+                    <button onClick={submitHandler} className='font-sans py-2 rounded-sm text-white w-full  duration-300 transition-all bg-primary-blue hover:bg-primaryhover-blue'>
                         Submit
                     </button>
                 </form>

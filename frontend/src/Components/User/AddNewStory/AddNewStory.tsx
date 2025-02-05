@@ -98,10 +98,10 @@ function AddNewStory({ refetchGetAllStories , showAddStory, setShowAddStory }: A
                             <>
                                 {!isCameraActive && (
                                     <div className='flex flex-col gap-4 my-6'>
-                                        <button onClick={handleStartCamera} className="bg-blue-500 text-white py-2 px-4 rounded">
+                                        <button onClick={handleStartCamera} className="bg-blue-500 text-white py-2 px-4 rounded-sm">
                                             Open Camera
                                         </button>
-                                        <button onClick={() => setShowIsUploadFileStory(true)} className='bg-green-500 text-white py-2 px-4 rounded'>
+                                        <button onClick={() => setShowIsUploadFileStory(true)} className='bg-green-500 text-white py-2 px-4 rounded-sm'>
                                             Upload Img
                                         </button>
                                     </div>
@@ -118,7 +118,7 @@ function AddNewStory({ refetchGetAllStories , showAddStory, setShowAddStory }: A
                                         setPostImage(null);
                                         setPostPreview(null);
                                         handleStartCamera()
-                                    }} className="text-white font-sans p-2 gap-1 rounded   flex items-center bg-red-500 mt-2">
+                                    }} className="text-white font-sans p-2 gap-1 rounded-sm   flex items-center bg-red-500 mt-2">
                                         Remove Photo
                                         <div className='w-5 h-5'>
                                             {deleteIcon}
@@ -141,7 +141,7 @@ function AddNewStory({ refetchGetAllStories , showAddStory, setShowAddStory }: A
 
 
 
-                                    })} disabled={isLoading} type="submit" className={`font-sans py-2 px-4 rounded text-white w-full  duration-300 transition-all ${isLoading ? "bg-primaryLoading-blue" : "bg-primary-blue hover:bg-primaryhover-blue"}`}>
+                                    })} disabled={isLoading} type="submit" className={`font-sans py-2 px-4 rounded-sm text-white w-full  duration-300 transition-all ${isLoading ? "bg-primaryLoading-blue" : "bg-primary-blue hover:bg-primaryhover-blue"}`}>
                                         {isLoading ? <IsLoaderBtn /> : "Upload"}
                                     </button>
                                 </div>

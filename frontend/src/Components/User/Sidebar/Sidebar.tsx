@@ -52,8 +52,8 @@ function Sidebar() {
 
 
     return (
-        <div className="fixed lg:right-[0px] hidden w-fit h-full lg:flex flex-col flex-auto m-8 xl:pr-8 -z-1">
-            <div className="xl:ml-10 mt-4 flex flex-col lg:p-1 xl:p-4 rounded">
+        <div className="fixed lg:right-[0px] z-50 hidden w-fit h-full lg:flex flex-col flex-auto m-8 xl:pr-8 -z-1">
+            <div className="xl:ml-10 mt-4 flex flex-col lg:p-1 xl:p-4 rounded-sm">
                 {isLoading ? (
                     Array(5).fill("").map((_, i) => (<SkeletonUserItem key={i} />))
                 ) : (
@@ -97,7 +97,7 @@ function Sidebar() {
                                                         }
                                                         followToggle(objFollow);
                                                     }}
-                                                    className="font-sans transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow rounded px-6 py-1.5"
+                                                    className="font-sans transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow-sm rounded-sm px-6 py-1.5"
                                                 >
                                                     {followed.includes(data._id) ? "UnFollow" : "Follow"}
                                                 </button>

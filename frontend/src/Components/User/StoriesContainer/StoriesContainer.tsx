@@ -52,7 +52,7 @@ const StoriesContainer = () => {
 
     return (
         <>
-            <Slider {...settings} className="w-full overflow-x-auto  pt-2.5 pb-1 px-2.5 rounded">
+            <Slider {...settings} className="w-full overflow-x-auto  pt-2.5 pb-1 px-2.5 rounded-sm">
                 <div onClick={() => {
                     setShowAddStory(true)
                 }} className="flex flex-col text-center justify-center items-center p-2 cursor-pointer">

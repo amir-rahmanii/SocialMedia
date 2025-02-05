@@ -104,7 +104,7 @@ export default function Header() {
                 title="Option"
                 height="h-auto"
             >
-                <ul className="border flex flex-col rounded dark:border-gray-300/20 border-gray-300">
+                <ul className="border flex flex-col rounded-sm dark:border-gray-300/20 border-gray-300">
                     <li onClick={() => { 
                         setShowOption(false)
                         setNewPost(true) 
@@ -155,7 +155,7 @@ export default function Header() {
                 title="Search title"
                 height="h-auto"
             >
-                <div className="flex justify-center items-center border rounded dark:border-gray-300/20 border-gray-300">
+                <div className="flex justify-center items-center border rounded-sm dark:border-gray-300/20 border-gray-300">
                     <SearchBox />
                 </div>
             </ShowDialogModal>

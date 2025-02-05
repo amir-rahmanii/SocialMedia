@@ -60,8 +60,8 @@ function Modal({ isAttention,
                             )}
 
                             <div className='flex justify-center items-center gap-3 mt-4'>
-                                <button onClick={submitHandler} className='bg-error-red hover:bg-red-400 transition-all duration-300 py-2 px-10 rounded text-base text-white text-nowrap flex'>Yes {btnYesTitle && <span className='hidden md:block'> , {btnYesTitle}</span>}</button>
-                                <button onClick={() => setisOpenModal(false)} className='border border-gray-300 bg-white hover:bg-admin-low transition-all duration-300 py-2 px-10 rounded text-base text-gray-700 text-nowrap flex'>Cancel {btnNoTitle && <span className='hidden md:block'>,{btnNoTitle}</span>}</button>
+                                <button onClick={submitHandler} className='bg-error-red hover:bg-red-400 transition-all duration-300 py-2 px-10 rounded-sm text-base text-white text-nowrap flex'>Yes {btnYesTitle && <span className='hidden md:block'> , {btnYesTitle}</span>}</button>
+                                <button onClick={() => setisOpenModal(false)} className='border border-gray-300 bg-white hover:bg-admin-low transition-all duration-300 py-2 px-10 rounded-sm text-base text-gray-700 text-nowrap flex'>Cancel {btnNoTitle && <span className='hidden md:block'>,{btnNoTitle}</span>}</button>
                             </div>
                         </>
                     ) : (

@@ -145,7 +145,7 @@ function MessagesAdmin() {
                 {isLoading ? (
                     <SkeletonTable />
                 ) : (
-                    <div className='bg-admin-navy rounded'>
+                    <div className='bg-admin-navy rounded-sm'>
                         <h3 className='text-xl px-6 pt-6 '>Messages</h3>
                         <div className='px-6 pt-6 flex justify-end items-center'>
                             <div className='gap-4 glex flex items-center'>
@@ -153,7 +153,7 @@ function MessagesAdmin() {
                                     <button onClick={serchUsernameFilterHandler} className='text-admin-High w-5 h-5'>
                                         {searchIcon}
                                     </button>
-                                    <input value={searchValue} onChange={(e) => setSearchValue(e.target.value)} className='bg-transparent text-white outline-none' placeholder='search...' type="text" />
+                                    <input value={searchValue} onChange={(e) => setSearchValue(e.target.value)} className='bg-transparent text-white outline-hidden' placeholder='search...' type="text" />
                                 </form>
                                 {/* show filter */}
                                 <Button onClick={() => setIsShowOpenFilter(true)} variant="outlined">Filter</Button>

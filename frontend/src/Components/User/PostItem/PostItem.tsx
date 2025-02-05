@@ -222,7 +222,7 @@ const PostItem: React.FC<PostItemProps> = ({ post, refetchMySavedPost, refetchGe
 
 
     return (
-        <div className="flex flex-col rounded  relative mt-3">
+        <div className="flex flex-col rounded-sm  relative mt-3">
 
             <div className="flex justify-between px-3 py-2.5 border-b dark:border-gray-300/20 border-gray-300  items-center">
                 <div className="flex space-x-3 items-center">
@@ -241,7 +241,7 @@ const PostItem: React.FC<PostItemProps> = ({ post, refetchMySavedPost, refetchGe
                     title="Post Deatils"
                     height='h-auto'
                 >
-                    <div className="flex flex-col w-full overflow-hidden rounded">
+                    <div className="flex flex-col w-full overflow-hidden rounded-sm">
                         {(myInfo?._id === post.user.id) && (
                             <button onClick={() => deletePostHandler(post._id)} className="flex bg-red-500 text-white items-center justify-between p-2.5 text-sm pl-4 cursor-pointer font-semibold hover:bg-red-400 duration-300 transition-all">
                                 Delete
@@ -399,7 +399,7 @@ const PostItem: React.FC<PostItemProps> = ({ post, refetchMySavedPost, refetchGe
                         )}
 
                         <input
-                            className="flex-auto text-sm text-black dark:text-white outline-none border-none bg-transparent"
+                            className="flex-auto text-sm text-black dark:text-white outline-hidden border-none bg-transparent"
                             type="text"
                             value={comment}
                             ref={commentInput}
@@ -451,7 +451,7 @@ const PostItem: React.FC<PostItemProps> = ({ post, refetchMySavedPost, refetchGe
                                                 }
                                                 followToggle(objFollow);
                                             }}
-                                            className="font-sans transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow rounded px-2 md:px-6 py-1.5"
+                                            className="font-sans transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow-sm rounded-sm px-2 md:px-6 py-1.5"
                                         >
                                             {followedListUser.includes(data.userid) ? "UnFollow" : "Follow"}
                                         </button>

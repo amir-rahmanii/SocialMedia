@@ -19,7 +19,7 @@ const OperatingSystemChart = ({ totalOsCount }: OperatingSystemChartProps) => {
       const bgColor = payload[0].payload.fill;
       return (
         <div
-          className="rounded p-3 shadow-xl text-black"
+          className="rounded-sm p-3 shadow-xl text-black"
           style={{ backgroundColor: bgColor }} 
         >
           <p>{payload[0].name} : {payload[0].value} </p>

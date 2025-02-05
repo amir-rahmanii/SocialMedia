@@ -40,7 +40,7 @@ function PostsContainer() {
                                     ))}
                                 </div>
                             ) : (
-                                <div className='text-black dark:text-white text-center mt-2 p-4 text-xl rounded'>
+                                <div className='text-black dark:text-white text-center mt-2 p-4 text-xl rounded-sm'>
                                     Sorry, no posts have been registered yet😩
                                     <div className='flex items-center justify-center gap-3 mt-2'>
                                         <span> You be the first</span>

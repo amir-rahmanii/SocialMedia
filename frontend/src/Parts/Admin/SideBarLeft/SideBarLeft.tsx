@@ -27,7 +27,7 @@ function SideBarLeft({ showSidebarLeftMobile, setShowSidebarLeftMobile }: SideBa
                     <ul className='flex flex-col gap-3'>
                         <li>
                             <NavLink to='panel' className={({ isActive }) =>
-                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300"
+                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300"
                             }>
                                 <div className='w-6 h-6'>
                                     {homeFill}
@@ -37,7 +37,7 @@ function SideBarLeft({ showSidebarLeftMobile, setShowSidebarLeftMobile }: SideBa
                         </li>
                         <li>
                             <NavLink to='profile' className={({ isActive }) =>
-                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300"
+                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300"
                             }>
                                 <div className='w-6 h-6'>
                                     {profileIcon}
@@ -47,7 +47,7 @@ function SideBarLeft({ showSidebarLeftMobile, setShowSidebarLeftMobile }: SideBa
                         </li>
                         <li>
                             <NavLink to='users' className={({ isActive }) =>
-                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300"
+                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300"
                             }>
                                 <div className='w-6 h-6'>
                                     {usersIcon}
@@ -57,7 +57,7 @@ function SideBarLeft({ showSidebarLeftMobile, setShowSidebarLeftMobile }: SideBa
                         </li>
                         <li>
                             <NavLink to='tickets' className={({ isActive }) =>
-                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300"
+                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300"
                             }>
                                 <div className='w-6 h-6'>
                                     {ticketIcon}
@@ -67,7 +67,7 @@ function SideBarLeft({ showSidebarLeftMobile, setShowSidebarLeftMobile }: SideBa
                         </li>
                         <li>
                             <NavLink to='posts' className={({ isActive }) =>
-                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300"
+                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300"
                             }>
                                 <div className='w-6 h-6'>
                                     {postsIconFill}
@@ -77,7 +77,7 @@ function SideBarLeft({ showSidebarLeftMobile, setShowSidebarLeftMobile }: SideBa
                         </li>
                         <li>
                             <NavLink to='messages' className={({ isActive }) =>
-                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300"
+                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300"
                             }>
                                 <div className='w-6 h-6'>
                                     {messageOutline}
@@ -87,7 +87,7 @@ function SideBarLeft({ showSidebarLeftMobile, setShowSidebarLeftMobile }: SideBa
                         </li>
                         <li>
                             <NavLink to='/' className={({ isActive }) =>
-                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300"
+                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300"
                             }>
                                 <div className='w-6 h-6'>
                                     {logOutIcon}
@@ -113,7 +113,7 @@ function SideBarLeft({ showSidebarLeftMobile, setShowSidebarLeftMobile }: SideBa
                         <ul className='flex flex-col gap-5'>
                         <li>
                             <NavLink to='panel' className={({ isActive }) =>
-                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300"
+                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300"
                             }>
                                 <div className='w-6 h-6'>
                                     {homeFill}
@@ -123,7 +123,7 @@ function SideBarLeft({ showSidebarLeftMobile, setShowSidebarLeftMobile }: SideBa
                         </li>
                         <li>
                             <NavLink to='profile' className={({ isActive }) =>
-                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300"
+                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300"
                             }>
                                 <div className='w-6 h-6'>
                                     {profileIcon}
@@ -133,7 +133,7 @@ function SideBarLeft({ showSidebarLeftMobile, setShowSidebarLeftMobile }: SideBa
                         </li>
                         <li>
                             <NavLink to='users' className={({ isActive }) =>
-                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300"
+                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300"
                             }>
                                 <div className='w-6 h-6'>
                                     {usersIcon}
@@ -143,7 +143,7 @@ function SideBarLeft({ showSidebarLeftMobile, setShowSidebarLeftMobile }: SideBa
                         </li>
                         <li>
                             <NavLink to='tickets' className={({ isActive }) =>
-                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300"
+                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300"
                             }>
                                 <div className='w-6 h-6'>
                                     {ticketIcon}
@@ -153,7 +153,7 @@ function SideBarLeft({ showSidebarLeftMobile, setShowSidebarLeftMobile }: SideBa
                         </li>
                         <li>
                             <NavLink to='posts' className={({ isActive }) =>
-                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300"
+                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300"
                             }>
                                 <div className='w-6 h-6'>
                                     {postsIconFill}
@@ -163,7 +163,7 @@ function SideBarLeft({ showSidebarLeftMobile, setShowSidebarLeftMobile }: SideBa
                         </li>
                         <li>
                             <NavLink to='messages' className={({ isActive }) =>
-                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300"
+                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300"
                             }>
                                 <div className='w-6 h-6'>
                                     {messageOutline}
@@ -173,7 +173,7 @@ function SideBarLeft({ showSidebarLeftMobile, setShowSidebarLeftMobile }: SideBa
                         </li>
                         <li>
                             <NavLink to='/' className={({ isActive }) =>
-                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded transition-all duration-300"
+                                isActive ? "flex items-center bg-[#313D4A] gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300" : "flex items-center gap-2 text-admin-low py-2 px-4 hover:bg-[#313D4A] rounded-sm transition-all duration-300"
                             }>
                                 <div className='w-6 h-6'>
                                     {logOutIcon}

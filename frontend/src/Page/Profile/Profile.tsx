@@ -223,7 +223,7 @@ function Profile() {
 
               {/* is showing profile picture */}
               <Dialog open={isShowProfile} onClose={() => setIsShowProfile(false)} maxWidth='xl'>
-                <div className="bg-gradient-to-r p-2 from-[#833ab4] via-[#fd1d1d] to-[#fcb045]">
+                <div className="bg-linear-to-r p-2 from-[#833ab4] via-[#fd1d1d] to-[#fcb045]">
                   <img draggable="false" className="w-60 h-60 border-none rounded-full border-2 object-cover" src={`${import.meta.env.VITE_API_BASE_URL}/${informationUserData?.user.profilePicture.path}`} alt="profile" />
                 </div>
               </Dialog>
@@ -237,7 +237,7 @@ function Profile() {
 
                   {myInfo?._id === informationUserData?.user._id && (
                     <div>
-                      <Link to="/update-password" className="text-black dark:text-white border flex gap-2 items-center font-sans hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 text-sm rounded px-2 py-2">Change Password {settingsIcon}</Link>
+                      <Link to="/update-password" className="text-black dark:text-white border flex gap-2 items-center font-sans hover:bg-[#00376b1a] dark:hover:bg-[#e0f1ff21] transition-all duration-300 text-sm rounded-sm px-2 py-2">Change Password {settingsIcon}</Link>
                     </div>
                   )}
 
@@ -284,7 +284,7 @@ function Profile() {
                                           }
                                           followToggle(objFollow);
                                         }}
-                                        className="font-sans transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow rounded px-6 py-1.5"
+                                        className="font-sans transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow-sm rounded-sm px-6 py-1.5"
                                       >
                                         {followedList.includes(data.userId) ? "UnFollow" : "Follow"}
                                       </button>
@@ -336,7 +336,7 @@ function Profile() {
                                           }
                                           followToggle(objFollow);
                                         }}
-                                        className="font-sans transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow rounded px-6 py-1.5"
+                                        className="font-sans transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow-sm rounded-sm px-6 py-1.5"
                                       >
                                         {followedList.includes(data.userId) ? "UnFollow" : "Follow"}
                                       </button>
@@ -373,7 +373,7 @@ function Profile() {
                       userIdToFollow: informationUserData?.user._id
                     }
                     followToggle(objFollow);
-                  }} className=" sm:max-w-[21.5rem] font-sans transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow rounded py-1.5">{followed ? "UnFollow" : "Follow"}</button>
+                  }} className=" sm:max-w-[21.5rem] font-sans transition-all duration-300 hover:bg-primaryhover-blue bg-primary-blue text-sm text-white hover:shadow-sm rounded-sm py-1.5">{followed ? "UnFollow" : "Follow"}</button>
                 )}
               </div>
 
@@ -420,7 +420,7 @@ function Profile() {
                         posts={mySavedPost} 
                         />
                     ) : (
-                      <div className='text-black dark:text-white text-center mt-2 p-4 text-xl rounded'>
+                      <div className='text-black dark:text-white text-center mt-2 p-4 text-xl rounded-sm'>
                         Sorry, no posts have been Saved yet😩
                         <div className='flex items-center justify-center gap-3 mt-2'>
                           <span> You be the first Save Post</span>
@@ -439,7 +439,7 @@ function Profile() {
                         showCol={true}
                         posts={informationUserData?.posts} />
                     ) : (
-                      <div className='text-black dark:text-white text-center mt-2 p-4 text-xl rounded'>
+                      <div className='text-black dark:text-white text-center mt-2 p-4 text-xl rounded-sm'>
                         Sorry, no posts have been registered yet😩
                         {myInfo?._id === informationUserData?.user._id && (
                           <>
@@ -465,10 +465,10 @@ function Profile() {
           </div> */}
 
             {/* footer */}
-            <div className="text-black dark:text-white mt-10 mb-10 drop-shadow-sm rounded flex lg:flex-row flex-col sm:gap-0 gap-5 sm:p-0 p-4 items-center justify-between">
+            <div className="text-black dark:text-white mt-10 mb-10 drop-shadow-xs rounded-sm flex lg:flex-row flex-col sm:gap-0 gap-5 sm:p-0 p-4 items-center justify-between">
               <div className='grid grid-cols-3 gap-2'>
                 {Array(9).fill(0).map((_, index) => (
-                  <img key={index + 1} loading='lazy' draggable="false" className="rounded w-28 h-28" src="/images/4.jpg" alt="1" />
+                  <img key={index + 1} loading='lazy' draggable="false" className="rounded-sm w-28 h-28" src="/images/4.jpg" alt="1" />
                 ))}
 
               </div>
