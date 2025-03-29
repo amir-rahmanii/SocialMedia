@@ -15,7 +15,8 @@ import { VisibilityEye, VisibilityEyeOff } from '../../Components/SvgIcon/SvgIco
 
 
 function UpdatePassword() {
-
+    
+    const navigate = useNavigate()
     const [showPrevPassword, setShowPrevPassword] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -32,7 +33,6 @@ function UpdatePassword() {
             navigate("/")
         });
 
-    const navigate = useNavigate()
   
 
 

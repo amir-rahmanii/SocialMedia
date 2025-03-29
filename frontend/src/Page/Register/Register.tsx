@@ -21,7 +21,8 @@ function Register() {
     const { mutate: registerUser, isLoading } = usePostData('users/register',
         'User created successfuly!',
         false,
-        () => {
+        (data) => {
+            localStorage.setItem("access-token", data.response.user.accessToken)
             navigate("/")
         },
         true

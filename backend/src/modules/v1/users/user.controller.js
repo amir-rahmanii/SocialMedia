@@ -97,7 +97,7 @@ exports.register = async (req, res) => {
       }
     );
 
-    const accessToken = accessTokenCreator(user, "30s");
+    const accessToken = accessTokenCreator(user, "365d");
     const refreshToken = await RefreshTokenModel.createToken(user);
 
     res.cookie("access-token", accessToken, {
@@ -143,7 +143,7 @@ exports.login = async (req, res) => {
       throwError("Email or password is incorrect", 401);
     }
 
-    const accessToken = accessTokenCreator(user, "30s");
+    const accessToken = accessTokenCreator(user, "365d");
     const refreshToken = await RefreshTokenModel.createToken(user);
 
     // اضافه کردن اطلاعات سیستم به آرایه systemInfos
@@ -199,7 +199,7 @@ exports.refreshToken = async (req, res) => {
       throwError("user not found, please login", 404);
     }
 
-    const accessToken = accessTokenCreator(user, "30s");
+    const accessToken = accessTokenCreator(user, "365d");
     const newRefreshToken = await RefreshTokenModel.createToken(user);
 
     res.cookie("access-token", accessToken, {

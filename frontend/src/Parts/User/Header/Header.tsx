@@ -6,7 +6,6 @@ import { MaterialUISwitch } from '../../../Components/User/MaterialUISwitch/Mate
 import { useThemeContext } from '../../../Global/ThemeContext';
 import ShowDialogModal from '../../../Components/ShowDialogModal/ShowDialogModal';
 import SearchBox from '../../../Components/User/SearchBox/SearchBox';
-import Cookies from "js-cookie";
 import useGetData from '../../../hooks/useGetData';
 import { userInformation } from '../../../hooks/user/user.types';
 import NewPost from '../../../Components/User/NewPost/NewPost';
@@ -31,8 +30,7 @@ export default function Header() {
     const navigate = useNavigate();
 
     const logOutHandler = () => {
-        Cookies.remove("access-token");
-        Cookies.remove("refresh-token");
+        localStorage.removeItem("access-token");
         navigate("/login")
     }
 

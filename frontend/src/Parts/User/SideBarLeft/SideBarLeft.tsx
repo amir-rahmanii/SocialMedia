@@ -5,7 +5,6 @@ import { FormControlLabel } from '@mui/material';
 import { MaterialUISwitch } from '../../../Components/User/MaterialUISwitch/MaterialUISwitch';
 import { useThemeContext } from '../../../Global/ThemeContext';
 import ShowDialogModal from '../../../Components/ShowDialogModal/ShowDialogModal';
-import Cookies from "js-cookie";
 import SearchBox from '../../../Components/User/SearchBox/SearchBox';
 import useGetData from '../../../hooks/useGetData';
 import { userInformation } from '../../../hooks/user/user.types';
@@ -26,8 +25,7 @@ function SideBarLeft() {
 
 
     const logOutHandler = () => {
-        Cookies.remove("access-token");
-        Cookies.remove("refresh-token");
+        localStorage.removeItem("access-token");
         navigate("/login")
     }
 

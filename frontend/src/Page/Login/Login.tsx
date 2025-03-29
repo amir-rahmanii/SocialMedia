@@ -16,10 +16,11 @@ function Login() {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
 
-    const { mutate: loginUser, isLoading } = usePostData('users/login',
+    const {mutate: loginUser, isLoading } = usePostData('users/login',
         "User login successfuly",
         false,
-        () => {
+        (data) => {
+            localStorage.setItem("access-token",data.response.data.accessToken)
             navigate("/")
         });
 
